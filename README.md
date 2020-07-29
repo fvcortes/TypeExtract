@@ -1,100 +1,103 @@
 # TypeExtract
-The purpose of this program is extracting types
-from functions in a Lua program.
 
-Content:
+The purpose of this program is extracting types from functions in a Lua program.
 
-  Type.lua     - Responsible for extract and infer types
-                 of a Lua value.
+## Content:
 
-  Function.lua - Responsible for gathering information
-                 about local values in a function call
-                 and return.
+* Type.lua: Responsible for extract and infer type of a Lua value.
 
-  Hook.lua     - Implementation of the hook used to extract
-                 types from function call and return.
+* Function.lua: Responsible for gathering information about local values in a function call and return.
 
-  Report.lua   - Responsible for generating a report with
-                 function information.
+* Hook.lua: Implementation of the hook used to extract types from function call and return.
 
-  Compare.lua  - Used for testing which compares two types
-                 and return if they are the same.
+* Report.lua: Responsible for generating a report with function information.
 
-  Test.lua     - Makes a series of compares based on programs
-                 which we know the output.
+* Compare.lua: Used for testing which compares two types and return if they are the same.
 
-  Run.lua      - Responsible for loading a Lua file and set
-                 the hook.
+* Test.lua: Makes a series of compares based on programs which we know the output.
 
-  Main.lua     - Receives a Lua program as parameter and run
-                 the file.
+* Run.lua: Responsible for loading a Lua file and set the hook.
 
-Usage:
+* Main.lua: Receives a Lua program as parameter and run the file.
 
-  lua Main.lua <program>
+## Usage:
 
-  This will generate a "report.out" file with information about
-  functions called during the program execution.
+```bash
+lua Main.lua <program>
+```
 
-Example:
+Where <program> is a Lua program fila (including the right path)
+  
+This will generate a "report.out" file with information about functions called during the program execution.
 
-  Let say we have the following program which has a single function.
+## Example:
 
-   function foo(a)
-     return a
-   end
+Let say we have the following program which has a single function.
+  
+```lua
+function foo(a)
+  return a
+end
+```
 
-  if we call foo(1) in the same file and pass it to our program,
-  it will generate the following output:
+If we call foo(1) in the same file and pass it to our program, it will generate the following output:
+  
+```
+[foo.lua]:1 (foo)1
+(integer) => (integer)
+```
 
-   [foo.lua]:1 (foo)1
-   (integer) => (integer)
+Which means the function declared in line 1 was called once and receives an integer and returns an integer.
+  
+If we call it twice as foo(1);foo(.1), the output will be asthe following:
+  
+```
+[foo.lua]:1 (foo)2
+(number) => (number)
+Parameters:
+1.
+    float 50.00% (1)
+    integer 50.00% (1)
+Results:
+1.
+    float 50.00% (1)
+    integer 50.00% (1)
+```
 
-  Which means the function declared in line 1 was called once and
-  receives an integer and returns an integer
+It means that function foo was called twice but not with the same value types and the output indicates the proportion of each type. Each parameter and result is reported in the order which it was passed/transfered.
 
-  if we call it twice as foo(1);foo(.1), the output will be as
-  the following:
+Going on with our example, if we continue to call foo but this time with no parameters, the following output will be generated:
+  
+ ```
+[foo.lua]:1 (foo)3
+(opt number) => (opt number)
+Parameters:
+1.
+    nil 33.33% (1)
+    integer 33.33% (1)
+    float 33.33% (1)
+Results
+1.
+    nil 33.33% (1)
+    integer 33.33% (1)
+    float 33.33% (1)
+```
 
-   [foo.lua]:1 (foo)2
-   (number) => (number)
-   Parameters:
-   1.
-       float 50.00% (1)
-       integer 50.00% (1)
-   Results:
-   1.
-       float 50.00% (1)
-       integer 50.00% (1)
+The new 'opt' tag means that this value is optional, since the function was called with a nil value. As the complexity of a program grows, it can be hard to generate a friendly report with intuitive types. For example, if we have a recursive struct types being transfered as values in a function, our program is not able to detect it's recursiveness and probably will show us a long and repetitive type structure, for example, imagine the following table:
+  
+  ```lua
+  list = {value = 1,
+          next = {value = 2,
+                  next = {value = 3,
+                          next = {value = 4,
+                                  next = nil}}}}
+```
 
-  It means that function foo was called twice but not with the
-  same value types and the output indicates the proportion of
-  each type. Each parameter and result is reported in the order
-  which it was passed/transfered.
+In this case, the extractor will not be able to identify the repetition
+and classify it as something like:
 
-  Going on with our example, if we continue to call foo but this
-  time with no parameters, the following output will be generated:
-
-   [foo.lua]:1 (foo)3
-   (opt number) => (opt number)
-   Parameters:
-   1.
-       nil 33.33% (1)
-       integer 33.33% (1)
-       float 33.33% (1)
-   Results
-   1.
-       nil 33.33% (1)
-       integer 33.33% (1)
-       float 33.33% (1)
-
-  The new 'opt' tag means that this value is optional, since the
-  function was called with a nil value.
-
-  As the complexity of a program grows, it can be hard to generate
-  a friendly report with intuitive types. For example, if we have
-  a recursive struct types being transfered as values in a function,
-  our program is not able to detect it's recursiveness and probably
-  will show us a long and repetitive type structure.
+```lua
+list:{value:integer, next:list} 
+```
 
 
