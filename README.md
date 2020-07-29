@@ -26,7 +26,7 @@ The purpose of this program is extracting types from functions in a Lua program.
 lua Main.lua <program>
 ```
 
-Where <program> is a Lua program fila (including the right path)
+Where "program" is a Lua program file (including the right path)
   
 This will generate a "report.out" file with information about functions called during the program execution.
 
