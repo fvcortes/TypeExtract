@@ -108,7 +108,7 @@ Giving this porgram as input to the extractor, the report will be as the followi
 (integer) => (integer)
 ```
 
-It means that foo is a functions that receives a function of integer to integer and returns an integer. The report also show us that the function, with no defined name, declared in line 4 is a function of integer to integer.
+It means that foo is a function that receives another function of integer to integer and returns an integer. The report also show us that the function, with no defined name, declared in line 4 is a function of integer to integer.
 
 As the complexity of a program grows, it can be hard to generate a friendly report with intuitive types. For example, if we have a recursive struct types being transfered as values in a function, our program is not able to detect it's recursiveness and probably will show us a long and repetitive type structure, for example, imagine the following table:
   
