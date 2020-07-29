@@ -29,7 +29,7 @@ end
 
 -- Hook function used to extract local value types from functions
 function hook(event)
-  local info = debug.getinfo(2,"frtSn")
+  local info = debug.getinfo(2,"frt")
   local names
   if Names[info.func] == nil then
     names = debug.getinfo(2,"Sn")
