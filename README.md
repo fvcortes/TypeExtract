@@ -83,7 +83,34 @@ Results
     float 33.33% (1)
 ```
 
-The new 'opt' tag means that this value is optional, since the function was called with a nil value. As the complexity of a program grows, it can be hard to generate a friendly report with intuitive types. For example, if we have a recursive struct types being transfered as values in a function, our program is not able to detect it's recursiveness and probably will show us a long and repetitive type structure, for example, imagine the following table:
+The new 'opt' tag means that this value is optional, since the function was called with a nil value. 
+
+As a last demonstration, let's consider the following program:
+
+```lua
+funcion boo(a)
+    return a
+end
+function foo(f)
+    return f(1)
+end
+
+foo(boo)
+```
+
+Giving this porgram as input to the extractor, the report will be as the following:
+
+```
+[temp.lua]:1 (foo) : 1
+(<<(integer) => (integer)>>) => (integer)
+
+[temp.lua]:4 : 1
+(integer) => (integer)
+```
+
+It means that foo is a function that receives another function of integer to integer and returns an integer. The report also show us that the function, with no defined name, declared in line 4 is a function of integer to integer.
+
+As the complexity of a program grows, it can be hard to generate a friendly report with intuitive types. For example, if we have a recursive struct types being transfered as values in a function, our program is not able to detect it's recursiveness and probably will show us a long and repetitive type structure, for example, imagine the following table:
   
   ```lua
   list = {value = 1,
@@ -99,5 +126,3 @@ and classify it as something like:
 ```lua
 list:{value:integer, next:list} 
 ```
-
-
