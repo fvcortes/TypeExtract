@@ -220,8 +220,13 @@ function union(a,b)
       elseif b.tag == "unknown" then
         return {tag = "unknown"}
       else
-        return { tag = "optional",
-		 optType = union(a.optType,b) }
+        local u = union(a.optType,b)
+        if u.tag == "unknown" then
+          return u
+        else
+          return { tag = "optional",
+		 optType = u }
+        end
       end
     else
       if a.tag == "nil" then
@@ -230,8 +235,13 @@ function union(a,b)
       elseif a.tag == "unknown" then
 	return { tag = "unknown" }
       else
-	return { tag = "optional",
-		 optType = union(a,b.optType) }
+        local u = union(a,b.optType)
+        if u.tag == "unknown" then
+          return u
+        else
+	  return { tag = "optional",
+		 optType = u }
+        end
       end
     end
   elseif a.tag == "nil" or
