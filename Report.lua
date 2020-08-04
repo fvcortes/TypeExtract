@@ -15,14 +15,6 @@ function printTable(t,pad)
     end
   end
 end
-local function printFunctions(F)
-  for k,v in pairs(F) do 
-    print(string.format("  "),k,v)
-    if type(v) == "table" then
-      printTable(v,1)
-    end
-  end
-end
 
 -- Get an apropriate name for the function
 function getName (func)
@@ -40,32 +32,29 @@ local getType
 
 -- Return a string representing an array type
 local function getArrayType(t,func)
-  local s = string.format("array %s", getType(t,func))
+  local s = string.format("array of %s", getType(t,func))
   return s  
 end
 
 -- Return a string representing a struct type
 local function getStructType(t,func)
-  local s = ""
+  local s = "struct {"
   for k,v in pairs(t) do
     s = s..string.format("%s:%s, ", k,getType(v,func))
   end
-  return string.sub(s,1,#s-2)
+  return string.sub(s,1,#s-2).."}"
 end
 
 -- Return a string representing a table type
 local function getTableType(t,func)
-
---  print ("---------GETTING TABLE TYPE-----------")
---  printTable(t,1)
   if t.arrayType == nil then
     return string.format("table { %s }", 
 			  getStructType(t.structType,func))
   elseif t.structType == nil then
-    return string.format("table { %s }",
+    return string.format("%s",
 			  getArrayType(t.arrayType,func))
   else
-    return string.format("table { %s, %s }",
+    return string.format("table { %s; %s }",
 			  getArrayType(t.arrayType),
 			   getStructType(t.structType,func))
     end
@@ -85,8 +74,6 @@ local function getFuncType(funcType,func)
     s = s..string.format("%s, ", getType(v.Type,func))
   end
   if next(funcType.resultType) ~= nil then
---    print(string.format("resultType: %s", funcType.resultType))
- ----   printTable(funcType.resultType, 1)
     s = string.sub(s,1,#s-2)
   end
   return s..string.format(")") 
@@ -135,7 +122,7 @@ local function getStat(typeCount, funcCount)
   local s = ""
   for k,v in pairs(typeCount) do
     if v ~= funcCount then -- function was called with different types
-      s = s..string.format("\t%s %.2f%% (%d)\n", k, (v/funcCount)*100, v)
+      s = s..string.format("\t%s %.0f%% (%d)\n", k, (v/funcCount)*100, v)
     end
   end  
   return s
@@ -143,8 +130,6 @@ end
 
 -- Generate a report file with information about function types
 function report()
---  print("PRINT FUNCTIONS")
---  printFunctions(Functions)
   local file = io.open("report.out", "w")
   io.output(file)
   for func, funcType in pairs(Functions) do
