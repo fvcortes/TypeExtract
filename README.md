@@ -56,12 +56,12 @@ If we call it twice as foo(1);foo(.1), the output will be asthe following:
 (number) => (number)
 Parameters:
 1.
-    float 50.00% (1)
-    integer 50.00% (1)
+    float 50% (1)
+    integer 50% (1)
 Results:
 1.
-    float 50.00% (1)
-    integer 50.00% (1)
+    float 50% (1)
+    integer 50% (1)
 ```
 
 It means that function foo was called twice but not with the same value types and the output indicates the proportion of each type. Each parameter and result is reported in the order which it was passed/transfered.
@@ -73,14 +73,14 @@ Going on with our example, if we continue to call foo but this time with no para
 (opt number) => (opt number)
 Parameters:
 1.
-    nil 33.33% (1)
-    integer 33.33% (1)
-    float 33.33% (1)
+    nil 33% (1)
+    integer 33% (1)
+    float 33% (1)
 Results
 1.
-    nil 33.33% (1)
-    integer 33.33% (1)
-    float 33.33% (1)
+    nil 33% (1)
+    integer 33% (1)
+    float 33% (1)
 ```
 
 The new 'opt' tag means that this value is optional, since the function was called with a nil value. 
@@ -88,7 +88,7 @@ The new 'opt' tag means that this value is optional, since the function was call
 As a last demonstration, let's consider the following program:
 
 ```lua
-funcion boo(a)
+function boo(a)
     return a
 end
 function foo(f)
@@ -120,8 +120,7 @@ As the complexity of a program grows, it can be hard to generate a friendly repo
                                   next = nil}}}}
 ```
 
-In this case, the extractor will not be able to identify the repetition
-and classify it as something like:
+In this case, the extractor will not be able to identify the repetition. An example of a good classification of this type would be something like:
 
 ```lua
 list:{value:integer, next:list} 
