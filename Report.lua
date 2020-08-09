@@ -60,28 +60,60 @@ local function getTableType(t,func)
     end
 end
 
+-- Return a string representing the parameter type
+local function getParamType(pType,func)
+  local s
+  if not next(pType) then
+    return "()"
+  else
+    local temp = table.clone(pType)
+    s = "("
+    for _,v in ipairs(pType) do
+      if #temp == 1 then
+        s = s..string.format("%s)", getType(v.Type,func))
+      else
+        s = s..string.format("%s,", getType(v.Type,func))
+      end
+      table.remove(temp,1)
+    end
+  end
+  return s
+end
+
+-- Return a string representing the result type
+local function getResultType(rType,func)
+  local s
+  if not next(rType) then
+    return "()"
+  elseif #rType == 1 then
+    return string.format("%s", getType(rType[1].Type, func))
+  else
+    local temp = table.clone(rType)
+    s = "("
+    for _,v in ipairs(rType) do
+      if #temp == 1 then
+        s = s..string.format("%s)", getType(v.Type,func))
+      else
+        s = s..string.format("%s,", getType(v.Type,func))
+      end
+      table.remove(temp,1)
+    end
+  end
+  return s
+end
+
 -- Return a string representing the type structure of a function
 local function getFuncType(funcType,func)
-  local s = "("
-  for _,v in pairs(funcType.paramType) do
-    s = s..string.format("%s, ", getType(v.Type,func))
-  end
-  if next(funcType.paramType) ~= nil then
-    s = string.sub(s,1,#s-2)
-  end
-  s =s..string.format(") => (")
-  for _,v in pairs(funcType.resultType) do
-    s = s..string.format("%s, ", getType(v.Type,func))
-  end
-  if next(funcType.resultType) ~= nil then
-    s = string.sub(s,1,#s-2)
-  end
-  return s..string.format(")") 
+  local s = getParamType(funcType.paramType,func)
+  s = s.." -> "
+  return s..getResultType(funcType.resultType,func)
 end
 
 -- Return a string representing a type
 getType = function(t,func)
-  if t.tag == "optional" then
+  if t.tag == nil then
+    return t
+  elseif t.tag == "optional" then
     return "opt "..getType(t.optType,func)
   elseif t.tag == "table" then
     return getTableType(t.tableType,func)  
@@ -90,14 +122,12 @@ getType = function(t,func)
     if tfunc == nil or rReference == true then 
       return "function"
     else
-      return "<<"..getFuncType(tfunc,func)..">>"
+      return getFuncType(tfunc,func)
     end
-  else
-    return t.tag
   end
 end
 
--- Return if we should ommit type stat
+-- Return if we should ommit type stat inside par/result information
 local function ommitTypeStat(Type, funcCount)
   local flag = true
   for _,v in pairs(Type) do

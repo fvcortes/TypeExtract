@@ -43,10 +43,10 @@ local function unionLocal(a,b)
   for k,v in pairs(listKeys(a,b)) do
     r[k] = {}
     if b[k] == nil then -- key only exist in a
-      r[k].Type = union(a[k].Type, { tag = "nil" })
+      r[k].Type = union(a[k].Type, "nil")
       r[k].typeCount = unionTypeCount(a[k].typeCount, {})
     elseif a[k] == nil then -- key only exist in b
-      r[k].Type = union({ tag = "nil"}, b[k].Type) 
+      r[k].Type = union("nil", b[k].Type) 
       r[k].typeCount = unionTypeCount({},b[k].typeCount)
     else
       r[k].Type = union(a[k].Type,b[k].Type)
@@ -68,10 +68,12 @@ local function inspectLocal(ftransfer, ntransfer)
     name, value = debug.getlocal(4,i)
     local v = inspect(value)
     local tc = {}
-    if v.tag == nil then
+    if v == "nil" then
       tc["nil"] = 1
+    elseif v.tag == nil then
+      tc[v] = 1
     else
-      tc[v.tag] = 1 
+      tc[v.tag] = 1
     end
     r[j] = {Type = v, typeCount = tc }
     j = j + 1

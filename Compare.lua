@@ -67,13 +67,22 @@ local function compareTable(a,b)
       return value, reason
     end
   elseif b.structType ~= nil and b.structType ~= nil then
-    return compare(a.structType, b.structType)
+    return compareField(a.structType, b.structType)
   end
 end
 
 -- Compare two Types
 function compare(a,b)
-  if a.tag ~= b.tag then
+  if (a.tag == nil and b.tag ~= nil) or
+      (a.tag ~= nil and b.tag == nil) then
+    return false, "different types"
+  elseif a.tag == nil and b.tag == nil then
+    if a ~= b then
+      return false, "different types"
+    else
+      return true
+    end
+  elseif a.tag ~= b.tag then
     return false, "different types"
   else
     local tag = a.tag

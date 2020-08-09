@@ -74,18 +74,18 @@ local function unionTable(a,b)
   elseif a.arrayType == nil then -- a has only struct type
     if b.structType == nil then
       return { structType = unionField(a.structType,{}),
-	       arrayType = union({tag = "nil"},b.arrayType) }
+	       arrayType = union("nil",b.arrayType) }
     else
       return { structType = unionField(a.structType, b.structType),
-	       arrayType = union({tag = "nil"}, b.arrayType) }
+	       arrayType = union("nil", b.arrayType) }
     end
   elseif b.arrayType == nil then -- b has only struct type
     if a.structType == nil then
       return { structType = unionField({}, b.structType),
-	       arrayType = union(a.arrayType, {tag = "nil"}) }
+	       arrayType = union(a.arrayType,"nil") }
     else
       return { structType = unionField(a.structType, b.structType),
-	       arrayType = union(a.arrayType, {tag = "nil"}) }
+	       arrayType = union(a.arrayType,"nil") }
     end
   elseif a.structType == nil then
     return { structType = unionField({}, b.structType),
@@ -127,11 +127,11 @@ function inspect(v)
   local vType = type(v)
  -- print(string.format("inspecting %s, type: %s", v,vType))
   if vType == "number" then
-    return { tag = math.type(v)}
+    return math.type(v)
   elseif vType == "table" then
     if not next(v) then
       -- table is empty
-      return { tag = "emptyTable" }
+      return "emptyTable"
     else
       return { tag = vType,
 	       tableType = inspectTable(v) }
@@ -140,7 +140,7 @@ function inspect(v)
     return { tag = vType, 
 	     functionType = { functionList = {[v] = true}} }
   else
-    return { tag = vType }
+    return vType
   end	    
 end
 
@@ -158,22 +158,22 @@ function union(a,b)
   	  b.tag == "optional" then
     return { tag = "optional", 
 	     optType = union(a.optType, b.optType) }
-  elseif a.tag == "emptyTable" and
-	  b.tag == "emptyTable" then
-    return { tag = "emptyTable" }
-  elseif a.tag == b.tag then -- same tag union
-    return { tag = a.tag }
-  elseif a.tag == "unknown" or
-	  b.tag == "unknown"  then
-    return { tag = "unknown" }
-  elseif a.tag == "emptyTable" or
-	  b.tag == "emptyTable" then
-    if a.tag == "emptyTable" then
+  elseif a == "emptyTable" and
+	  b == "emptyTable" then
+    return "emptyTable"
+  elseif a == b then -- same tag union
+    return a
+  elseif a == "unknown" or
+	   b == "unknown"  then
+    return "unknown"
+  elseif a == "emptyTable" or
+	  b == "emptyTable" then
+    if a == "emptyTable" then
       if b.tag == "table" then
         if b.tableType.structType == nil then
           return { tag = "table",
 		   tableType = 
-		     { arrayType = union({tag="nil"},b.tableType.arrayType)}}
+		     { arrayType = union("nil",b.tableType.arrayType)}}
         else
           if b.tableType.arrayType == nil then
             return { tag = "table",
@@ -183,18 +183,18 @@ function union(a,b)
             return { tag = "table",
   		     tableType = 
 		       { structType = unionField({}, b.tableType.structType),
-		         arrayType = union({tag="nil"}, b.tableType.arrayType) }}
+		         arrayType = union("nil", b.tableType.arrayType) }}
           end
         end
       else
-        return { tag = "unknown" }
+        return "unknown"
       end
     else
       if a.tag == "table" then
         if a.tableType.structType == nil then
           return { tag = "table",
 		   tableType = 
-		     { arrayType = union(a.tableType.arrayType,{tag="nil"})}}
+		     { arrayType = union(a.tableType.arrayType,"nil")}}
         else
           if a.tableType.arrayType == nil then
             return { tag = "table",
@@ -204,24 +204,24 @@ function union(a,b)
             return { tag = "table",
   		     tableType = 
 		       { structType = unionField(a.tableType.structType,{}),
-		         arrayType = union(a.tableType.arrayType,{tag="nil"}) }}
+		         arrayType = union(a.tableType.arrayType,"nil") }}
           end
         end
       else
-        return { tag = "unknown" }
+        return "unknown"
       end
     end
   elseif a.tag == "optional" or
           b.tag == "optional" then
     if a.tag == "optional" then
-      if b.tag == "nil" then
+      if b == "nil" then
         return { tag = "optional", 
 		 optType = a.optType }
-      elseif b.tag == "unknown" then
-        return {tag = "unknown"}
+      elseif b == "unknown" then
+        return "unknown"
       else
         local u = union(a.optType,b)
-        if u.tag == "unknown" then
+        if u == "unknown" then
           return u
         else
           return { tag = "optional",
@@ -229,14 +229,14 @@ function union(a,b)
         end
       end
     else
-      if a.tag == "nil" then
+      if a == "nil" then
         return { tag = "optional",
 		 optType = b.optType }
-      elseif a.tag == "unknown" then
-	return { tag = "unknown" }
+      elseif a == "unknown" then
+	return "unknown"
       else
         local u = union(a,b.optType)
-        if u.tag == "unknown" then
+        if u == "unknown" then
           return u
         else
 	  return { tag = "optional",
@@ -244,32 +244,32 @@ function union(a,b)
         end
       end
     end
-  elseif a.tag == "nil" or
-          b.tag == "nil" then
-    if a.tag == "nil" then
-      if b.tag == "unknown" then
-        return { tag = "unknown" }
+  elseif a == "nil" or
+          b == "nil" then
+    if a == "nil" then
+      if b == "unknown" then
+        return "unknown"
       else
         return { tag = "optional",
 		optType = b }
       end
     else
-      if a.tag == "unknown" then
-        return { tag = "unknown" }
+      if a == "unknown" then
+        return "unknown"
       else
         return { tag = "optional",
 		optType = a }
       end
     end
-  elseif ((a.tag == "integer") and (b.tag == "float")) or 
-	 ((a.tag == "float") and (b.tag == "integer")) or 
-	 ((a.tag == "number") and (b.tag == "integer")) or 
-	 ((a.tag == "integer") and (b.tag == "number")) or 
-	 ((a.tag == "number") and (b.tag == "float")) or 
-	 ((a.tag == "float") and (b.tag == "number")) then 
-    return { tag = "number" }
+  elseif ((a == "integer") and (b == "float")) or 
+	 ((a == "float") and (b == "integer")) or 
+	 ((a == "number") and (b == "integer")) or 
+	 ((a == "integer") and (b == "number")) or 
+	 ((a == "number") and (b == "float")) or 
+	 ((a == "float") and (b == "number")) then 
+    return "number"
   else
-    return { tag = "unknown" }
+    return "unknown"
   end
 end
 
@@ -278,9 +278,9 @@ function unionField(a,b)
   local r = { }
   for k,_ in pairs(listKeys(a,b)) do
     if b[k] == nil then -- key only exist in a
-      r[k] = union(a[k], { tag = "nil" })
+      r[k] = union(a[k], "nil")
     elseif a[k] == nil then -- key only exist in b
-      r[k] = union({ tag = "nil" }, b[k])
+      r[k] = union("nil", b[k])
     else -- key present in both tables
       r[k] = union(a[k],b[k])
     end

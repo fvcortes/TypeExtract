@@ -1,21 +1,21 @@
 require "Compare"
 require "Run"
 -- Common Type Variables
-TNumber = {tag = "number"}
+TNumber = "number"
 
-TInt = {tag = "integer"}
+TInt = "integer"
 
-TFloat = {tag = "float"}
+TFloat = "float"
 
-TString = {tag = "string"}
+TString = "string"
 
-TBool = {tag = "boolean"}
+TBool = "boolean"
 
-TUnknown = {tag = "unknown"}
+TUnknown = "unknown"
 
-TNil = {tag = "nil"}
+TNil = "nil"
 
-TEmptyTable = {tag = "emptyTable"}
+TEmptyTable = "emptyTable"
 
 TArrayNumber = {tag = "table", tableType = {arrayType = TNumber}}
 
