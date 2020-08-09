@@ -44,7 +44,7 @@ If we call foo(1) in the same file and pass it to our program, it will generate 
   
 ```
 [foo.lua]:1 (foo)1
-(integer) => (integer)
+(integer) -> integer
 ```
 
 Which means the function declared in line 1 was called once and receives an integer and returns an integer.
@@ -53,7 +53,7 @@ If we call it twice as foo(1);foo(.1), the output will be asthe following:
   
 ```
 [foo.lua]:1 (foo)2
-(number) => (number)
+(number) -> number
 Parameters:
 1.
     float 50% (1)
@@ -70,7 +70,7 @@ Going on with our example, if we continue to call foo but this time with no para
   
  ```
 [foo.lua]:1 (foo)3
-(opt number) => (opt number)
+(opt number) -> opt number
 Parameters:
 1.
     nil 33% (1)
@@ -102,10 +102,10 @@ Giving this porgram as input to the extractor, the report will be as the followi
 
 ```
 [temp.lua]:1 (foo) : 1
-(<<(integer) => (integer)>>) => (integer)
+((integer) -> integer) -> integer
 
 [temp.lua]:4 : 1
-(integer) => (integer)
+(integer) -> integer
 ```
 
 It means that foo is a function that receives another function of integer to integer and returns an integer. The report also show us that the function, with no defined name, declared in line 4 is a function of integer to integer.
