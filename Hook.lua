@@ -1,38 +1,35 @@
+local util = require "Util"
 local Counters = {}
 local Names = {}
 local Locals = {}
 local UpValues = {}
 --TODO: Treat varargs from getlocal
 
-local function dumptable(t)
-    print("------------ table ------------")
-    for k,v in pairs(t) do print(k,v) end
-    print("-------------------------------")
-end
-local function dumplocal(name,value)
-    print("----------- locals ------------")
-    print("Locals:", "name: ["..name.."] - value: ["..value.."]")
-    print("-------------------------------")
-end
 local function hook ()
-    local localname, localvalue
+    
     local names = debug.getinfo(2,"Sn")
     if names.what == "Lua" then
         local f = debug.getinfo(2,"f").func
         local upvalues = debug.getinfo(2,"u")
-        if(upvalues.isvararg) then
-            localname, localvalue = debug.getlocal(2,-1)
-        else
-            localname, localvalue = debug.getlocal(2,1)
-        end
         local count = Counters[f]
-        dumplocal(localname, localvalue)
-        dumptable(upvalues)
+        local locals = Locals[f]
+        util.dumptable(upvalues)
         if count == nil then -- first time 'f' is called
             Counters[f] = 1
             Names[f] = names
-            Locals[f] = {name = localname, value = localvalue}
-            dumptable(Names[f])
+            util.dumptable(Names[f])
+            util.dumptable(upvalues)
+            local locals = {}
+            if (upvalues.isvararg == false) then        -- function parameter is not vararg
+                if (upvalues.nparams > 0) then  -- function has at least 1 parameter
+                    for i=1,upvalues.nparams do          -- iterate over parameters
+                        name, value = debug.getlocal(2,i)
+                        table.insert(locals,{["name"] = name, ["value"] = value})
+                        Locals[f] = locals
+                    end
+                    util.dumplocal(locals)
+                end
+            end 
         else
             Counters[f] = count + 1
         end
@@ -60,7 +57,9 @@ return {
 --      end
 --      boo(1,2,3)  --> nparams = 0
 --      boo(1)      --> nparams = 0
-
+-- In a call hook, we want to analyse function parameters.
+-- If nparams is 0 then only update functions call
+-- If nparams is greater than 0, we iterate over nparams obtaining parameter names and values through getlocal
 
 
 -------------------------------------------------------------------
