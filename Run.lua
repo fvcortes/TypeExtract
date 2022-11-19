@@ -12,9 +12,9 @@ local function getname (func)
         if (l ~= nil) then
             local params = ""
             local firstparameter = l[1];
-            params = params..firstparameter.name..":"..type(firstparameter.value)
+            params = params..firstparameter.name..":"..firstparameter.type.tag
             for i=2,#l do
-                params = params..", "..l[i].name..":"..type(l[i].value)
+                params = params..", "..l[i].name..":"..l[i].type.tag
             end
             return string.format("%s\t%s(%s)", lc, n.name, params)
         end

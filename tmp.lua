@@ -10,5 +10,8 @@ end
 
 
 --hello1(1,2,3,4)
-hello(1,'b',10)
+hello(1,'b',{})
+hello(1,'b', "")
+hello('a', {}, nil)
+hey()
 hey()

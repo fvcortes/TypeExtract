@@ -1,4 +1,5 @@
 local util = require "Util"
+local type = require "Type"
 local Counters = {}
 local Names = {}
 local Locals = {}
@@ -13,25 +14,35 @@ local function hook ()
         local upvalues = debug.getinfo(2,"u")
         local count = Counters[f]
         local locals = Locals[f]
-        util.dumptable(upvalues)
+        --sutil.dumptable(upvalues)
         if count == nil then -- first time 'f' is called
             Counters[f] = 1
             Names[f] = names
-            util.dumptable(Names[f])
-            util.dumptable(upvalues)
-            local locals = {}
+            --util.dumptable(Names[f])
+            --util.dumptable(upvalues)
             if (upvalues.isvararg == false) then        -- function parameter is not vararg
                 if (upvalues.nparams > 0) then  -- function has at least 1 parameter
+                    Locals[f] = {}
                     for i=1,upvalues.nparams do          -- iterate over parameters
                         name, value = debug.getlocal(2,i)
-                        table.insert(locals,{["name"] = name, ["value"] = value})
-                        Locals[f] = locals
+                        table.insert(Locals[f],{["name"] = name, ["type"] = type.extract(value), ["lastvalue"] = value})
                     end
-                    util.dumplocal(locals)
+                    util.dumplocal(Locals[f])
                 end
             end 
         else
             Counters[f] = count + 1
+            if (locals ~= nil) then     -- function already called with parameters before
+                -- try to add new types to old ones
+                local newLocals = {}
+                for i=1,upvalues.nparams do             -- iterate over parameters
+                    _, value = debug.getlocal(2,i)
+                    local oldType = locals[i].type
+                    local newType = type.extract(value)
+                    locals[i].lastvalue = value         -- update last value
+                    locals[i].type = type.add(oldType, newType)     -- store added types
+                end
+            end
         end
     end
 end
