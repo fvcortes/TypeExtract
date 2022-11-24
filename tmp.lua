@@ -12,10 +12,10 @@ end
 
 
 
---hello1(1,2,3,4)
-hello(1,'b',{})
+hello(1,2,3)
+hello(1,'b',{1})
 hello(1,'b', "")
-hello('a', {}, nil)
+--hello('a', {}, nil)
 hey()
 hey()
 foo("a")
