@@ -1,11 +1,19 @@
-local Type = {}
+Type = {tag = "", category = ""}
 
-Type.extract = function(value)
-    return {["tag"] = type(value)}
+local function extract(value)
+    return type(value), "primitive type"
 end
 
-Type.add = function(type1, type2) 
-    return {["tag"] = type2.tag}
+function Type:add (value)
+    self.tag = extract(value)
+end
+
+function Type:new (o)
+    o = o or {}
+    self.__index = self
+    o.tag, o.category = extract(o.value)
+    setmetatable(o,self)
+    return o
 end
 
 return Type

@@ -7,7 +7,7 @@ end
 Util.dumplocal = function (locals)
     print("----------- locals ------------")
     for _,v in pairs (locals) do
-        print("Locals:", v.name..":"..v.type.tag.." = "..tostring(v.lastvalue))
+        print("Locals:", v.name..":"..v.type.tag.." = "..tostring(v.type.lastvalue))
     end
     print("-------------------------------")
 end

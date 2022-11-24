@@ -1,8 +1,8 @@
 local util = require "Util"
-local type = require "Type"
+require "Type"
 local Counters = {}
 local Names = {}
-local Locals = {}
+local Parameters = {}
 local UpValues = {}
 --TODO: Treat varargs from getlocal
 
@@ -13,7 +13,7 @@ local function hook ()
         local f = debug.getinfo(2,"f").func
         local upvalues = debug.getinfo(2,"u")
         local count = Counters[f]
-        local locals = Locals[f]
+        local parameters = Parameters[f]
         --sutil.dumptable(upvalues)
         if count == nil then -- first time 'f' is called
             Counters[f] = 1
@@ -22,25 +22,23 @@ local function hook ()
             --util.dumptable(upvalues)
             if (upvalues.isvararg == false) then        -- function parameter is not vararg
                 if (upvalues.nparams > 0) then  -- function has at least 1 parameter
-                    Locals[f] = {}
+                    parameters = {}
                     for i=1,upvalues.nparams do          -- iterate over parameters
-                        name, value = debug.getlocal(2,i)
-                        table.insert(Locals[f],{["name"] = name, ["type"] = type.extract(value), ["lastvalue"] = value})
+                        n, v = debug.getlocal(2,i)
+                        t = Type:new({value = v})
+                        table.insert(parameters, {name = n, type = t})
                     end
-                    util.dumplocal(Locals[f])
+                    Parameters[f] = parameters
                 end
             end 
         else
             Counters[f] = count + 1
-            if (locals ~= nil) then     -- function already called with parameters before
+            if (parameters ~= nil) then     -- function already called with parameters before
                 -- try to add new types to old ones
-                local newLocals = {}
+                local newParameters = {}
                 for i=1,upvalues.nparams do             -- iterate over parameters
                     _, value = debug.getlocal(2,i)
-                    local oldType = locals[i].type
-                    local newType = type.extract(value)
-                    locals[i].lastvalue = value         -- update last value
-                    locals[i].type = type.add(oldType, newType)     -- store added types
+                    parameters[i].type:add(value)
                 end
             end
         end
@@ -50,7 +48,7 @@ return {
     hook = hook,
     counters = Counters,
     names = Names,
-    locals = Locals
+    parameters = Parameters
 }
 
 ---------------------------- NOTES --------------------------------

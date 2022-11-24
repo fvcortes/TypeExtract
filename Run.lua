@@ -3,18 +3,19 @@ local h = require "Hook"
 -- Finds a suitable name for the function
 local function getname (func)
     local n = h.names[func]
-    local l = h.locals[func]
+    local p = h.parameters[func]
     if n.what == "C" then
         return n.name
     end
     local lc = string.format("[%s]:%d", n.short_src, n.linedefined)
     if n.what ~= "main" and n.namewhat ~= "" then
-        if (l ~= nil) then
+        if (p ~= nil) then
             local params = ""
-            local firstparameter = l[1];
+            local firstparameter = p[1];
+            --print(type(firstparameter))
             params = params..firstparameter.name..":"..firstparameter.type.tag
-            for i=2,#l do
-                params = params..", "..l[i].name..":"..l[i].type.tag
+            for i=2,#p do
+                params = params..", "..p[i].name..":"..p[i].type.tag
             end
             return string.format("%s\t%s(%s)", lc, n.name, params)
         end
