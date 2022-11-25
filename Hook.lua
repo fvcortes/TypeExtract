@@ -22,7 +22,7 @@ local function hook ()
                     parameters = {}
                     for i=1,upvalues.nparams do         -- iterate over parameters
                         n, v = debug.getlocal(2,i)
-                        t = Type:new({value = v})
+                        t = getType(v)
                         table.insert(parameters, {name = n, type = t})
                     end
                     Parameters[f] = parameters
@@ -33,8 +33,9 @@ local function hook ()
             if (parameters ~= nil) then     -- function already called with parameters before
                 -- try to add new types to old ones
                 for i=1,upvalues.nparams do             -- iterate over parameters
-                    _, value = debug.getlocal(2,i)
-                    parameters[i].type:add(value)
+                    _, v = debug.getlocal(2,i)
+                    t = getType(v)
+                    parameters[i].type = addType(parameters[i].type, t)
                 end
             end
         end

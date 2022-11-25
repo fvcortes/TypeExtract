@@ -37,24 +37,64 @@ local function getTag(value)
     return tag
 end
 
-local function extract(value)
-    return {tag = getTag(value)}
+local function isCompatible(type1, type2)
+    if (type1.tag == type2.tag) then
+        return true
+    end
+    return false
 end
 
-function Type:add (value)
-    local newTypeTag = getTag(value)
-    -- TODO: Union types
-    self.tag = newTypeTag
-    
+local function addArrayType(type1,type2)
+    return type2
 end
 
-function Type:new (o)
-    o = o or {}
-    self.__index = self
-    local result = extract(o.value)
-    o.tag = result.tag
-    setmetatable(o,self)
-    return o
+local function addRecordType(type1,type2)
+    return type2
+end
+
+function addType(type1, type2)
+    -- TODO: add types
+    if(isCompatible(type1, type2)) then
+        local tag = type1.tag
+        local result = {tag = tag}
+        if(tag == "array") then
+            result.arrayType = addArrayType(type1.arrayType, type2.arrayType)
+        else
+            if (tag == "record") then
+                result.recordType = addRecordType(type1.recordType,type2.recordType)
+            end
+        end
+        return result
+    else
+        return {tag = "unknown"}
+    end
+end
+
+local function getArrayType(array)
+    -- arrayOfTypes = map(array, getType)
+    -- fold(arrayOfTypes, addType)
+    local t = getType(array[1])
+    return t
+end
+
+local function getRecordType(record)
+    -- {label = type}
+    local i,v = next(record)
+    local t = getType(v)
+    return {[i] = t}
+end
+
+function getType(value)
+    local tag = getTag(value)
+    local result = {tag = tag, value = value}
+    if (tag == "array") then
+        result.arrayType = getArrayType(value)
+    else
+        if(tag == "record") then
+            result.recordType = getRecordType(value)
+        end
+    end
+    return result
 end
 
 return Type

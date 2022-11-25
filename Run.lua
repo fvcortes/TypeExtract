@@ -1,5 +1,18 @@
 local h = require "Hook"
 
+local function getTypeName(t)
+    if(t.tag == "array") then
+        return "{"..getTypeName(t.arrayType).."}"
+    else
+        if(t.tag == "record") then
+            -- TODO: iterate over all elements of recordType
+            local l,t1 = next(t.recordType)
+            return "{"..l..":"..getTypeName(t1).."}"
+        else
+            return t.tag
+        end
+    end
+end
 -- Finds a suitable name for the function
 local function getname (func)
     local n = h.names[func]
@@ -13,9 +26,9 @@ local function getname (func)
             local params = ""
             local firstparameter = p[1];
             --print(type(firstparameter))
-            params = params..firstparameter.name..":"..firstparameter.type.tag
+            params = params..firstparameter.name..":"..getTypeName(firstparameter.type)
             for i=2,#p do
-                params = params..", "..p[i].name..":"..p[i].type.tag
+                params = params..", "..p[i].name..":"..getTypeName(p[i].type)
             end
             return string.format("%s\t%s(%s)", lc, n.name, params)
         end
