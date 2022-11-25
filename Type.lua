@@ -1,55 +1,50 @@
 Type = {tag = "", category = ""}
 
-local function tabletag(table)
-    local i,v = next(table)
-    if (i == nil) then
-        return "empty"
-    else
-        local indextype = type(i) -- TODO: Check all index types, not only the first
-        if (indextype == "string") then
-            return "record"
+local function getTableTag(table)
+    local tablesize = #table
+    if (tablesize > 0) then
+        return "array"
+    else                        
+        local i,v = next(table)
+        if (i == nil) then
+            return "empty"
         else
-            if (indextype == "number") then
-                return "array"
-            else
-                return "unknown"
-            end
+            return "record"
         end
     end
 end
-local function extracttable(value)
-    local result = {}
-    result.tag = tabletag(value)
-    -- TODO: Continue with array type and record type extraction
-    return result
-end
-local function extract(value)
-    local result = {}
+
+local function getTag(value)
+    local tag
     local valuetype = type(value)
-    if (valuetype ~= "userdata") then          -- not a table
-        if (valuetype ~= "function") then        -- not a function
-            if(valuetype ~= "table") then    -- not userdata
+    if (valuetype ~= "userdata") then           -- not a userdata
+        if (valuetype ~= "function") then       -- not a function
+            if(valuetype ~= "table") then       -- not table
                 if (valuetype ~= "number") then -- not a number
-                    result.tag = valuetype
+                    tag = valuetype
                 else
-                    result.tag = math.type(value)
+                    tag = math.type(value)
                 end
             else 
-                result = extracttable(value)
+                tag = getTableTag(value)
             end
         else
-            result.tag = "function"
+            tag = "function"
         end
     else
-        result.tag = "userdata" 
+        tag = "userdata" 
     end
-    return result
+    return tag
+end
+
+local function extract(value)
+    return {tag = getTag(value)}
 end
 
 function Type:add (value)
-    local newType = extract(value)
+    local newTypeTag = getTag(value)
     -- TODO: Union types
-    self.tag = newType.tag
+    self.tag = newTypeTag
     
 end
 

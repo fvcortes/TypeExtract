@@ -14,16 +14,13 @@ local function hook ()
         local upvalues = debug.getinfo(2,"u")
         local count = Counters[f]
         local parameters = Parameters[f]
-        --sutil.dumptable(upvalues)
-        if count == nil then -- first time 'f' is called
+        if count == nil then        -- first time 'f' is called
             Counters[f] = 1
             Names[f] = names
-            --util.dumptable(Names[f])
-            --util.dumptable(upvalues)
             if (upvalues.isvararg == false) then        -- function parameter is not vararg
-                if (upvalues.nparams > 0) then  -- function has at least 1 parameter
+                if (upvalues.nparams > 0) then          -- function has at least 1 parameter
                     parameters = {}
-                    for i=1,upvalues.nparams do          -- iterate over parameters
+                    for i=1,upvalues.nparams do         -- iterate over parameters
                         n, v = debug.getlocal(2,i)
                         t = Type:new({value = v})
                         table.insert(parameters, {name = n, type = t})
@@ -35,7 +32,6 @@ local function hook ()
             Counters[f] = count + 1
             if (parameters ~= nil) then     -- function already called with parameters before
                 -- try to add new types to old ones
-                local newParameters = {}
                 for i=1,upvalues.nparams do             -- iterate over parameters
                     _, value = debug.getlocal(2,i)
                     parameters[i].type:add(value)
