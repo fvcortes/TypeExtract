@@ -1,5 +1,3 @@
-Type = {tag = "", category = ""}
-
 local function getTableTag(table)
     local tablesize = #table
     if (tablesize > 0) then
@@ -71,22 +69,28 @@ function addType(type1, type2)
 end
 
 local function getArrayType(array)
+    -- TODO:
     -- arrayOfTypes = map(array, getType)
     -- fold(arrayOfTypes, addType)
+    print("getArrayType")
     local t = getType(array[1])
     return t
 end
 
 local function getRecordType(record)
+    -- TODO:
     -- {label = type}
-    local i,v = next(record)
-    local t = getType(v)
-    return {[i] = t}
+    print("getRecordType")
+    local result = {}
+    for k,v in pairs(record) do
+        result[k] = getType(v)
+    end
+    return result
 end
 
 function getType(value)
     local tag = getTag(value)
-    local result = {tag = tag, value = value}
+    local result = {tag = tag}
     if (tag == "array") then
         result.arrayType = getArrayType(value)
     else
@@ -96,5 +100,3 @@ function getType(value)
     end
     return result
 end
-
-return Type

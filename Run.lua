@@ -1,13 +1,22 @@
 local h = require "Hook"
-
-local function getTypeName(t)
+local getTypeName
+local function getRecordTypeName(rt)
+    local entries = ""
+    local firstLabel, firstEntry = next(rt)
+    entries = entries..firstLabel..":"..getTypeName(firstEntry)
+    rt[firstLabel] = nil
+    for k,v in pairs(rt) do
+        entries = entries..", "..k..":"..getTypeName(v)
+    end
+    return string.format("{%s}", entries)
+end
+getTypeName = function(t)
     if(t.tag == "array") then
         return "{"..getTypeName(t.arrayType).."}"
     else
         if(t.tag == "record") then
             -- TODO: iterate over all elements of recordType
-            local l,t1 = next(t.recordType)
-            return "{"..l..":"..getTypeName(t1).."}"
+            return getRecordTypeName(t.recordType)
         else
             return t.tag
         end

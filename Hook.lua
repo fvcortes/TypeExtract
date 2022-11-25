@@ -1,9 +1,7 @@
-local util = require "Util"
 require "Type"
 local Counters = {}
 local Names = {}
 local Parameters = {}
-local UpValues = {}
 --TODO: Treat varargs from getlocal
 
 local function hook ()
