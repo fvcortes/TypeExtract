@@ -12,8 +12,11 @@ end
 
 
 
---hello(1,2,3)
-hello(1,'b',{a=1,b={z = {}}})
+hello(1,2,3)
+hello(1.0, 2, 3)
+hello(1, 2, 3.0)
+hello("", 2.0, 3)
+--hello(1,'b',{a=1,b={z = {}}})
 --hello(1,'b', "")
 --hello('a', {}, nil)
 hey()

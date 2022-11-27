@@ -16,6 +16,18 @@ local primitive =
         string = true, 
         boolean = true 
     }
+local number = 
+    {
+        number = true,
+        integer = true,
+        float = true
+    }
+local numberType = 
+    {
+        number = { number = "number", integer = "number", float = "number" },
+        integer = { number = "number", integer = "integer", float = "number" },
+        float = { number = "number", integer = "number", float = "float" }
+    }
 
 local function getTableTag(table)
     local tablesize = #table
@@ -61,7 +73,14 @@ end
 local function isPrimitive (type)
     return primitive[type.tag]
 end
-    
+
+local function isNumber(type)
+    return number[type.tag]
+end
+
+local function addNumberType(type1,type2)
+    return {tag = numberType[type1.tag][type2.tag]}
+end
 
 local function addArrayType(type1,type2)
     return {tag = "array", arrayType = type2}
@@ -71,7 +90,11 @@ local function addRecordType(type1,type2)
     return {tag = "record", recordType = type2}
 end
 local function addPrimitiveType(type1, type2)
-    return type2
+    -- types are compatible and primitives
+    if (isNumber(type1) and isNumber(type2)) then
+        return addNumberType(type1,type2)
+    end
+    return (type1 or type2)
 end
 function addType(type1, type2)
     -- TODO: add types
