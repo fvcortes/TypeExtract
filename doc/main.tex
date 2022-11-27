@@ -1,0 +1,209 @@
+%% -*- coding: utf-8; -*-
+
+% Use 'digital' option to enable back references. This option is recommended for digital pdf version
+%\documentclass[phd,american,digital]{thesispuc}%english thesis
+\documentclass[mscr,american]{thesispuc}%english dissertation
+%\documentclass[phd,brazilian]{thesispuc}%tese em portugês
+%\documentclass[msc,brazilian]{thesispuc}%disseretação em portuguŝ
+
+
+%%%
+%%% Additional Packages
+%%%
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{multicol}
+\usepackage{colortbl}
+\usepackage[%
+    dvipsnames,
+    svgnames,
+    x11names,
+    fixpdftex,
+    table
+]{xcolor}
+\usepackage{numprint}
+\usepackage{textcomp}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{enumitem}
+\usepackage{amssymb}
+% ABNT reference style package. The current style is the alphabetical order, if you need
+% change to citation order, change in the line above 'alf' to 'num', also at the end replace
+% bibliographystyle with the commented version.
+\usepackage[alf,bibjustif,abnt-emphasize=bf]{abntex2cite}
+%\usepackage{tikz}
+%\usepackage[linesnumbered, ruled, vlined]{algorithm2e}
+%\usepackage{pgfplots,pgfplotstable} 
+%\usepackage{array}
+
+%% numprint 
+\npthousandsep{.}
+\npdecimalsign{,}
+
+%% ThesisPUC option
+%\tablesmode{fig} %% [nada, fig, tab ou figtab]
+%\algoritmsmode{none} %% [none ou use] %% Default is [use]
+%\codesmode{none} %% [none ou use] %% Default is [use]
+%\abreviationsmode{none} %% [none ou use] %% Default is [use]
+
+% \makeatletter  \renewcommand\@biblabel[1]{#1}  \makeatother
+
+%%%
+%%% Counters
+%%%
+
+%% uncomment and change for other depth values
+\setcounter{tocdepth}{1}
+%\setcounter{lofdepth}{3}
+%\setcounter{lotdepth}{3}
+%\setcounter{secnumdepth}{3}
+
+%%%
+%%% Misc.
+%%%
+
+\usecolour{true}
+
+
+%%%
+%%% Titulos
+%%%
+
+\author{Felipe V. Côrtes}
+\authorR{Cortes,Felipe} % full name
+
+\advisor{Roberto Ierusalimschy}{Prof.} %Name LastName
+\advisorR{Ierusalimschy, Roberto} %LastName, Name
+% If the advisor's department is different from author's department, uncomment the next line and type the correct name and acronym of advisor's institution.
+%\advisorInst{institution name}{acronym}
+
+%\coadvisor{Otávio da Fonseca Martins Gomes}{Dr.}
+%\coadvisorR{da Fonseca Martins Gomes, Otávio}
+%\coadvisorInst{Centro de Tecnologia Mineral}{CETEM/MCTI}
+
+\title{Extrator de tipos} %title in portuguese
+
+\titleuk{Type Extractor} %title in english
+
+%%\subtitulo{Aqui vai o subtitulo caso precise}
+
+\day{8}
+\month{March}
+\year{2018}
+
+\city{Rio de Janeiro}
+\CDD{004} 
+\department{Informática}
+\program{Informática}
+\school{Pós-Graduação em Informática}
+\university{Pontifícia Universidade Católica do Rio de Janeiro}
+\uni{PUC-Rio }
+
+
+% %%%
+% %%% Jury
+% %%%
+
+% \jury{%
+%   \jurymember{Alberto Barbosa Raposo}{Prof.}
+%     {Departamento de Informática}{PUC-Rio}
+%   \jurymember{Waldemar Celes Filho}{Prof.}
+%     {Departamento de Informática}{PUC-Rio}
+% }
+
+
+% %%%
+% %%% Personal Resume
+% %%%
+
+% \resume{%
+% % If it fit in one line use this command:
+% \makebox[\textwidth][s]{Graduated in computer science by the  Harvard University.}%
+% % If not just type your resume without any special command 
+% }
+
+% %%%
+% %%% Acknowledgment (REMINDER TO SCHOLARSHIP STUDENTS. Do not forget to thank the agencies that supported your work.)
+% %%%
+% \acknowledgment{%
+% \noindent To my adviser Professor Marcelo Gattass for the stimulus and partnership
+% to carry out this work.
+% \bigskip
+
+% \noindent To CNPq and PUC-Rio, for the aids granted, without which this work does not
+% could have been accomplished.
+% \bigskip
+
+% \noindent \textbf{For students contemplated with any CAPES scholarship, whose defense occurred as of 04 September 2018 leave the following passage:} 
+
+% \noindent This study was financed in part by the Coordenação de Aperfeiçoamento de Pessoal
+% de Nível Superior - Brasil (CAPES) - Finance Code 001.
+% }
+
+
+%%%
+%%% Catalog prekeywords
+%%%
+
+\catalogprekeywords{%
+  \catalogprekey{Informática}%
+}
+
+%%%
+%%% Keywords - Don't use % at the end of /key dfinition
+%%%
+
+\keywords{%
+  \key{Procesamento Geométrico}
+  \key{Remoção de ruído de malha}
+  \key{Vizinhança adaptativa}
+}
+
+\keywordsuk{%
+  \key{Geometry Processing}
+  \key{Mesh Denoising}
+  \key{Adaptive Patches}
+}
+
+%%%
+%%% Abstract
+%%%
+
+% \abstract{%
+% A aquisição de malhas triangulares normalmente introduz ruídos indesejados...
+% }
+
+% \abstractuk{%
+% The acquisition of triangular meshes typically introduces undesired noise...}
+
+%%%
+%%% Dedication
+%%%
+
+\dedication{%
+  To my parents, for their support\\
+and encouragement.
+}
+
+%%%
+%%% Epigraph
+%%%
+
+% \epigraph{%
+%   My beautifull epigraph
+% }
+% \epigraphauthor{Wassily Kandinsky}
+% \epigraphbook{Regards sur le passé}
+
+
+\begin{document}
+  \input{1-introduction} % introduction
+  \input{2-project-scope} % previous work
+  \input{3-proposal}
+  \input{4-results}
+  \input{5-conclusions}
+  %% ...
+  \arial
+  \bibliographystyle{abnt-alf} % \bibliographystyle{abnt-num}
+  \bibliography{srs} 
+\end{document}

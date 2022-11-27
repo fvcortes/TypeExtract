@@ -1,4 +1,5 @@
-local h = require "Hook"
+require "Hook"
+
 local getTypeName
 local function getRecordTypeName(rt)
     local entries = ""
@@ -24,8 +25,8 @@ getTypeName = function(t)
 end
 -- Finds a suitable name for the function
 local function getname (func)
-    local n = h.names[func]
-    local p = h.parameters[func]
+    local n = Names[func]
+    local p = Parameters[func]
     if n.what == "C" then
         return n.name
     end
@@ -47,13 +48,16 @@ local function getname (func)
     end
 end
 
-local f = assert(loadfile(arg[1]))
-table.remove(arg,1)         -- adjust arg table to match programs parameters
-debug.sethook(h.hook,"c")   -- turn on the hook for calls
-f()                         -- run the program
-debug.sethook()             -- turn off hook
+function run(file)
+    --local f = assert(loadfile(arg[1]))
+    local _f = assert(loadfile(file), "could not load file")
+    table.remove(arg,1)         -- adjust arg table to match programs parameters
+    debug.sethook(hook,"c")   -- turn on the hook for calls
+    _f()                        -- run the program
+    debug.sethook()             -- turn off hook
 
-for func, count in pairs (h.counters) do
-    print(getname(func), count)
+    for func, count in pairs (Counters) do
+        print(getname(func), count)
+    end    
 end
 

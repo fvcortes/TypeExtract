@@ -1,0 +1,23 @@
+% -*- coding: utf-8; -*-
+
+\chapter{Project Scope}
+The extractor can analyse each function call and return by using reflection properties of the Lua programming language. With the debug library, we ca\
+n register hook functions to inspect the behaviour of a program's execution and then compute the types of functions and variables present in the code\
+.
+\newline
+The Type Extractor can be used by two approaches.
+\begin{itemize}
+    \item{Full Analysis:} A full program analysis can be made by passing a Lua program as input to the extractor. In this approach, each possible fun\
+ction call and return types will be analysed.
+    \item{Inspection library:} An auxiliar library, capable of registring specific functions for inspection. In this approach, the programmer can sel\
+ect what part of the program they want to analyse.
+\end{itemize}
+In the end of each execution, a report will be generated. This report has information about parameters and return types of each analysed function.
+\newline
+These usage scenarios enables the extractor to be used as an auxiliary tool for migrating from dynamically to statically typed languages. It also ser\
+ves as a good documentation for functions parameter and return types. Giving tools for understanding the type relations inside a program helps progra\
+mmers to debug and optimize dynamically typed code.
+
+%This document is structured as follows. In Chapter~\ref{cha:Previous Work} we present some previous work relevant to our problem. In Chapter~\ref{cha:Proposal} we explain our proposal. In Chapter~\ref{cha:Results} we show our results. Finally, in Chapter~\ref{cha:Conclusion} we present our conclusion and future work.
+
+

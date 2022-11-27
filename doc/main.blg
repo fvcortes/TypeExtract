@@ -1,0 +1,74 @@
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+The style file: abnt-alf.bst
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+Database file #1: abntex2-options.bib
+Database file #2: srs.bib
+Warning--I didn't find a database entry for "FDC03"
+Warning--I didn't find a database entry for "JDD03"
+Warning--I didn't find a database entry for "SRML07"
+Warning--I didn't find a database entry for "ZFAT11"
+Warning--I didn't find a database entry for "HS13"
+Warning--I didn't find a database entry for "ZDZBL15"
+Warning--I didn't find a database entry for "YRP16"
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated glb_str_ptr (elt_size=4) to 20 items from 10.
+Reallocated global_strs (elt_size=200001) to 20 items from 10.
+Reallocated glb_str_end (elt_size=4) to 20 items from 10.
+Warning--campo year vazio ou faltando em takikawa_is_2016
++---------------------------------------------------------+
+| Estilo bibliográfico abntex2-alf.bst versão v<VERSION>           |
+| Em caso de dúvidas ou problemas com este estilo procure |
+| http://www.abntex.net.br/                               |
++---------------------------------------------------------+
+You've used 3 entries,
+            6714 wiz_defined-function locations,
+            1223 strings with 9820 characters,
+and the built_in function-call counts, 3010 in all, are:
+= -- 432
+> -- 41
+< -- 41
++ -- 106
+- -- 12
+* -- 172
+:= -- 424
+add.period$ -- 8
+call.type$ -- 3
+change.case$ -- 21
+chr.to.int$ -- 2
+cite$ -- 2
+duplicate$ -- 175
+empty$ -- 160
+format.name$ -- 61
+if$ -- 677
+int.to.chr$ -- 1
+int.to.str$ -- 0
+missing$ -- 39
+newline$ -- 13
+num.names$ -- 5
+pop$ -- 56
+preamble$ -- 1
+purify$ -- 11
+quote$ -- 0
+skip$ -- 298
+stack$ -- 1
+substring$ -- 137
+swap$ -- 69
+text.length$ -- 2
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 1
+warning$ -- 1
+while$ -- 11
+width$ -- 0
+write$ -- 27
+(There were 8 warnings)

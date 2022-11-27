@@ -1,11 +1,12 @@
-local typeCompatibility = 
+require "Util"
+typeCompatibility = 
     {
-        number = { number = true, integer = true, float = true}, 
-        integer = {number = true, integer = true, float = true}, 
-        float = {number = true, integer = true, float = true}, 
-        string = {string = true}, 
-        boolean = {boolean = true}, 
-        array = {array = true}, 
+        number = { number = true, integer = true, float = true},
+        integer = {number = true, integer = true, float = true},
+        float = {number = true, integer = true, float = true},
+        string = {string = true},
+        boolean = {boolean = true},
+        array = {array = true},
         record = {record = true}
     }
 local primitive = 
@@ -28,6 +29,13 @@ local numberType =
         integer = { number = "number", integer = "integer", float = "number" },
         float = { number = "number", integer = "number", float = "float" }
     }
+
+function listKeys(a,b)
+    local list = {}
+    for k,_ in pairs(a) do list[k] = true end
+    for k,_ in pairs(b) do list[k] = true end
+    return list
+end
 
 function mapTable(tb,f)
     local result = {}
@@ -94,16 +102,32 @@ local function isNumber(type)
     return number[type.tag]
 end
 
-local function addNumberType(type1,type2)
-    return {tag = numberType[type1.tag][type2.tag]}
+local function addNumberType(n1,n2)
+    return {tag = numberType[n1.tag][n2.tag]}
 end
 
-local function addArrayType(type1,type2)
-    return {tag = "array", arrayType = type2}
+local function addArrayType(a1,a2)
+    return {tag = "array", arrayType = addType(a1.arrayType,a2.arrayType)}
 end
 
 local function addRecordType(r1,r2)
-    return {tag = "record", recordType = type2}
+    local lk = listKeys(r1.recordType,r2.recordType)
+    local recordType = {}
+    for k,_ in pairs(lk) do
+        if (r1.recordType[k] and r2.recordType[k]) then
+            --print("label in both records")
+            --dumptable(r1)
+            --dumptable(r2)
+            recordType[k] = addType(r1.recordType[k],r2.recordType[k])
+        else
+            if (r1.recordType[k] and ~(r2.recordType[k])) then
+                recordType[k] = r1.recordType[k]
+            else
+                recordType[k] = r2.recordType[k]
+            end
+        end
+    end
+    return {tag = "record", recordType = recordType}
 end
 
 local function addPrimitiveType(type1, type2)
@@ -115,14 +139,19 @@ local function addPrimitiveType(type1, type2)
 end
 
 function addType(type1, type2)
-    -- TODO: add types
+    --print("Adding types...")
+    --print(type1.tag, type2.tag)
+    --dumptable(type1)
+    --dumptable(type2)
     if(isCompatible(type1, type2)) then
         local tag = type1.tag
         if(tag == "array") then
-            return {tag = "array", arrayType = addArrayType(type1.arrayType, type2.arrayType)}
+            --print("adding array types...")
+            return addArrayType(type1, type2)
         else
             if (tag == "record") then
-                return {tag = "record", recordType = addRecordType(type1.recordType,type2.recordType)}
+                --print("adding record types...")            
+                return addRecordType(type1,type2)
             else
                 return addPrimitiveType(type1,type2)
             end
@@ -133,15 +162,10 @@ function addType(type1, type2)
 end
 
 local function getArrayType(array)
-    print("getArrayType")
-    arrayOfTypes = mapTable(array, getType)
-    return foldTable(arrayOfTypes, addType)
+    return foldTable(mapTable(array, getType), addType)
 end
 
 local function getRecordType(record)
-    -- TODO:
-    -- {label = type}
-    print("getRecordType")
     local result = {}
     for k,v in pairs(record) do
         result[k] = getType(v)
@@ -152,7 +176,9 @@ end
 function getType(value)
     local tag = getTag(value)
     local result = {tag = tag}
-    if (tag == "array") then
+    if (tag == "array") then 
+        local at = getArrayType(value)
+        --dumptable(at)
         result.arrayType = getArrayType(value)
     else
         if(tag == "record") then

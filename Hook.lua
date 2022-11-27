@@ -1,11 +1,10 @@
 require "Type"
-local Counters = {}
-local Names = {}
-local Parameters = {}
+Counters = {}
+Names = {}
+Parameters = {}
 --TODO: Treat varargs from getlocal
 
-local function hook ()
-    
+function hook ()
     local names = debug.getinfo(2,"Sn")
     if names.what == "Lua" then
         local f = debug.getinfo(2,"f").func
@@ -18,9 +17,12 @@ local function hook ()
             if (upvalues.isvararg == false) then        -- function parameter is not vararg
                 if (upvalues.nparams > 0) then          -- function has at least 1 parameter
                     parameters = {}
+                    --print("Getting types for the first time...")
+                    --print("nparams",upvalues.nparams)
                     for i=1,upvalues.nparams do         -- iterate over parameters
                         n, v = debug.getlocal(2,i)
                         t = getType(v)
+                        --dumptable(t)
                         table.insert(parameters, {name = n, type = t})
                     end
                     Parameters[f] = parameters
@@ -33,18 +35,15 @@ local function hook ()
                 for i=1,upvalues.nparams do             -- iterate over parameters
                     _, v = debug.getlocal(2,i)
                     t = getType(v)
+                    --print("Adding parameters type...")
                     parameters[i].type = addType(parameters[i].type, t)
+                    --print("New parameter type ->")
+                    --dumptable(parameters[i].type)
                 end
             end
         end
     end
 end
-return {
-    hook = hook,
-    counters = Counters,
-    names = Names,
-    parameters = Parameters
-}
 
 ---------------------------- NOTES --------------------------------
 -- if the function isvararg, the value of nparams from getlocal  is always 0
