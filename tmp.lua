@@ -13,7 +13,7 @@ end
 
 
 --hello(1,2,3)
-hello(1,'b',{a=1,b=2})
+hello(1,'b',{a=1,b={z = {}}})
 --hello(1,'b', "")
 --hello('a', {}, nil)
 hey()

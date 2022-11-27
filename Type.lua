@@ -1,3 +1,22 @@
+local typeCompatibility = 
+    {
+        number = { number = true, integer = true, float = true}, 
+        integer = {number = true, integer = true, float = true}, 
+        float = {number = true, integer = true, float = true}, 
+        string = {string = true}, 
+        boolean = {boolean = true}, 
+        array = {array = true}, 
+        record = {record = true}
+    }
+local primitive = 
+    { 
+        number = true, 
+        integer = true, 
+        float = true, 
+        string = true, 
+        boolean = true 
+    }
+
 local function getTableTag(table)
     local tablesize = #table
     if (tablesize > 0) then
@@ -36,33 +55,38 @@ local function getTag(value)
 end
 
 local function isCompatible(type1, type2)
-    if (type1.tag == type2.tag) then
-        return true
-    end
-    return false
+    return typeCompatibility[type1.tag][type2.tag]
 end
 
+local function isPrimitive (type)
+    return primitive[type.tag]
+end
+    
+
 local function addArrayType(type1,type2)
-    return type2
+    return {tag = "array", arrayType = type2}
 end
 
 local function addRecordType(type1,type2)
+    return {tag = "record", recordType = type2}
+end
+local function addPrimitiveType(type1, type2)
     return type2
 end
-
 function addType(type1, type2)
     -- TODO: add types
+    local result
     if(isCompatible(type1, type2)) then
         local tag = type1.tag
-        local result = {tag = tag}
         if(tag == "array") then
-            result.arrayType = addArrayType(type1.arrayType, type2.arrayType)
+            return addArrayType(type1.arrayType, type2.arrayType)
         else
             if (tag == "record") then
-                result.recordType = addRecordType(type1.recordType,type2.recordType)
+                return addRecordType(type1.recordType,type2.recordType)
+            else
+                return addPrimitiveType(type1,type2)
             end
         end
-        return result
     else
         return {tag = "unknown"}
     end
