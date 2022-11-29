@@ -1571,9 +1571,9 @@ parcial para obtenção de grau da disciplina \puc@coverprogram.}
   %\puc@showjury%
   %\puc@showcopyrights%
   %
-  \if@pucdedication
-    \puc@showdedication
-  \fi
+  % \if@pucdedication
+  %   \puc@showdedication
+  % \fi
   % \puc@showacknowledgment%
   % \if@brazilianlanguage
   %   \puc@showabstract%
