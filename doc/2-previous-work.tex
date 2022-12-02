@@ -1,9 +1,21 @@
 % -*- coding: utf-8; -*-
 
-\chapter{Related Work}
-\label{cha:Related Work}
+\chapter{Previous Work}
+\label{cha:Previous Work}
 
-There are 
+Typed Lua \cite{murbach_typed_2014} has already defined an optional type system for the language. More than enriching documentation, this extension ensures static type safety while preserving Lua idioms. Typed Lua encodes the main data structure mechanism from Lua into arrays, records, tuples and maps. It uses a bracket syntax to denote table types:
+
+\lstinputlisting[language={[5.0]Lua}]{codes/typedlua.lua}
+
+The type system features are designed to be lightweight and type-safe and extends for typing object, classes and modules by adding few type annotations.
+
+\paragraph*{}
+
+Lua Type System has also been explored for scripting optimization with Pallene \cite{gualandi_pallene_2020}. The language uses an optional type system for integrating seamlessly with Lua's dynamic code. 
+
+\lstinputlisting[language={[5.0]Lua}]{codes/pallene.lua}
+
+As opposed to Typed Lua, Pallene is designed for efficiency. It performs runtime checks to ensure type safety with a tweak flexibility. 
 
 % Early smoothing methods tried to minimize... In the figure \ref{subfig:pictures/image01.png} we see...
 
