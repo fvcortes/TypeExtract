@@ -1,34 +1,6 @@
 .vscode/
 Especificacao/
 
-Skip to content
-Product
-Solutions
-Open Source
-Pricing
-Search
-Sign in
-Sign up
-github
-/
-gitignore
-Public
-Code
-Pull requests
-345
-Actions
-Security
-Insights
-gitignore/TeX.gitignore
-@bdougie
-bdougie Merge pull request #3752 from lafeychine/TikZplot
-…
-Latest commit 362abac on Dec 10, 2021
- History
- 66 contributors
-@maieul@koppor@shiftkey@arcresu@bdougie@habi@lszeremeta@tjgrilley@Anton-Sakovich@seungwonpark@vkusvody@dopefishh
-301 lines (234 sloc)  3.01 KB
-
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
