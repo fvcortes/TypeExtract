@@ -1,9 +1,14 @@
 \babel@toc {american}{}
-\contentsline {chapter}{\numberline {1}Introduction}{9}{chapter.1}%
-\contentsline {chapter}{\numberline {2}Project Scope}{10}{chapter.2}%
-\contentsline {chapter}{\numberline {3}Proposal}{11}{chapter.3}%
-\contentsline {chapter}{\numberline {4}Results}{13}{chapter.4}%
-\contentsline {section}{\numberline {4.1}Comparison}{13}{section.4.1}%
-\contentsline {chapter}{\numberline {5}Conclusion and future work}{14}{chapter.5}%
-\contentsline {chapter}{\numberline {6}Bibliography}{15}{chapter.6}%
+\babel@toc {brazilian}{}
+\babel@toc {american}{}
+\babel@toc {american}{}
+\contentsline {chapter}{\numberline {1}Introduction}{10}{chapter.1}%
+\contentsline {chapter}{\numberline {2}Related Work}{11}{chapter.2}%
+\contentsline {chapter}{\numberline {3}Project Scope}{12}{chapter.3}%
+\contentsline {chapter}{\numberline {4}Project Specification}{13}{chapter.4}%
+\contentsline {chapter}{\numberline {5}Development}{15}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Comparison}{15}{section.5.1}%
+\contentsline {chapter}{\numberline {6}Results}{16}{chapter.6}%
+\contentsline {chapter}{\numberline {7}Final Considerations}{17}{chapter.7}%
+\contentsline {chapter}{\numberline {8}Bibliography}{18}{chapter.8}%
 \contentsfinish 

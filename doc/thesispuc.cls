@@ -1575,15 +1575,15 @@ parcial para obtenção de grau da disciplina \puc@coverprogram.}
   %   \puc@showdedication
   % \fi
   % \puc@showacknowledgment%
-  % \if@brazilianlanguage
-  %   \puc@showabstract%
-  %   \puc@showabstractuk%
-  %   \selectlanguage{brazilian}%
-  % \else
-  %   \puc@showabstractuk%
-  %   \puc@showabstract%
-  %   \selectlanguage{american}%
-  % \fi
+  \if@brazilianlanguage
+    \puc@showabstract%
+    \puc@showabstractuk%
+    \selectlanguage{brazilian}%
+  \else
+    \puc@showabstractuk%
+    \puc@showabstract%
+    \selectlanguage{american}%
+  \fi
   \puc@showtables%
   % \if@pucepigraph
   %   \puc@showepigraph
