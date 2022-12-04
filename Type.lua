@@ -1,5 +1,5 @@
 require "Util"
-typeCompatibility = 
+local typeCompatibility =
     {
         number = { number = true, integer = true, float = true},
         integer = {number = true, integer = true, float = true},
@@ -9,13 +9,13 @@ typeCompatibility =
         array = {array = true},
         record = {record = true}
     }
-local primitive = 
+local primitive =
     { 
-        number = true, 
-        integer = true, 
-        float = true, 
-        string = true, 
-        boolean = true 
+        number = true,
+        integer = true,
+        float = true,
+        string = true,
+        boolean = true
     }
 local number = 
     {

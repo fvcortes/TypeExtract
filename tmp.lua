@@ -6,6 +6,7 @@ end
 local function foo(a)
     return true
 end
+
 local function hey()
     return 0
 end

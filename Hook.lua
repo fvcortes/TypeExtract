@@ -4,42 +4,58 @@ Names = {}
 Parameters = {}
 --TODO: Treat varargs from getlocal
 
-function hook ()
+local function set_name(f, names)
+    Names[f] = names
+end
+local function init_counter(f)
+    Counters[f] = 1
+end
+
+local function update_counter(f)
+    Counters[f] = Counters[f] + 1
+end
+
+local function get_parameter_type(nparams)
+    local parameters = {}
+    --print("Getting types for the first time...")
+    --print("nparams",upvalues.nparams)
+    for i=1,nparams do         -- iterate over parameters
+        local n, v = debug.getlocal(3,i)
+        --dumptable(t)
+        table.insert(parameters, {name = n, type = getType(v)})
+    end
+    return parameters
+end
+
+local function add_parameter_type(params, nparams)
+    for i=1,nparams do             -- iterate over parameters
+        local _, v = debug.getlocal(3,i)
+        --print("Adding parameters type...")
+        params[i].type = addType(params[i].type, getType(v))
+        --print("New parameter type ->")
+        --dumptable(parameters[i].type)
+    end
+end
+
+function Hook ()
     local names = debug.getinfo(2,"Sn")
     if names.what == "Lua" then
         local f = debug.getinfo(2,"f").func
         local upvalues = debug.getinfo(2,"u")
-        local count = Counters[f]
         local parameters = Parameters[f]
-        if count == nil then        -- first time 'f' is called
-            Counters[f] = 1
+        if Counters[f] == nil then        -- first time 'f' is called
+            init_counter(f)
             Names[f] = names
             if (upvalues.isvararg == false) then        -- function parameter is not vararg
                 if (upvalues.nparams > 0) then          -- function has at least 1 parameter
-                    parameters = {}
-                    --print("Getting types for the first time...")
-                    --print("nparams",upvalues.nparams)
-                    for i=1,upvalues.nparams do         -- iterate over parameters
-                        n, v = debug.getlocal(2,i)
-                        t = getType(v)
-                        --dumptable(t)
-                        table.insert(parameters, {name = n, type = t})
-                    end
-                    Parameters[f] = parameters
+                    Parameters[f] = get_parameter_type(upvalues.nparams)
                 end
-            end 
+            end
         else
-            Counters[f] = count + 1
+            update_counter(f)
             if (parameters ~= nil) then     -- function already called with parameters before
                 -- try to add new types to old ones
-                for i=1,upvalues.nparams do             -- iterate over parameters
-                    _, v = debug.getlocal(2,i)
-                    t = getType(v)
-                    --print("Adding parameters type...")
-                    parameters[i].type = addType(parameters[i].type, t)
-                    --print("New parameter type ->")
-                    --dumptable(parameters[i].type)
-                end
+                add_parameter_type(parameters, upvalues.nparams)
             end
         end
     end

@@ -1,5 +1,13 @@
+-------------------------------------------------------------------
+-- File: Main.lua                                                 -
+-- Loads input file, run program and show report                  -
+-------------------------------------------------------------------
+require "Report"
 require "Run"
 
-assert(arg[1], "input file expected")
-
-run(arg[1])
+local file = arg[1]
+assert(file, "input file expected")
+local _f = assert(loadfile(file), "could not load file")
+table.remove(arg,1)         -- adjust arg table to match programs parameters
+Run(_f)
+Show()
