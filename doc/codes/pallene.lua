@@ -1,3 +1,7 @@
-function add ( x : float , y : float ): float
-    return x + y
+function sum ( xs : { float }): float
+    local s : float = 0 .0
+    for i = 1 , # xs do
+        s = s + xs [ i ]
+    end
+    return s
 end

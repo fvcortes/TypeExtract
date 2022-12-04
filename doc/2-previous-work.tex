@@ -3,19 +3,19 @@
 \chapter{Previous Work}
 \label{cha:Previous Work}
 
-Typed Lua \cite{murbach_typed_2014} has already defined an optional type system for the language. More than enriching documentation, this extension ensures static type safety while preserving Lua idioms. Typed Lua encodes the main data structure mechanism from Lua into arrays, records, tuples and maps. It uses a bracket syntax to denote table types:
+There has been some notable works about Type System with Lua that we must cite. Typed Lua \cite{murbach_typed_2014} has already defined an optional type system for the language. More than enriching documentation, this extension ensures static type safety while preserving Lua idioms. Typed Lua encodes the main data structure mechanism from Lua into arrays, records, tuples and maps. It uses a bracket syntax to denote table types:
 
-\lstinputlisting[language={[5.0]Lua}]{codes/typedlua.lua}
+\lstinputlisting[label=insert,title={List Insert},caption={Insert Typed Lua}, language={[5.0]Lua}]{codes/typedlua.lua}
 
-The type system features are designed to be lightweight and type-safe and extends for typing object, classes and modules by adding few type annotations.
+The type system is designed to be lightweight and type-safe and extends for typing object, classes and modules by adding type annotations. In Code ~\ref{insert} example, a simple algorithm for inserting numbers in a list is shown using type annotations. The Element interface is defined recursively and referenced twice on the function's header, indicating it's return type. The \textit{?} symbol means that \textit{e} is optional and can assume empty values. Although Typed Lua's type system share some parts with other optional type systems for dynamically typed languages, it's design demanded uncommon features due to Lua's characteristics.  
 
 \paragraph*{}
 
-Lua Type System has also been explored for scripting optimization with Pallene \cite{gualandi_pallene_2020}. The language uses an optional type system for integrating seamlessly with Lua's dynamic code. 
+Lua Type System has also been explored for scripting optimization with Pallene \cite{gualandi_pallene_2020}. The language design is inspired by optional type systems and it's semantical and syntatical similarity with Lua enables integrating seamlessly with Lua's dynamic code. 
 
-\lstinputlisting[language={[5.0]Lua}]{codes/pallene.lua}
+\lstinputlisting[label=sum,title={Array Sum},caption={Pallene Array Sum},language={[5.0]Lua}]{codes/pallene.lua}
 
-As opposed to Typed Lua, Pallene is designed for efficiency. It performs runtime checks to ensure type safety with a tweak flexibility. 
+As opposed to Typed Lua, Pallene is designed for efficiency. It performs runtime checks to ensure type safety with a tweak flexibility. But similarly, Pallene uses type annotations. As shown in Code ~\ref{sum}, the function \textit{sum} receives an array of float and returns a single float. Pallene has a built in interoperability with Lua by sharing its runtime and data-structures. These features allow converting Lua code to Pallene code more easly. 
 
 % Early smoothing methods tried to minimize... In the figure \ref{subfig:pictures/image01.png} we see...
 
