@@ -2,60 +2,108 @@ require "Type"
 Counters = {}
 Names = {}
 Parameters = {}
+Returns = {}
+CallInfos = {}
+ReturnInfos = {}
+Ignores = {}
+local FIRST_RETURN = true
+local FIRST_CALL = true
 --TODO: Treat varargs from getlocal
 
-local function set_name(f, names)
-    Names[f] = names
-end
-local function init_counter(f)
-    Counters[f] = 1
-end
 
 local function update_counter(f)
     Counters[f] = Counters[f] + 1
 end
 
-local function get_parameter_type(nparams)
-    local parameters = {}
-    --print("Getting types for the first time...")
-    --print("nparams",upvalues.nparams)
-    for i=1,nparams do         -- iterate over parameters
-        local n, v = debug.getlocal(3,i)
-        --dumptable(t)
-        table.insert(parameters, {name = n, type = getType(v)})
-    end
-    return parameters
-end
-
-local function add_parameter_type(params, nparams)
-    for i=1,nparams do             -- iterate over parameters
-        local _, v = debug.getlocal(3,i)
-        --print("Adding parameters type...")
-        params[i].type = addType(params[i].type, getType(v))
-        --print("New parameter type ->")
-        --dumptable(parameters[i].type)
+local function get_parameter_types(f)
+    local upvalues = CallInfos[f]
+    print("get_parameter_types(f,upvalues)")
+    if (upvalues.isvararg == false) then        -- function parameter is not vararg
+        if (upvalues.nparams > 0) then 
+            local parameters = {}
+            --print("Getting types for the first time...")
+            --print("nparams",upvalues.nparams)
+            for i=1,upvalues.nparams do         -- iterate over parameters
+                local n, v = debug.getlocal(3,i)
+                --dumptable(t)
+                table.insert(parameters, {name = n, type = getType(v)})
+            end
+            Parameters[f] = parameters
+        end
     end
 end
 
-function Hook ()
-    local names = debug.getinfo(2,"Sn")
-    if names.what == "Lua" then
-        local f = debug.getinfo(2,"f").func
-        local upvalues = debug.getinfo(2,"u")
-        local parameters = Parameters[f]
-        if Counters[f] == nil then        -- first time 'f' is called
-            init_counter(f)
-            Names[f] = names
-            if (upvalues.isvararg == false) then        -- function parameter is not vararg
-                if (upvalues.nparams > 0) then          -- function has at least 1 parameter
-                    Parameters[f] = get_parameter_type(upvalues.nparams)
+local function get_return_types(f)
+    print("get_return_types(f)")
+    local upvalues = ReturnInfos[f]
+    dumptable(upvalues)
+    --dumptable(Names[f])
+    if(upvalues.istailcall ~= true) then            -- functions is not a tail call
+        if (upvalues.isvararg == false) then        -- function parameter is not vararg
+            if (upvalues.nparams > 0) then
+                local returns = {}
+                --print("Getting types for the first time...")
+                --print("nparams",upvalues.nparams)
+                for i=upvalues.ftransfer,(upvalues.ftransfer + upvalues.ntransfer) - 1 do         -- iterate over parameters
+                    local n, v = debug.getlocal(3,i)
+                    table.insert(returns, {name = n, type = getType(v)})
+                end
+                Returns[f] = returns
+            end
+        end
+    end
+end
+
+local function add_parameter_type(f)
+    print("add_parameter_type(f)")
+    local parameters = Parameters[f]
+    if (parameters ~= nil) then     -- function already called with parameters before
+        for i=1,CallInfos[f].nparams do             -- iterate over parameters
+            local _, v = debug.getlocal(3,i)
+            --print("Adding parameters type...")
+            parameters[i].type = addType(parameters[i].type, getType(v))
+            --print("New parameter type ->")
+            --dumptable(parameters[i].type)
+        end
+    end
+end
+
+local function add_return_types(f)
+end
+
+function Hook (event)
+    local f = debug.getinfo(2,"f").func
+    if(Ignores[f] ~= true) then
+        print("name",debug.getinfo(2,"Sn").name,"event", event)
+        if (event == "call") then
+            if(FIRST_CALL) then
+                Ignores[f] = true
+                FIRST_CALL = false
+            else
+                if(Counters[f] ~= nil) then -- function already called
+                    update_counter(f)
+                    add_parameter_type(f)    -- try to add new types to old ones
+                else
+                    local names = debug.getinfo(2,"Sn")
+                    if names.what == "Lua" then
+                        CallInfos[f] = debug.getinfo(2,"urt")
+                        Counters[f] = 1
+                        Names[f] = names
+                        get_parameter_types(f)
+                    end
                 end
             end
         else
-            update_counter(f)
-            if (parameters ~= nil) then     -- function already called with parameters before
-                -- try to add new types to old ones
-                add_parameter_type(parameters, upvalues.nparams)
+            if (FIRST_RETURN) then
+                Ignores[f] = true
+                FIRST_RETURN = false
+            else 
+                if(Returns[f] ~= nil) then -- function already returned before
+                    add_return_types(f)
+                else
+                    ReturnInfos[f] = debug.getinfo(2,"urt")
+                    get_return_types(f)
+                end
             end
         end
     end

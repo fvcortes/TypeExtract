@@ -5,7 +5,7 @@
 require "Hook"
 
 function Run(f)
-    debug.sethook(Hook,"c")   -- turn on the hook for calls
+    debug.sethook(Hook,"cr")   -- turn on the hook for calls
     f()                        -- run the program
     debug.sethook()             -- turn off hook
 end

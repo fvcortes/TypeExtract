@@ -37,17 +37,28 @@ local function get_parameter_type_name(params)
     return p
 end
 
+local function get_return_type_name(returns)
+    local r = ""
+    local firstreturn = returns[1];
+    r = r..get_type_name(firstreturn.type)
+    for i=2,#returns do
+        r = r..", "..get_type_name(returns[i].type)
+    end
+    return r
+end
+
 -- Finds a suitable name for the function
 local function get_name (func)
     local n = Names[func]
     local p = Parameters[func]
+    local r = Returns[func]
     if n.what == "C" then
         return n.name
     end
     local lc = string.format("[%s]:%d", n.short_src, n.linedefined)
     if n.what ~= "main" and n.namewhat ~= "" then
         if (p ~= nil) then
-            return string.format("%s\t%s(%s)", lc, n.name, get_parameter_type_name(p))
+            return string.format("%s\t%s(%s):%s", lc, n.name, get_parameter_type_name(p), get_return_type_name(r))
         end
         return string.format("%s\t%s()", lc, n.name)
     else
