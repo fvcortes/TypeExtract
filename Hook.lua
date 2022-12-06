@@ -1,3 +1,7 @@
+-------------------------------------------------------------------
+-- File: Hook.lua                                                 -
+-- Inspect local types; export function information               -
+-------------------------------------------------------------------
 require "Type"
 Counters = {}
 Names = {}
@@ -26,7 +30,7 @@ local function get_parameter_types(f)
             for i=1,upvalues.nparams do         -- iterate over parameters
                 local n, v = debug.getlocal(3,i)
                 --dumptable(t)
-                table.insert(parameters, {name = n, type = getType(v)})
+                table.insert(parameters, {name = n, type = Type(v)})
             end
             Parameters[f] = parameters
         end
@@ -36,7 +40,7 @@ end
 local function get_return_types(f)
     print("get_return_types(f)")
     local upvalues = ReturnInfos[f]
-    dumptable(upvalues)
+    --dumptable(upvalues)
     --dumptable(Names[f])
     if(upvalues.istailcall ~= true) then            -- functions is not a tail call
         if (upvalues.isvararg == false) then        -- function parameter is not vararg
@@ -46,7 +50,7 @@ local function get_return_types(f)
                 --print("nparams",upvalues.nparams)
                 for i=upvalues.ftransfer,(upvalues.ftransfer + upvalues.ntransfer) - 1 do         -- iterate over parameters
                     local n, v = debug.getlocal(3,i)
-                    table.insert(returns, {name = n, type = getType(v)})
+                    table.insert(returns, {name = n, type = Type(v)})
                 end
                 Returns[f] = returns
             end
@@ -61,7 +65,7 @@ local function add_parameter_type(f)
         for i=1,CallInfos[f].nparams do             -- iterate over parameters
             local _, v = debug.getlocal(3,i)
             --print("Adding parameters type...")
-            parameters[i].type = addType(parameters[i].type, getType(v))
+            parameters[i].type = Add(parameters[i].type, Type(v))
             --print("New parameter type ->")
             --dumptable(parameters[i].type)
         end
@@ -74,7 +78,7 @@ end
 function Hook (event)
     local f = debug.getinfo(2,"f").func
     if(Ignores[f] ~= true) then
-        print("name",debug.getinfo(2,"Sn").name,"event", event)
+        --print("name",debug.getinfo(2,"Sn").name,"event", event)
         if (event == "call") then
             if(FIRST_CALL) then
                 Ignores[f] = true
@@ -127,7 +131,7 @@ end
 -- In a call hook, we want to analyse function parameters.
 -- If nparams is 0 then only update functions call
 -- If nparams is greater than 0, we iterate over nparams obtaining parameter names and values through getlocal
-
+-- First hook and last hook evocations should be avoided cause its sethook return and set_hook call at the end
 
 -------------------------------------------------------------------
 -- 'f': pushes onto the stack the function that is running at the given level;

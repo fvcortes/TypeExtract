@@ -1,6 +1,6 @@
 -------------------------------------------------------------------
 -- File: Run.lua                                                  -
--- Run input file with inspection Hook                           -
+-- Run input file with inspection Hook                            -
 -------------------------------------------------------------------
 require "Hook"
 

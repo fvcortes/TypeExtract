@@ -1,5 +1,9 @@
+-------------------------------------------------------------------
+-- File: Type.lua                                               -
+-- Type operations                         -
+-------------------------------------------------------------------
 require "Util"
-local typeCompatibility =
+local type_compatibility =
     {
         number = { number = true, integer = true, float = true},
         integer = {number = true, integer = true, float = true},
@@ -7,7 +11,9 @@ local typeCompatibility =
         string = {string = true},
         boolean = {boolean = true},
         array = {array = true},
-        record = {record = true}
+        record = {record = true},
+        unknown = {},
+        ["function"] = {["function"] = true}
     }
 local primitive =
     { 
@@ -23,21 +29,21 @@ local number =
         integer = true,
         float = true
     }
-local numberType = 
+local number_type = 
     {
         number = { number = "number", integer = "number", float = "number" },
         integer = { number = "number", integer = "integer", float = "number" },
         float = { number = "number", integer = "number", float = "float" }
     }
 
-function listKeys(a,b)
+local function list_keys(a,b)
     local list = {}
     for k,_ in pairs(a) do list[k] = true end
     for k,_ in pairs(b) do list[k] = true end
     return list
 end
 
-function mapTable(tb,f)
+local function map_table(tb,f)
     local result = {}
     for k,v in pairs(tb) do
         result[k] = f(v)
@@ -45,7 +51,7 @@ function mapTable(tb,f)
     return result
 end
 
-function foldTable(tb,f)
+local function fold_table(tb,f)
     local result = tb[1]
     for i = 2, #tb do
         result = f(result, tb[i])
@@ -53,7 +59,7 @@ function foldTable(tb,f)
     return result
 end
 
-local function getTableTag(tb)
+local function get_table_tag(tb)
     local tablesize = #tb
     if (tablesize > 0) then
         return "array"
@@ -67,60 +73,50 @@ local function getTableTag(tb)
     end
 end
 
-local function getTag(value)
-    local tag
-    local valuetype = type(value)
-    if (valuetype ~= "userdata") then           -- not a userdata
-        if (valuetype ~= "function") then       -- not a function
-            if(valuetype ~= "table") then       -- not table
-                if (valuetype ~= "number") then -- not a number
-                    tag = valuetype
-                else
-                    tag = math.type(value)
-                end
-            else 
-                tag = getTableTag(value)
-            end
-        else
-            tag = "function"
-        end
+local function get_tag(value)
+    local tag = type(value)
+    if (tag == "number") then
+        return math.type(value)
     else
-        tag = "userdata" 
+        if (tag == "table") then
+            return get_table_tag(value)
+        else
+            return tag
+        end
     end
-    return tag
 end
 
-local function isCompatible(type1, type2)
-    return typeCompatibility[type1.tag][type2.tag]
+local function is_compatible(t1, t2)
+    return type_compatibility[t1.tag][t2.tag]
 end
 
-local function isPrimitive (type)
+local function is_primitive (type)
     return primitive[type.tag]
 end
 
-local function isNumber(type)
+local function is_number(type)
     return number[type.tag]
 end
 
-local function addNumberType(n1,n2)
-    return {tag = numberType[n1.tag][n2.tag]}
+local function add_number_type(n1,n2)
+    return {tag = number_type[n1.tag][n2.tag]}
 end
 
-local function addArrayType(a1,a2)
-    return {tag = "array", arrayType = addType(a1.arrayType,a2.arrayType)}
+local function add_array_type(a1,a2)
+    return {tag = "array", arrayType = Add(a1.arrayType,a2.arrayType)}
 end
 
-local function addRecordType(r1,r2)
-    local lk = listKeys(r1.recordType,r2.recordType)
+local function add_record_type(r1,r2)
+    local lk = list_keys(r1.recordType,r2.recordType)
     local recordType = {}
     for k,_ in pairs(lk) do
         if (r1.recordType[k] and r2.recordType[k]) then
             --print("label in both records")
             --dumptable(r1)
             --dumptable(r2)
-            recordType[k] = addType(r1.recordType[k],r2.recordType[k])
+            recordType[k] = Add(r1.recordType[k],r2.recordType[k])
         else
-            if (r1.recordType[k] and ~(r2.recordType[k])) then
+            if (r1.recordType[k] and (r2.recordType[k] == nil)) then
                 recordType[k] = r1.recordType[k]
             else
                 recordType[k] = r2.recordType[k]
@@ -130,30 +126,40 @@ local function addRecordType(r1,r2)
     return {tag = "record", recordType = recordType}
 end
 
-local function addPrimitiveType(type1, type2)
+local function add_compatible_primitive_type(t1, t2)
     -- types are compatible and primitives
-    if (isNumber(type1) and isNumber(type2)) then
-        return addNumberType(type1,type2)
+    if (is_number(t1) and is_number(t2)) then
+        return add_number_type(t1,t2)
     end
-    return (type1 or type2)
+    return (t1 or t2)
 end
 
-function addType(type1, type2)
+local function add_function_type(f1,f2)
+    return {tag = "function", functionType = list_keys(f1.functionType,f2.functionType)}
+end
+
+function Add(t1, t2)
     --print("Adding types...")
-    --print(type1.tag, type2.tag)
-    --dumptable(type1)
-    --dumptable(type2)
-    if(isCompatible(type1, type2)) then
-        local tag = type1.tag
-        if(tag == "array") then
-            --print("adding array types...")
-            return addArrayType(type1, type2)
+    --print(t1.tag, t2.tag)
+    --dumptable(t1)
+    --dumptable(t2)
+    if(is_compatible(t1, t2)) then
+        local tag = t1.tag
+        if(is_primitive(t1)) then
+            return add_compatible_primitive_type(t1,t2)
         else
-            if (tag == "record") then
-                --print("adding record types...")            
-                return addRecordType(type1,type2)
+            if(tag == "array") then
+                --print("adding array types...")
+                return add_array_type(t1, t2)
             else
-                return addPrimitiveType(type1,type2)
+                if (tag == "record") then
+                    --print("adding record types...")            
+                    return add_record_type(t1,t2)
+                else
+                    if(tag == "function") then
+                        return add_function_type(t1,t2)
+                    end
+                end
             end
         end
     else
@@ -161,28 +167,32 @@ function addType(type1, type2)
     end
 end
 
-local function getArrayType(array)
-    return foldTable(mapTable(array, getType), addType)
+local function get_array_type(array)
+    return fold_table(map_table(array, Type), Add)
 end
 
-local function getRecordType(record)
+local function get_record_type(record)
     local result = {}
     for k,v in pairs(record) do
-        result[k] = getType(v)
+        result[k] = Type(v)
     end
     return result
 end
 
-function getType(value)
-    local tag = getTag(value)
+function Type(value)
+    local tag = get_tag(value)
     local result = {tag = tag}
     if (tag == "array") then 
-        local at = getArrayType(value)
+        local at = get_array_type(value)
         --dumptable(at)
-        result.arrayType = getArrayType(value)
+        result.arrayType = get_array_type(value)
     else
         if(tag == "record") then
-            result.recordType = getRecordType(value)
+            result.recordType = get_record_type(value)
+        else
+            if (tag == "function") then
+                result.functionType = {[value] = true}
+            end
         end
     end
     return result

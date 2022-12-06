@@ -1,5 +1,9 @@
+-------------------------------------------------------------------
+-- File: Report.lua                                               -
+-- Generates a human readable type report                         -
+-------------------------------------------------------------------
 require "Hook"
-
+local function_type_names = {}
 local get_type_name
 
 local function get_record_type_name(rt)
@@ -13,40 +17,59 @@ local function get_record_type_name(rt)
     return string.format("{%s}", entries)
 end
 
+local function get_function_type_name(ft)
+    local entries = ""
+    for k,_ in pairs(ft) do
+        entries = entries.."; "..tostring(k)
+    end
+    return string.format("{%s}", entries)
+end
 get_type_name = function(t)
     if(t.tag == "array") then
         return "{"..get_type_name(t.arrayType).."}"
     else
         if(t.tag == "record") then
-            -- TODO: iterate over all elements of recordType
             return get_record_type_name(t.recordType)
         else
-            return t.tag
+            if(t.tag == "function") then
+                return get_function_type_name(t.functionType)
+            else
+                return t.tag
+            end
         end
     end
 end
 
 local function get_parameter_type_name(params)
-    local p = ""
-    local firstparameter = params[1];
-    --print(type(firstparameter))
-    p = p..firstparameter.name..":"..get_type_name(firstparameter.type)
-    for i=2,#params do
-        p = p..", "..params[i].name..":"..get_type_name(params[i].type)
+    if(params ~= nil) then
+        local p = ""
+        local firstparameter = params[1];
+        --print(type(firstparameter))
+        p = p..get_type_name(firstparameter.type)
+        for i=2,#params do
+            p = p.."->"..get_type_name(params[i].type)
+        end
+        return p
     end
-    return p
 end
 
 local function get_return_type_name(returns)
-    local r = ""
-    local firstreturn = returns[1];
-    r = r..get_type_name(firstreturn.type)
-    for i=2,#returns do
-        r = r..", "..get_type_name(returns[i].type)
+    if(returns ~= nil) then
+        local r = ""
+        local firstreturn = returns[1];
+        r = r..get_type_name(firstreturn.type)
+        for i=2,#returns do
+            r = r.."->"..get_type_name(returns[i].type)
+        end
+        return r
     end
-    return r
 end
 
+local function get_function_type_name(params, returns)
+    if (params ~= nil) then
+        return string.format("(%s)->(%s)", get_parameter_type_name(params), get_return_type_name(returns))
+    end
+end
 -- Finds a suitable name for the function
 local function get_name (func)
     local n = Names[func]
@@ -58,7 +81,8 @@ local function get_name (func)
     local lc = string.format("[%s]:%d", n.short_src, n.linedefined)
     if n.what ~= "main" and n.namewhat ~= "" then
         if (p ~= nil) then
-            return string.format("%s\t%s(%s):%s", lc, n.name, get_parameter_type_name(p), get_return_type_name(r))
+            function_type_names[func] = get_function_type_name(p,r)
+            return string.format("%s\t%s\t%s", lc, n.name, function_type_names[func])
         end
         return string.format("%s\t%s()", lc, n.name)
     else
