@@ -1,6 +1,6 @@
 -------------------------------------------------------------------
 -- File: Report.lua                                               -
--- Generates a human readable type report                         -
+-- Generates a readable report                         -
 -------------------------------------------------------------------
 require "Hook"
 local function_type_names = {}

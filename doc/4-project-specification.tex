@@ -2,66 +2,66 @@
 \chapter{Project Specification}
 \label{cha:Project Specification}
 
-Equation example 1:
+% Equation example 1:
 
-\begin{equation}
-\begin{split}
-\min_u \int_{x_i\in X}\int_{x_j\in X} q_{ij} u_i u_j da da + \int_{x_i\in X}||x' - x_i|| u_i da \\
-s.t. \ \ \ u\in[0,1] \ \ \land  \ \ \int_{x_i\in X}u da = a_0,
-\end{split}
-\end{equation}
+% \begin{equation}
+% \begin{split}
+% \min_u \int_{x_i\in X}\int_{x_j\in X} q_{ij} u_i u_j da da + \int_{x_i\in X}||x' - x_i|| u_i da \\
+% s.t. \ \ \ u\in[0,1] \ \ \land  \ \ \int_{x_i\in X}u da = a_0,
+% \end{split}
+% \end{equation}
 
-Equation exmaple 2:
+% Equation exmaple 2:
 
-\begin{equation}
-\begin{split}
-\min_{\mathbf{u}} \alpha \mathbf{u}^T \mathbf{A}^T \mathbf{Q} \mathbf{A} \mathbf{u} +  \beta \mathbf{d}^T a' \mathbf{A} \mathbf{u} + \gamma \mathbf{u}^T \mathbf{G}^T \mathbf{G} \mathbf{u} + \delta\mathbf{f}^T a' \mathbf{A} \mathbf{u} \\
-s.t. \ \ \ \mathbf{0} \leq \mathbf{u} \leq \mathbf{1} \land \mathbf{a}^T\mathbf{u}=a_0.
-\end{split}
-\end{equation}
+% \begin{equation}
+% \begin{split}
+% \min_{\mathbf{u}} \alpha \mathbf{u}^T \mathbf{A}^T \mathbf{Q} \mathbf{A} \mathbf{u} +  \beta \mathbf{d}^T a' \mathbf{A} \mathbf{u} + \gamma \mathbf{u}^T \mathbf{G}^T \mathbf{G} \mathbf{u} + \delta\mathbf{f}^T a' \mathbf{A} \mathbf{u} \\
+% s.t. \ \ \ \mathbf{0} \leq \mathbf{u} \leq \mathbf{1} \land \mathbf{a}^T\mathbf{u}=a_0.
+% \end{split}
+% \end{equation}
 
-Equation example 3:
-\begin{align}
-\mathbf{G}=(g_{ij}) = \left\lbrace
-\begin{array}{ll}
-\sum_{f_k\in N_f(f_i)} l_{ik} & i=j\\
--l_{ij} & e_{ij}\in E\\
-0 & \text{otherwise}
-\end{array}
-\right.
-\end{align}
+% Equation example 3:
+% \begin{align}
+% \mathbf{G}=(g_{ij}) = \left\lbrace
+% \begin{array}{ll}
+% \sum_{f_k\in N_f(f_i)} l_{ik} & i=j\\
+% -l_{ij} & e_{ij}\in E\\
+% 0 & \text{otherwise}
+% \end{array}
+% \right.
+% \end{align}
 
-\lstinputlisting[label=mean,title={Mean Filter},caption={Mean Filter},language=R]{codes/mean.R}
+% \lstinputlisting[label=mean,title={Mean Filter},caption={Mean Filter},language=R]{codes/mean.R}
 
-%% Poruguese algorithm
-%\begin{algorithm}
-%\DontPrintSemicolon
-%\Entrada{Malha e quantidade de pontos a ser amostrado}
-%\Saida{Pontos amostrados na malha}
-%\BlankLine
-%\emph{Crie um vetor de números randômicos entre $[0,1]$ com a %quantidade de pontos a ser amostrada e ordene-o}\;
-%\emph{Calcule a área total dos triângulos da malha}\;
-%\For{$i=0$ \KwTo numeroDePontos} {
-%  \emph{Navegue entre as faces acumulando a sua $\frac{area}{areaTotal}$ até achar a face com valor acumulado $\geqslant$ numerosRandomicos[i]}\;
-%  \emph{Pegue um ponto randômico dentro da face utilizando o %método de Turk e adicione no vetor do resultado}\;
-%}
-%\caption{Escolha das amostras inicias}\label{alg:sampling}
-%\end{algorithm}\DecMargin{1em}
+% %% Poruguese algorithm
+% %\begin{algorithm}
+% %\DontPrintSemicolon
+% %\Entrada{Malha e quantidade de pontos a ser amostrado}
+% %\Saida{Pontos amostrados na malha}
+% %\BlankLine
+% %\emph{Crie um vetor de números randômicos entre $[0,1]$ com a %quantidade de pontos a ser amostrada e ordene-o}\;
+% %\emph{Calcule a área total dos triângulos da malha}\;
+% %\For{$i=0$ \KwTo numeroDePontos} {
+% %  \emph{Navegue entre as faces acumulando a sua $\frac{area}{areaTotal}$ até achar a face com valor acumulado $\geqslant$ numerosRandomicos[i]}\;
+% %  \emph{Pegue um ponto randômico dentro da face utilizando o %método de Turk e adicione no vetor do resultado}\;
+% %}
+% %\caption{Escolha das amostras inicias}\label{alg:sampling}
+% %\end{algorithm}\DecMargin{1em}
 
-%% enlgish algorithm
-\begin{algorithm}
-\DontPrintSemicolon
-\KwIn{Malha e quantidade de pontos a ser amostrado}
-\KwOut{Pontos amostrados na malha}
-\BlankLine
-\emph{Crie um vetor de números randômicos entre $[0,1]$ com a quantidade de pontos a ser amostrada e ordene-o}\;
-\emph{Calcule a área total dos triângulos da malha}\;
-\For{$i=0$ \KwTo numeroDePontos} {
-  \emph{Navegue entre as faces acumulando a sua $\frac{area}{areaTotal}$ até achar a face com valor acumulado $\geqslant$ numerosRandomicos[i]}\;
-  \emph{Pegue um ponto randômico dentro da face utilizando o método de Turk e adicione no vetor do resultado}\;
-}
-\caption{Escolha das amostras inicias}\label{alg:sampling}
-\end{algorithm}\DecMargin{1em}
+% %% enlgish algorithm
+% \begin{algorithm}
+% \DontPrintSemicolon
+% \KwIn{Malha e quantidade de pontos a ser amostrado}
+% \KwOut{Pontos amostrados na malha}
+% \BlankLine
+% \emph{Crie um vetor de números randômicos entre $[0,1]$ com a quantidade de pontos a ser amostrada e ordene-o}\;
+% \emph{Calcule a área total dos triângulos da malha}\;
+% \For{$i=0$ \KwTo numeroDePontos} {
+%   \emph{Navegue entre as faces acumulando a sua $\frac{area}{areaTotal}$ até achar a face com valor acumulado $\geqslant$ numerosRandomicos[i]}\;
+%   \emph{Pegue um ponto randômico dentro da face utilizando o método de Turk e adicione no vetor do resultado}\;
+% }
+% \caption{Escolha das amostras inicias}\label{alg:sampling}
+% \end{algorithm}\DecMargin{1em}
 
 
 
