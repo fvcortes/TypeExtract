@@ -2,7 +2,9 @@
 
 \chapter{Project Scope}
 \label{cha:Project Scope}
-Type extraction for existing dymanic code is still an uncovered subject. Our software has the purpose of collecting type information from an user's program and reporting this data for documentation, inspection and code migration. The type extractor analyse each function call and return by using reflection properties of the Lua programming language. The debug library allow us to register hook functions to inspect a program's execution, computing the types present in the code.
+Type extraction for existing dymanic code is still a low covered subject. Our software has the purpose of collecting type information from an user's program and reporting this data for documentation, inspection and code migration. The reflection properties of Lua allow us to register hook functions and extract the values contained in the program's execution. By accessing these values during runtime, the extractor builds a structure containing all type information gathered so far.
+\paragraph*{}
+Lua values can assume several types, speacially tables, which is the main data-structure mechanism of the language, and functions, considered as first class values. This type dynamism makes type inspection a challenging task, so in order to reduce some complexity, we chose to follow a merge strategy for types following the Pallene Language type specification. Pallene specification brings simplicity for table types, which are divided between array types and record types.
 \paragraph*{}
 The type extractor can be used by two approaches, as a full program analysis or as a inspection library.
 \begin{itemize}
