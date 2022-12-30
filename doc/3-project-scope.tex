@@ -2,13 +2,13 @@
 
 \chapter{Project Scope}
 \label{cha:Project Scope}
-Type extraction for existing dymanic code is still a low covered subject. Our software has the purpose of collecting type information from an user's program and reporting this data for documentation, inspection and code migration. The reflection properties of Lua allow us to register hook functions and extract the values contained in the program's execution. By accessing these values during runtime, the extractor builds a structure containing all type information gathered so far.
+Type extraction for existing dymanic code is still a low covered subject. Our goal is to build a complementary tool, collecting type information from an user's program and reporting this data for documentation, inspection and code migration. The reflection properties of Lua allow us to register hook functions and extract the values contained in the program's execution by accessing the values during runtime. As an output the program generates a list of function types containing all gathered information.
 \paragraph*{}
-Lua values can assume several types, speacially tables, which is the main data-structure mechanism of the language, and functions, considered as first class values. This type dynamism makes type inspection a challenging task, so in order to reduce some complexity, we chose to follow a merge strategy for types following the Pallene Language type specification. Pallene specification brings simplicity for table types, which are divided between array types and record types.
+Lua values can assume several types, speacially tables, which is the main data-structure mechanism of the language, and functions, considered as first class values. This type dynamism makes type inspection a challenging task, so in order to reduce some complexity, we chose to follow a merge strategy for types following the Pallene Language type specification. Pallene conventional type system brings simplicity for table types, restricting them as array types and record types and shows a straightforward function type definition. Serving as an analysis tool, we won't make any type verification or restrain the program's execution. The types that could not be infered will be shown as a dynamic type.
 \paragraph*{}
-The type extractor can be used by two approaches, as a full program analysis or as a inspection library.
+The tool offers two ways for type inspection in a program:
 \begin{itemize}
-    \item{Full Analysis:} A full program analysis is made by passing a Lua program as input to the extractor. In this approach, each possible function call and return types will be analysed.
+    \item{Full Analysis:} A full program analysis can be made by passing a Lua program as input to the extractor. In this approach, each possible function call and return types will be analysed.
     \item{Inspection library:} An auxiliar library, capable of registring specific functions for inspection. In this approach, the programmer can select what part of the program they want to analyse.
 \end{itemize}
  These usage scenarios enables the extractor to be used as an auxiliary tool for migrating from dynamically to statically typed languages. At the end, a report containing information about parameters and return types of each analysed function is generated and shown to the user. This data serves as a good documentation for functions parameter and return types. Giving tools for understanding the type relations inside a program helps programmers to debug and optimize dynamically typed code.
