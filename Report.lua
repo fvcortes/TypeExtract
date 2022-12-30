@@ -14,14 +14,19 @@ local function get_record_type_name(rt)
     for k,v in pairs(rt) do
         entries = entries..", "..k..":"..get_type_name(v)
     end
+    rt[firstLabel] = firstEntry
     return string.format("{%s}", entries)
 end
 
 local function get_function_type_name(ft)
     local entries = ""
+    local firstKey, _ = next(ft)
+    entries = entries..tostring(firstKey)
+    ft[firstKey] = nil
     for k,_ in pairs(ft) do
         entries = entries.."; "..tostring(k)
     end
+    ft[firstKey] = true
     return string.format("{%s}", entries)
 end
 get_type_name = function(t)
