@@ -10,8 +10,6 @@ Returns = {}
 CallInfos = {}
 ReturnInfos = {}
 Ignores = {}
-local FIRST_RETURN = true
-local FIRST_CALL = true
 --TODO: Treat varargs from getlocal
 
 
@@ -23,7 +21,7 @@ local function get_parameter_types(f)
     local upvalues = CallInfos[f]
     print("get_parameter_types(f,upvalues)")
     if (upvalues.isvararg == false) then        -- function parameter is not vararg
-        if (upvalues.nparams > 0) then 
+        if (upvalues.nparams > 0) then
             local parameters = {}
             --print("Getting types for the first time...")
             --print("nparams",upvalues.nparams)
@@ -79,40 +77,36 @@ function Hook (event)
     local f = debug.getinfo(2,"f").func
     if(Ignores[f] ~= true) then
         --print("name",debug.getinfo(2,"Sn").name,"event", event)
-        if (event == "call") then
-            if(FIRST_CALL) then
-                Ignores[f] = true
-                FIRST_CALL = false
-            else
-                if(Counters[f] ~= nil) then -- function already called
-                    update_counter(f)
-                    add_parameter_type(f)    -- try to add new types to old ones
-                else
-                    local names = debug.getinfo(2,"Sn")
-                    if names.what == "Lua" then
-                        CallInfos[f] = debug.getinfo(2,"urt")
-                        Counters[f] = 1
-                        Names[f] = names
-                        get_parameter_types(f)
-                    end
+        if (event == "call") then -- call event
+            if(Counters[f] == nil) then -- first time function is called
+                local names = debug.getinfo(2,"Sn")
+                if names.what == "Lua" then
+                    CallInfos[f] = debug.getinfo(2,"urt")
+                    Counters[f] = 1
+                    Names[f] = names
+                    get_parameter_types(f)
                 end
+            else    -- function already called 
+                update_counter(f)
+                add_parameter_type(f)   -- try to add new types to old ones
             end
-        else
-            if (FIRST_RETURN) then
-                Ignores[f] = true
-                FIRST_RETURN = false
-            else 
-                if(Returns[f] ~= nil) then -- function already returned before
-                    add_return_types(f)
-                else
-                    ReturnInfos[f] = debug.getinfo(2,"urt")
-                    get_return_types(f)
-                end
+        else    -- return event
+            if(Returns[f] == nil) then  -- first time returned
+                ReturnInfos[f] = debug.getinfo(2,"urt")
+                get_return_types(f)
+            else    -- function already returned before
+                add_return_types(f)
             end
         end
     end
 end
 
+function ResolveFunctionTypes()
+    print("Resolving function types...")
+    for k,v in pairs(FunctionTypes) do
+        print(k,v)
+    end
+end
 ---------------------------- NOTES --------------------------------
 -- if the function isvararg, the value of nparams from getlocal  is always 0
 -- the value of nparams is always the number of parameters defined in the functions declaration,
@@ -131,7 +125,6 @@ end
 -- In a call hook, we want to analyse function parameters.
 -- If nparams is 0 then only update functions call
 -- If nparams is greater than 0, we iterate over nparams obtaining parameter names and values through getlocal
--- First hook and last hook evocations should be avoided cause its sethook return and set_hook call at the end
 
 -------------------------------------------------------------------
 -- 'f': pushes onto the stack the function that is running at the given level;

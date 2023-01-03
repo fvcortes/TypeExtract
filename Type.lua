@@ -3,6 +3,7 @@
 -- Type operations                         -
 -------------------------------------------------------------------
 require "Util"
+FunctionTypes = {}
 local type_compatibility =
     {
         number = { number = true, integer = true, float = true},
@@ -126,7 +127,7 @@ local function add_record_type(r1,r2)
     return {tag = "record", recordType = recordType}
 end
 
-local function add_compatible_primitive_type(t1, t2)
+local function add_compatible_primitive_types(t1, t2)
     -- types are compatible and primitives
     if (is_number(t1) and is_number(t2)) then
         return add_number_type(t1,t2)
@@ -146,7 +147,7 @@ function Add(t1, t2)
     if(is_compatible(t1, t2)) then
         local tag = t1.tag
         if(is_primitive(t1)) then
-            return add_compatible_primitive_type(t1,t2)
+            return add_compatible_primitive_types(t1,t2)
         else
             if(tag == "array") then
                 --print("adding array types...")
@@ -179,6 +180,10 @@ local function get_record_type(record)
     return result
 end
 
+local function get_function_type(func)
+    return {[func] = true}
+end
+
 function Type(value)
     local tag = get_tag(value)
     local result = {tag = tag}
@@ -191,7 +196,8 @@ function Type(value)
             result.recordType = get_record_type(value)
         else
             if (tag == "function") then
-                result.functionType = {[value] = true}
+                result.functionType = get_function_type(value)
+                table.insert(FunctionTypes, result.functionType)
             end
         end
     end
