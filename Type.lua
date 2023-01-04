@@ -3,7 +3,7 @@
 -- Type operations                         -
 -------------------------------------------------------------------
 require "Util"
-FunctionTypes = {}
+
 local type_compatibility =
     {
         number = { number = true, integer = true, float = true},
@@ -197,7 +197,6 @@ function Type(value)
         else
             if (tag == "function") then
                 result.functionType = get_function_type(value)
-                table.insert(FunctionTypes, result.functionType)
             end
         end
     end
