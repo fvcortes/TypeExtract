@@ -5,13 +5,10 @@
 require "Type"
 require "Inspect"
 Stack = {}
-Functions = {}
 Counters = {}
 Names = {}
 Parameters = {}
 Returns = {}
-Infos = {}
-ReturnInfos = {}
 Ignores = {}
 --TODO: Treat varargs from getlocal
 
@@ -27,111 +24,75 @@ local function update_counter(f)
     Counters[f] = Counters[f] + 1
 end
 
-local function get_parameter_types(f)
-    local upvalues = Infos[f]
-    print("get_parameter_types(f,upvalues)")
-    if (upvalues.isvararg == false) then        -- function parameter is not vararg
-        if (upvalues.nparams > 0) then
-            local parameters = {}
-            --print("Getting types for the first time...")
-            --print("nparams",upvalues.nparams)
-            for i=1,upvalues.nparams do         -- iterate over parameters
-                local n, v = debug.getlocal(3,i)
-                --dumptable(t)
-                table.insert(parameters, {name = n, type = Type(v)})
-            end
-            Parameters[f] = parameters
-        end
-    end
-end
-
-local function get_return_types(f)
-    print("get_return_types(f)")
-    local upvalues = ReturnInfos[f]
-    --dumptable(upvalues)
-    --dumptable(Names[f])
-    if(upvalues.istailcall ~= true) then            -- functions is not a tail call
-        if (upvalues.isvararg == false) then        -- function parameter is not vararg
-            if (upvalues.nparams > 0) then
-                local returns = {}
-                --print("Getting types for the first time...")
-                --print("nparams",upvalues.nparams)
-                for i=upvalues.ftransfer,(upvalues.ftransfer + upvalues.ntransfer) - 1 do         -- iterate over parameters
-                    local n, v = debug.getlocal(3,i)
-                    table.insert(returns, {name = n, type = Type(v)})
-                end
-                Returns[f] = returns
-            end
-        end
-    end
-end
-
-local function add_parameter_type(f)
-    print("add_parameter_type(f)")
-    local parameters = Parameters[f]
-    if (parameters ~= nil) then     -- function already called with parameters before
-        for i=1,Infos[f].nparams do             -- iterate over parameters
-            local _, v = debug.getlocal(3,i)
-            --print("Adding parameters type...")
-            parameters[i].type = Add(parameters[i].type, Type(v))
-            --print("New parameter type ->")
-            --dumptable(parameters[i].type)
-        end
-    end
-end
-
-local function add_return_types(f)
-end
-
 function Hook (event)
-    local f = debug.getinfo(2,"f").func
-    if(Ignores[f] ~= true) then
-        local infos
-        if(Counters[f] == nil) then  -- Function never inspected
-            infos = debug.getinfo(2,"Snurt")
-            if infos.what == "Lua" then
-                push(infos)
-            end
-        else    -- Function already inspected
-            infos = pop()
-        end
-        Inspect(f, event,infos.ntransfer,infos.ftransfer)
-    end
-
-    -- TODO: Transfer value obtention logic from debug.getlocal to Inspect module
-
-    if(Ignores[f] ~= true) then
-        --print("name",debug.getinfo(2,"Sn").name,"event", event)
-        if (event == "call") then -- call event
-            if(Counters[f] == nil) then -- first time function is called
+    local infos = debug.getinfo(2,"furt").func
+    if(Ignores[infos.func] ~= true) then
+        if (event == "call") then
+            if(Counters[infos.func] == nil) then  -- Function never inspected
                 local names = debug.getinfo(2,"Sn")
                 if names.what == "Lua" then
-                    Infos[f] = debug.getinfo(2,"urt")
-                    Counters[f] = 1
-                    Names[f] = names
-                    get_parameter_types(f)
+                    push(infos.func)
+                    --Infos[f] = debug.getinfo(2,"urt")
+                    Counters[infos.func] = 1
+                    Names[infos.func] = names
                 end
-            else    -- function already called 
-                update_counter(f)
-                add_parameter_type(f)   -- try to add new types to old ones
+            else    -- Function already inspected and its a call event
+                push(infos.func)
+                update_counter(infos.func)
             end
         else    -- return event
-            if(Returns[f] == nil) then  -- first time returned
-                ReturnInfos[f] = debug.getinfo(2,"urt")
-                get_return_types(f)
-            else    -- function already returned before
-                add_return_types(f)
-            end
+            pop()
+            --Infos[f] = debug.getinfo(2,"urt")
         end
+        Inspect(event, infos)
     end
+    -- TODO: Transfer value obtention logic from debug.getlocal to Inspect module
+    -- WARNING: Counters table is messed up now, Inspect module knows how to increment call count (due to event == "call")
+    --          but Report module requires Hook and not Inspect
+    --          event is only useful to assign the correct table (returnType or parameterType), but
+    --          it's very debatable wether event is necessary on Inspect or not because ntransfer and ftransfer
+    --          facilitates a lot to iterate over 
+    
+
+
+    --     local infos
+    --     if(Counters[f] == nil) then  -- Function never inspected
+    --         infos = debug.getinfo(2,"Snurt")
+    --         if infos.what == "Lua" then
+    --             push(infos)
+    --         end
+    --     else    -- Function already inspected
+    --         infos = pop()
+    --     end
+    --     Inspect(f,event,infos.ntransfer,infos.ftransfer)
+    -- end
+
+    -- if(Ignores[f] ~= true) then
+    --     --print("name",debug.getinfo(2,"Sn").name,"event", event)
+    --     if (event == "call") then -- call event
+    --         if(Counters[f] == nil) then -- first time function is called
+    --             local names = debug.getinfo(2,"Sn")
+    --             if names.what == "Lua" then
+    --                 Infos[f] = debug.getinfo(2,"urt")
+    --                 Counters[f] = 1
+    --                 Names[f] = names
+    --                 get_parameter_types(f)
+    --             end
+    --         else    -- function already called 
+    --             update_counter(f)
+    --             add_parameter_type(f)   -- try to add new types to old ones
+    --         end
+    --     else    -- return event
+    --         if(Returns[f] == nil) then  -- first time returned
+    --             ReturnInfos[f] = debug.getinfo(2,"urt")
+    --             get_return_types(f)
+    --         else    -- function already returned before
+    --             add_return_types(f)
+    --         end
+    --     end
+    -- end
 end
 
-function ResolveFunctionTypes()
-    print("Resolving function types...")
-    for k,v in pairs(FunctionTypes) do
-        print(k,v)
-    end
-end
 ---------------------------- NOTES --------------------------------
 -- if the function isvararg, the value of nparams from getlocal  is always 0
 -- the value of nparams is always the number of parameters defined in the functions declaration,
