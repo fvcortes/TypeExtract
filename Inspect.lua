@@ -61,19 +61,21 @@ end
 local function add_return_types(f)
 end
 
-function Inspect(event, infos)
+function Update(func, functionType)
+end
+function Inspect(event, func, infos)
     if(event == "call") then
-        if(Functions[infos.func] == nil) then -- first call
-            get_parameter_types(infos.func)
+        if(Functions[func] == nil) then -- first call
+            get_parameter_types(func)
         else    -- already called
-            add_parameter_type(infos.func)   -- try to add new types to old ones
+            add_parameter_type(func)   -- try to add new types to old ones
 
         end
     else    -- return event
-        if(Functions[infos.func].returnType == nil) then  -- First time returning
-            get_return_types(infos.func)
+        if(Functions[func].returnType == nil) then  -- First time returning
+            get_return_types(func)
         else
-            add_return_types(infos.func)
+            add_return_types(func)
         end
     end
     

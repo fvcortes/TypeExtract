@@ -25,26 +25,37 @@ local function update_counter(f)
 end
 
 function Hook (event)
-    local infos = debug.getinfo(2,"furt").func
-    if(Ignores[infos.func] ~= true) then
+    local finfos = debug.getinfo(2,"ft")
+    local f = finfos.func
+    if(Ignores[f] ~= true) then
+        --local infos = debug.getinfo(2,"ur")
+        local functionType = Inspect(event, f, debug.getinfo(2,"ur"))
         if (event == "call") then
-            if(Counters[infos.func] == nil) then  -- Function never inspected
+            if(Counters[f] == nil) then  -- Function never inspected
                 local names = debug.getinfo(2,"Sn")
                 if names.what == "Lua" then
-                    push(infos.func)
-                    --Infos[f] = debug.getinfo(2,"urt")
-                    Counters[infos.func] = 1
-                    Names[infos.func] = names
+                    push(finfos)
+                    Counters[f] = 1
+                    Names[f] = names
                 end
             else    -- Function already inspected and its a call event
-                push(infos.func)
-                update_counter(infos.func)
+                push(finfos)
+                update_counter(f)
             end
         else    -- return event
-            pop()
-            --Infos[f] = debug.getinfo(2,"urt")
+            local finfos = pop()
+            while finfos.istailcall do
+                finfos = pop()
+                Update(finfos.func, functionType)
+            end
+            -- REMINDER
+            --[[
+                while p.istailcall do
+                    p = pop()
+                    updateResult(p.func, info.ftransfer, info.ntransfer)
+                end
+            ]]
         end
-        Inspect(event, infos)
     end
     -- TODO: Transfer value obtention logic from debug.getlocal to Inspect module
     -- WARNING: Counters table is messed up now, Inspect module knows how to increment call count (due to event == "call")
