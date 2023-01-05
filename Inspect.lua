@@ -4,6 +4,15 @@
 -------------------------------------------------------------------
 require "Type"
 Functions = {}
+Stack = {}
+
+local function push(info)
+    table.insert(Stack, info)
+end
+
+local function pop()
+    return table.remove(Stack)
+end
 
 local function get_parameter_types(f)
     local upvalues = Infos[f]
@@ -61,22 +70,44 @@ end
 local function add_return_types(f)
 end
 
-function Update(func, functionType)
-end
-function Inspect(event, func, infos)
-    if(event == "call") then
-        if(Functions[func] == nil) then -- first call
-            get_parameter_types(func)
-        else    -- already called
-            add_parameter_type(func)   -- try to add new types to old ones
+local function inspect_parameters(tf)
+    push(ft)
 
-        end
+end
+
+local function inspect_results()
+    local transfer_infos = pop()
+    -- inspect ...
+    -- .
+    -- .
+    -- .
+
+
+    while (transfer_infos.istailcall) do
+        transfer_infos = pop()
+        -- update func type
+    end
+end
+
+function Inspect(event)
+    if(event == "call") then
+        inspect_parameters(debug.getinfo(2,"ftur"))
+
+        -- if(Functions[func] == nil) then -- first call
+        --     get_parameter_types(func)
+        -- else    -- already called
+        --     add_parameter_type(func)   -- try to add new types to old ones
+
+        -- end
     else    -- return event
-        if(Functions[func].returnType == nil) then  -- First time returning
-            get_return_types(func)
-        else
-            add_return_types(func)
-        end
+        local p = pop()
+        inspect_results()
+
+        -- if(Functions[func].returnType == nil) then  -- First time returning
+        --     get_return_types(func)
+        -- else
+        --     add_return_types(func)
+        -- end
     end
     
 end

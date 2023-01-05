@@ -25,8 +25,27 @@ local function update_counter(f)
 end
 
 function Hook (event)
-    local finfos = debug.getinfo(2,"ft")
-    local f = finfos.func
+    local f = debug.getinfo(2,"f").func
+    if (Ignores[f] == true) then
+        return
+    else
+        if(Counters[f] == nil) then
+            local names = debug.getinfo(2,"Sn")
+            if (names.what ~= "Lua") then
+                Ignores[f] = true
+                return
+            else
+                Counters[f] = 1
+                Names[f] = names
+            end
+        else
+            if(event == "call") then
+                update_counter(f)
+            end
+        end
+        Inspect(event)
+    end
+    ----------------------------------------------------------
     if(Ignores[f] ~= true) then
         --local infos = debug.getinfo(2,"ur")
         local functionType = Inspect(event, f, debug.getinfo(2,"ur"))
@@ -37,13 +56,15 @@ function Hook (event)
                     push(finfos)
                     Counters[f] = 1
                     Names[f] = names
+                else
+                    return
                 end
             else    -- Function already inspected and its a call event
                 push(finfos)
                 update_counter(f)
             end
         else    -- return event
-            local finfos = pop()
+            finfos = pop()
             while finfos.istailcall do
                 finfos = pop()
                 Update(finfos.func, functionType)
