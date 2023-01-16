@@ -70,28 +70,43 @@ end
 local function add_return_types(f)
 end
 
-local function inspect_parameters(tf)
-    push(ft)
+local function inspect_parameters(info)
+    push(info)
+    local f = info.func
+    
 
 end
 
 local function inspect_results()
-    local transfer_infos = pop()
+    local info = pop()
     -- inspect ...
     -- .
     -- .
     -- .
 
 
-    while (transfer_infos.istailcall) do
-        transfer_infos = pop()
+    while (info.istailcall) do
+        info = pop()
         -- update func type
     end
 end
 
 function Inspect(event)
+
+    -- IDEA: pack parameter values in a table and call Type on it
+
     if(event == "call") then
-        inspect_parameters(debug.getinfo(2,"ftur"))
+        local info = debug.getinfo(2,"ftur")
+
+
+
+        -- local f = info.func
+        -- local parameterType = inspect_parameters(info)
+        -- if(Functions[f] ==  nil) then
+        --     Functions[f] = {tag = "function", parameterType = inspect_parameters(info)}
+        -- else
+        --     Functions[f].parameterType = inspect_parameters(info)
+        -- end
 
         -- if(Functions[func] == nil) then -- first call
         --     get_parameter_types(func)
@@ -100,7 +115,6 @@ function Inspect(event)
 
         -- end
     else    -- return event
-        local p = pop()
         inspect_results()
 
         -- if(Functions[func].returnType == nil) then  -- First time returning

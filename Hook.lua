@@ -40,7 +40,7 @@ function Hook (event)
             end
         else
             if(event == "call") then
-                update_counter(f)
+                Counters[f] = Counters[f] + 1
             end
         end
         Inspect(event)
@@ -48,7 +48,7 @@ function Hook (event)
     ----------------------------------------------------------
     if(Ignores[f] ~= true) then
         --local infos = debug.getinfo(2,"ur")
-        local functionType = Inspect(event, f, debug.getinfo(2,"ur"))
+        local functionType = Inspect(event)
         if (event == "call") then
             if(Counters[f] == nil) then  -- Function never inspected
                 local names = debug.getinfo(2,"Sn")
@@ -84,9 +84,8 @@ function Hook (event)
     --          event is only useful to assign the correct table (returnType or parameterType), but
     --          it's very debatable wether event is necessary on Inspect or not because ntransfer and ftransfer
     --          facilitates a lot to iterate over 
+
     
-
-
     --     local infos
     --     if(Counters[f] == nil) then  -- Function never inspected
     --         infos = debug.getinfo(2,"Snurt")
