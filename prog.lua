@@ -30,3 +30,4 @@ hello('a', {}, 2)
 
 foo(math.sin)
 foo(math.cos)
+

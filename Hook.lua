@@ -4,25 +4,10 @@
 -------------------------------------------------------------------
 require "Type"
 require "Inspect"
-Stack = {}
 Counters = {}
 Names = {}
-Parameters = {}
-Returns = {}
 Ignores = {}
 --TODO: Treat varargs from getlocal
-
-local function push(info)
-    table.insert(Stack, info)
-end
-
-local function pop()
-    return table.remove(Stack)
-end
-
-local function update_counter(f)
-    Counters[f] = Counters[f] + 1
-end
 
 function Hook (event)
     local f = debug.getinfo(2,"f").func
@@ -46,38 +31,38 @@ function Hook (event)
         Inspect(event)
     end
     ----------------------------------------------------------
-    if(Ignores[f] ~= true) then
-        --local infos = debug.getinfo(2,"ur")
-        local functionType = Inspect(event)
-        if (event == "call") then
-            if(Counters[f] == nil) then  -- Function never inspected
-                local names = debug.getinfo(2,"Sn")
-                if names.what == "Lua" then
-                    push(finfos)
-                    Counters[f] = 1
-                    Names[f] = names
-                else
-                    return
-                end
-            else    -- Function already inspected and its a call event
-                push(finfos)
-                update_counter(f)
-            end
-        else    -- return event
-            finfos = pop()
-            while finfos.istailcall do
-                finfos = pop()
-                Update(finfos.func, functionType)
-            end
-            -- REMINDER
-            --[[
-                while p.istailcall do
-                    p = pop()
-                    updateResult(p.func, info.ftransfer, info.ntransfer)
-                end
-            ]]
-        end
-    end
+    -- if(Ignores[f] ~= true) then
+    --     --local infos = debug.getinfo(2,"ur")
+    --     local functionType = Inspect(event)
+    --     if (event == "call") then
+    --         if(Counters[f] == nil) then  -- Function never inspected
+    --             local names = debug.getinfo(2,"Sn")
+    --             if names.what == "Lua" then
+    --                 push(finfos)
+    --                 Counters[f] = 1
+    --                 Names[f] = names
+    --             else
+    --                 return
+    --             end
+    --         else    -- Function already inspected and its a call event
+    --             push(finfos)
+    --             update_counter(f)
+    --         end
+    --     else    -- return event
+    --         finfos = pop()
+    --         while finfos.istailcall do
+    --             finfos = pop()
+    --             Update(finfos.func, functionType)
+    --         end
+    --         -- REMINDER
+    --         --[[
+    --             while p.istailcall do
+    --                 p = pop()
+    --                 updateResult(p.func, info.ftransfer, info.ntransfer)
+    --             end
+    --         ]]
+    --     end
+    -- end
     -- TODO: Transfer value obtention logic from debug.getlocal to Inspect module
     -- WARNING: Counters table is messed up now, Inspect module knows how to increment call count (due to event == "call")
     --          but Report module requires Hook and not Inspect

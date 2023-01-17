@@ -144,6 +144,18 @@ function Add(t1, t2)
     --print(t1.tag, t2.tag)
     --dumptable(t1)
     --dumptable(t2)
+    if(t1 == nil and t2 == nil) then 
+        return {tag = "nil"}
+    else
+        if (t1 == nil) then
+            return t2
+        else
+            if (t2 == nil) then
+                return t1
+            end
+        end
+    end
+
     if(is_compatible(t1, t2)) then
         local tag = t1.tag
         if(is_primitive(t1)) then

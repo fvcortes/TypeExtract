@@ -44,7 +44,7 @@ local function get_return_types(f)
                 --print("Getting types for the first time...")
                 --print("nparams",upvalues.nparams)
                 for i=upvalues.ftransfer,(upvalues.ftransfer + upvalues.ntransfer) - 1 do         -- iterate over parameters
-                    local n, v = debug.getlocal(3,i)
+                    local n, v = debug.getlocal(4,i)
                     table.insert(returns, {name = n, type = Type(v)})
                 end
                 Returns[f] = returns
@@ -58,7 +58,7 @@ local function add_parameter_type(f)
     local parameters = Parameters[f]
     if (parameters ~= nil) then     -- function already called with parameters before
         for i=1,Infos[f].nparams do             -- iterate over parameters
-            local _, v = debug.getlocal(3,i)
+            local _, v = debug.getlocal(4,i)
             --print("Adding parameters type...")
             parameters[i].type = Add(parameters[i].type, Type(v))
             --print("New parameter type ->")
@@ -67,61 +67,41 @@ local function add_parameter_type(f)
     end
 end
 
-local function add_return_types(f)
-end
-
-local function inspect_parameters(info)
-    push(info)
-    local f = info.func
-    
-
-end
-
-local function inspect_results()
-    local info = pop()
-    -- inspect ...
-    -- .
-    -- .
-    -- .
-
-
-    while (info.istailcall) do
-        info = pop()
-        -- update func type
+local function update_parameter_type(type)
+    local ft = debug.getinfo(3,"ft")
+    push(ft)
+    if (Functions[ft.func] == nil) then
+        Functions[ft.func] = {tag = "function", parameterType = type}
+    else
+        Functions[ft.func].parameterType = Add(Functions[ft.func].parameterType, type)
     end
+end
+
+local function update_result_type(type)
+    local ft = pop()
+    Functions[ft.func].returnType = Add(Functions[ft.func].returnType, type)
+    while ft.istailcall do
+        ft = pop()
+        Functions[ft.func].returnType = Add(Functions[ft.func].returnType, type)
+    end
+end
+
+local function get_transfered_values()
+    local v = {}
+    local r = debug.getinfo(4, "r")
+    for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
+        local name, value = debug.getlocal(4,i)
+        table.insert(v, {[name] = value})
+    end
+    return v
 end
 
 function Inspect(event)
-
-    -- IDEA: pack parameter values in a table and call Type on it
-
+    -- IDEA: pack parameter/return values in a table and call Type on it
+    local transfered_type = Type(get_transfered_values())
     if(event == "call") then
-        local info = debug.getinfo(2,"ftur")
-
-
-
-        -- local f = info.func
-        -- local parameterType = inspect_parameters(info)
-        -- if(Functions[f] ==  nil) then
-        --     Functions[f] = {tag = "function", parameterType = inspect_parameters(info)}
-        -- else
-        --     Functions[f].parameterType = inspect_parameters(info)
-        -- end
-
-        -- if(Functions[func] == nil) then -- first call
-        --     get_parameter_types(func)
-        -- else    -- already called
-        --     add_parameter_type(func)   -- try to add new types to old ones
-
-        -- end
+        update_parameter_type(transfered_type)
     else    -- return event
-        inspect_results()
-
-        -- if(Functions[func].returnType == nil) then  -- First time returning
-        --     get_return_types(func)
-        -- else
-        --     add_return_types(func)
-        -- end
+        update_result_type(transfered_type)
     end
-    
 end

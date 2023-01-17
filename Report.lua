@@ -3,7 +3,7 @@
 -- Generates a readable report                         -
 -------------------------------------------------------------------
 require "Hook"
-local function_type_names = {}
+local function_type_name = {}
 local get_type_name
 
 local function get_record_type_name(rt)
@@ -29,6 +29,7 @@ local function get_function_type_name(ft)
     ft[firstKey] = true
     return string.format("{%s}", entries)
 end
+
 get_type_name = function(t)
     if(t.tag == "array") then
         return "{"..get_type_name(t.arrayType).."}"
@@ -72,22 +73,21 @@ end
 
 local function get_function_type_name(params, returns)
     if (params ~= nil) then
-        return string.format("(%s)->(%s)", get_parameter_type_name(params), get_return_type_name(returns))
+        return string.format("(%s)->(%s)", get_type_name(params), get_type_name(returns))
     end
 end
 -- Finds a suitable name for the function
 local function get_name (func)
     local n = Names[func]
-    local p = Parameters[func]
-    local r = Returns[func]
+    local f = Functions[func]
     if n.what == "C" then
         return n.name
     end
     local lc = string.format("[%s]:%d", n.short_src, n.linedefined)
     if n.what ~= "main" and n.namewhat ~= "" then
-        if (p ~= nil) then
-            function_type_names[func] = get_function_type_name(p,r)
-            return string.format("%s\t%s\t%s", lc, n.name, function_type_names[func])
+        if (f.parameterType ~= nil) then
+            function_type_name[func] = get_function_type_name(f.parameterType, f.returnType)
+            return string.format("%s\t%s\t%s", lc, n.name, function_type_name[func])
         end
         return string.format("%s\t%s()", lc, n.name)
     else
