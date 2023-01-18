@@ -14,6 +14,7 @@ local type_compatibility =
         array = {array = true},
         record = {record = true},
         unknown = {},
+        ["nil"] = {["nil"] = true},
         ["function"] = {["function"] = true}
     }
 local primitive =
@@ -45,16 +46,26 @@ local function list_keys(a,b)
 end
 
 local function map_table(tb,f)
+    print(">Type:map_table")
+
     local result = {}
-    for k,v in pairs(tb) do
-        result[k] = f(v)
+    for i = 1,#tb do
+        print(">Type:map_table - f(tb[i]) = " .. tostring(f(tb[i])))
+
+        result[i] = f(tb[i])
     end
     return result
 end
 
 local function fold_table(tb,f)
+    print(">Type:fold_table")
+
     local result = tb[1]
+    print(">Type:fold_table - tb[1]: " .. tostring(tb[1]))
+
     for i = 2, #tb do
+        print(">Type:fold_table - f(result, tb[i]) = " .. tostring(f(result, tb[i])))
+        
         result = f(result, tb[i])
     end
     return result
@@ -75,16 +86,18 @@ local function get_table_tag(tb)
 end
 
 local function get_tag(value)
-    local tag = type(value)
-    if (tag == "number") then
+    print(">Type:get_tag")
+    print(">Type:get_tag - value: " .. tostring(value))
+    local t = type(value)
+    if (t == "number") then
         return math.type(value)
     else
-        if (tag == "table") then
+        if (t == "table") then
             return get_table_tag(value)
-        else
-            return tag
         end
     end
+    print(">Type:get_tag - tag: " .. t)
+    return t
 end
 
 local function is_compatible(t1, t2)
@@ -140,11 +153,9 @@ local function add_function_type(f1,f2)
 end
 
 function Add(t1, t2)
-    --print("Adding types...")
-    --print(t1.tag, t2.tag)
-    --dumptable(t1)
-    --dumptable(t2)
-    if(t1 == nil and t2 == nil) then 
+    print(">Type:Add")
+    print(">Type:Add - t1: " .. tostring(t1) .. " - t2: " .. tostring(t2))
+    if(t1 == nil and t2 == nil) then
         return {tag = "nil"}
     else
         if (t1 == nil) then
@@ -181,6 +192,12 @@ function Add(t1, t2)
 end
 
 local function get_array_type(array)
+    print(">Type:get_array_type")
+    local mapped = map_table(array,Type)
+    print(">Type:get_array_type -  dumping mapped table")
+    dumptable(mapped)
+    print(">Type:get_array_type -  dumping mapped[1]")
+    dumptable(mapped[1])
     return fold_table(map_table(array, Type), Add)
 end
 
@@ -197,11 +214,18 @@ local function get_function_type(func)
 end
 
 function Type(value)
+    print(">Type:Type")
+
     local tag = get_tag(value)
+    print(">Type:Type - tag: " .. tag)
+
     local result = {tag = tag}
     if (tag == "array") then 
+        print(">Type:Type -  dumping value")
+        dumptable(value)
         local at = get_array_type(value)
-        --dumptable(at)
+        print(">Type:Type -  dumping array type")
+        dumptable(at)
         result.arrayType = get_array_type(value)
     else
         if(tag == "record") then

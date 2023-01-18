@@ -95,14 +95,22 @@ local function get_transfered_values(event)
     print(">Inspect:get_transfered_values")
     local v = {}
     local r = debug.getinfo(4, "r")
+    print(">Inspect:get_transfered_values - event: " .. event)
+    print(">Inspect:get_transfered_values - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
     for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
         local name, value = debug.getlocal(4,i)
         if(event == "call") then
+            print(">Inspect:get_transfered_values - -> [" .. name .. "]" )
             table.insert(v, {[name] = value})
         else
             table.insert(v, {[i] = value})
         end
     end
+    print(">Inspect:get_transfered_values - dumping transfered_values:" )
+    dumptable(v)
+    print(">Inspect:get_transfered_values - dumping v[1]:" )
+    dumptable(v[1])
+
     return v
 end
 

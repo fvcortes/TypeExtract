@@ -51,6 +51,9 @@ get_type_name = function(t, function_print)
 
     if(t.tag == "array") then
         if(function_print) then
+            if(t.arrayType.tag == "empty") then
+                return ""
+            end
             return get_type_name(t.arrayType, function_print)
         end
         return "{"..get_type_name(t.arrayType).."}"
@@ -93,7 +96,7 @@ local function get_return_type_name(returns)
 end
 
 local function get_function_type_name(params, returns)
-    print(">Report:get_function_type_name")
+    print(">Report:get_function_type_name (redefined)")
 
     if (params ~= nil) then
         return string.format("(%s)->(%s)", get_type_name(params, true), get_type_name(returns, true))
