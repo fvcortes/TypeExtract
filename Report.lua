@@ -6,19 +6,35 @@ require "Hook"
 local function_type_name = {}
 local get_type_name
 
-local function get_record_type_name(rt)
+local function get_record_type_name(rt, function_print)
+    print(">Report:get_record_type_name")
+
     local entries = ""
     local firstLabel, firstEntry = next(rt)
-    entries = entries..firstLabel..":"..get_type_name(firstEntry)
+    if(function_print) then
+        entries = entries..get_type_name(firstEntry)
+    else
+        entries = entries..firstLabel..":".. get_type_name(firstEntry)
+    end
     rt[firstLabel] = nil
     for k,v in pairs(rt) do
-        entries = entries..", "..k..":"..get_type_name(v)
+        if (function_print) then
+            entries = entries.." -> ".. get_type_name(v)
+        else
+            entries = entries..", "..k..":".. get_type_name(v)
+        end
+        
     end
     rt[firstLabel] = firstEntry
+    if (function_print) then
+        return string.format("%s", entries)
+    end
     return string.format("{%s}", entries)
 end
 
 local function get_function_type_name(ft)
+    print(">Report:get_function_type_name")
+
     local entries = ""
     local firstKey, _ = next(ft)
     entries = entries..tostring(firstKey)
@@ -30,12 +46,17 @@ local function get_function_type_name(ft)
     return string.format("{%s}", entries)
 end
 
-get_type_name = function(t)
+get_type_name = function(t, function_print)
+    print(">Report:get_type_name")
+
     if(t.tag == "array") then
+        if(function_print) then
+            return get_type_name(t.arrayType, function_print)
+        end
         return "{"..get_type_name(t.arrayType).."}"
     else
         if(t.tag == "record") then
-            return get_record_type_name(t.recordType)
+            return get_record_type_name(t.recordType, function_print)
         else
             if(t.tag == "function") then
                 return get_function_type_name(t.functionType)
@@ -72,14 +93,21 @@ local function get_return_type_name(returns)
 end
 
 local function get_function_type_name(params, returns)
+    print(">Report:get_function_type_name")
+
     if (params ~= nil) then
-        return string.format("(%s)->(%s)", get_type_name(params), get_type_name(returns))
+        return string.format("(%s)->(%s)", get_type_name(params, true), get_type_name(returns, true))
     end
 end
 -- Finds a suitable name for the function
 local function get_name (func)
+    print(">Report:get_name")
     local n = Names[func]
     local f = Functions[func]
+    -- print(">Report:get_name - dumping Functions")
+    -- dumptable(Functions)
+    -- print(">Report:get_name - dumping Functions[" .. tostring(func) .. "]")
+    -- dumptable(f)
     if n.what == "C" then
         return n.name
     end
@@ -95,8 +123,10 @@ local function get_name (func)
     end
 end
 
-function Show()
+function Report()
+    print(">Report:Report")
     for func, count in pairs (Counters) do
+        --print(">Report:Report - func: " .. tostring(func))
         print(get_name(func), count)
     end
 end

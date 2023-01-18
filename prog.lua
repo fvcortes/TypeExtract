@@ -1,10 +1,10 @@
-local b = 1
+
 local function hello(a,b,c)
     return a,b
 end
 
-local function foo(a)
-    return a
+local function foo(a,b)
+    return a,b
 end
 
 local function hey()
@@ -24,10 +24,10 @@ end
 --hello("", 2.0, 3)
 --hello(1,2,3)
 --hello(1,'b', "")
-hello('a', {}, 2)
+--hello('a', {}, 2)
 --hey()
 --hey()
-
-foo(math.sin)
-foo(math.cos)
+foo({x = 1, record = {a=1,b=2}}, {y = 2})
+--foo(math.sin)
+--foo(math.cos)
 

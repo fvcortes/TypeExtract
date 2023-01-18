@@ -7,10 +7,13 @@ Functions = {}
 Stack = {}
 
 local function push(info)
+    print(">Inspect:push")
+
     table.insert(Stack, info)
 end
 
 local function pop()
+    print(">Inspect:pop")
     return table.remove(Stack)
 end
 
@@ -68,7 +71,8 @@ local function add_parameter_type(f)
 end
 
 local function update_parameter_type(type)
-    local ft = debug.getinfo(3,"ft")
+    print(">Inspect:update_parameter_type")
+    local ft = debug.getinfo(4,"ft")
     push(ft)
     if (Functions[ft.func] == nil) then
         Functions[ft.func] = {tag = "function", parameterType = type}
@@ -78,6 +82,7 @@ local function update_parameter_type(type)
 end
 
 local function update_result_type(type)
+    print(">Inspect:update_result_type")
     local ft = pop()
     Functions[ft.func].returnType = Add(Functions[ft.func].returnType, type)
     while ft.istailcall do
@@ -86,19 +91,25 @@ local function update_result_type(type)
     end
 end
 
-local function get_transfered_values()
+local function get_transfered_values(event)
+    print(">Inspect:get_transfered_values")
     local v = {}
     local r = debug.getinfo(4, "r")
     for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
         local name, value = debug.getlocal(4,i)
-        table.insert(v, {[name] = value})
+        if(event == "call") then
+            table.insert(v, {[name] = value})
+        else
+            table.insert(v, {[i] = value})
+        end
     end
     return v
 end
 
 function Inspect(event)
+    print(">Inspect:Inspect")
     -- IDEA: pack parameter/return values in a table and call Type on it
-    local transfered_type = Type(get_transfered_values())
+    local transfered_type = Type(get_transfered_values(event))
     if(event == "call") then
         update_parameter_type(transfered_type)
     else    -- return event

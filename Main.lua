@@ -10,4 +10,4 @@ assert(file, "input file expected")
 local _f = assert(loadfile(file), "could not load file")
 table.remove(arg,1)         -- adjust arg table to match programs parameters
 Run(_f)
-Show()
+Report()
