@@ -51,9 +51,6 @@ get_type_name = function(t, function_print)
 
     if(t.tag == "array") then
         if(function_print) then
-            if(t.arrayType.tag == "empty") then
-                return ""
-            end
             return get_type_name(t.arrayType, function_print)
         end
         return "{"..get_type_name(t.arrayType).."}"
@@ -64,6 +61,11 @@ get_type_name = function(t, function_print)
             if(t.tag == "function") then
                 return get_function_type_name(t.functionType)
             else
+                -- if(function_print) then
+                --     if(t.tag == "nil") then
+                --         return ""
+                --     end
+                -- end
                 return t.tag
             end
         end

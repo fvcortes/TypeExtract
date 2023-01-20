@@ -1,0 +1,91 @@
+>Hook:Hook
+>Hook:Hook - func:function: 0x5618ece50470 ignored
+>Hook:Hook
+>Hook:Hook - func:function: 0x5618ee535ef0 ignored
+>Hook:Hook
+>Hook:Hook - name:foo
+>Hook:Hook - Counters = 1
+>Inspect:Inspect
+>Inspect:get_transfered_values
+>Inspect:get_transfered_values - event: call
+>Inspect:get_transfered_values - ftransfer: 1 - ntransfer: 1
+>Inspect:get_transfered_values - -> [a]
+>Inspect:get_transfered_values - dumping transfered_values:
+------------ table ------------
+1	table: 0x5618ee53bad0
+-------------------------------
+>Inspect:get_transfered_values - dumping v[1]:
+------------ table ------------
+a	table: 0x5618ee53b7e0
+-------------------------------
+>Type:Type
+>Type:get_tag
+>Type:get_table_tag
+>Type:get_table_tag - array
+>Type:Type - tag: array
+>Type:get_array_type
+>Type:map_table
+>Type:Type
+>Type:get_tag
+>Type:get_table_tag
+>Type:get_table_tag - record
+>Type:Type - tag: record
+>Type:Type
+>Type:get_tag
+>Type:get_table_tag
+>Type:get_table_tag - empty
+>Type:Type - tag: empty
+>Type:fold_table
+>Inspect:update_parameter_type
+>Inspect:push
+>Hook:Hook
+>Inspect:Inspect
+>Inspect:get_transfered_values
+>Inspect:get_transfered_values - event: return
+>Inspect:get_transfered_values - ftransfer: 1 - ntransfer: 1
+>Inspect:get_transfered_values - dumping transfered_values:
+------------ table ------------
+1	table: 0x5618ee52aa70
+-------------------------------
+>Inspect:get_transfered_values - dumping v[1]:
+------------ table ------------
+1	table: 0x5618ee53b7e0
+-------------------------------
+>Type:Type
+>Type:get_tag
+>Type:get_table_tag
+>Type:get_table_tag - array
+>Type:Type - tag: array
+>Type:get_array_type
+>Type:map_table
+>Type:Type
+>Type:get_tag
+>Type:get_table_tag
+>Type:get_table_tag - record
+>Type:Type - tag: record
+>Type:Type
+>Type:get_tag
+>Type:get_table_tag
+>Type:get_table_tag - empty
+>Type:Type - tag: empty
+>Type:fold_table
+>Inspect:update_result_type
+>Inspect:pop
+>Type:Add
+>Type:Add - t1: nil - t2: table: 0x5618ee52ab10
+>Hook:Hook
+>Hook:Hook - func:function: 0x5618ee535ef0 ignored
+>Hook:Hook
+>Hook:Hook - func:function: 0x5618ece50470 ignored
+>Report:Report
+>Report:get_name
+>Report:get_function_type_name (redefined)
+>Report:get_type_name
+>Report:get_type_name
+>Report:get_record_type_name
+>Report:get_type_name
+>Report:get_type_name
+>Report:get_type_name
+>Report:get_record_type_name
+>Report:get_type_name
+[prog.lua]:19	foo	()->()	1

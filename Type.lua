@@ -14,6 +14,7 @@ local type_compatibility =
         array = {array = true},
         record = {record = true},
         unknown = {},
+        empty = {empty = true},
         ["nil"] = {["nil"] = true},
         ["function"] = {["function"] = true}
     }
@@ -50,7 +51,7 @@ local function map_table(tb,f)
 
     local result = {}
     for i = 1,#tb do
-        print(">Type:map_table - f(tb[i]) = " .. tostring(f(tb[i])))
+        -- print(">Type:map_table - f(tb[i]) = " .. tostring(f(tb[i])))
 
         result[i] = f(tb[i])
     end
@@ -61,10 +62,10 @@ local function fold_table(tb,f)
     print(">Type:fold_table")
 
     local result = tb[1]
-    print(">Type:fold_table - tb[1]: " .. tostring(tb[1]))
+    --print(">Type:fold_table - tb[1]: " .. tostring(tb[1]))
 
     for i = 2, #tb do
-        print(">Type:fold_table - f(result, tb[i]) = " .. tostring(f(result, tb[i])))
+        -- print(">Type:fold_table - f(result, tb[i]) = " .. tostring(f(result, tb[i])))
         
         result = f(result, tb[i])
     end
@@ -72,14 +73,18 @@ local function fold_table(tb,f)
 end
 
 local function get_table_tag(tb)
+    print(">Type:get_table_tag")
     local tablesize = #tb
     if (tablesize > 0) then
+        print(">Type:get_table_tag - array")
         return "array"
     else                        
         local i,v = next(tb)
         if (i == nil) then
+            print(">Type:get_table_tag - empty")
             return "empty"
         else
+            print(">Type:get_table_tag - record")
             return "record"
         end
     end
@@ -87,7 +92,7 @@ end
 
 local function get_tag(value)
     print(">Type:get_tag")
-    print(">Type:get_tag - value: " .. tostring(value))
+    -- print(">Type:get_tag - value: " .. tostring(value))
     local t = type(value)
     if (t == "number") then
         return math.type(value)
@@ -96,7 +101,7 @@ local function get_tag(value)
             return get_table_tag(value)
         end
     end
-    print(">Type:get_tag - tag: " .. t)
+    -- print(">Type:get_tag - tag: " .. t)
     return t
 end
 
@@ -193,11 +198,11 @@ end
 
 local function get_array_type(array)
     print(">Type:get_array_type")
-    local mapped = map_table(array,Type)
-    print(">Type:get_array_type -  dumping mapped table")
-    dumptable(mapped)
-    print(">Type:get_array_type -  dumping mapped[1]")
-    dumptable(mapped[1])
+    -- local mapped = map_table(array,Type)
+    -- print(">Type:get_array_type -  dumping mapped table")
+    -- dumptable(mapped)
+    -- print(">Type:get_array_type -  dumping mapped[1]")
+    -- dumptable(mapped[1])
     return fold_table(map_table(array, Type), Add)
 end
 
@@ -221,11 +226,11 @@ function Type(value)
 
     local result = {tag = tag}
     if (tag == "array") then 
-        print(">Type:Type -  dumping value")
-        dumptable(value)
-        local at = get_array_type(value)
-        print(">Type:Type -  dumping array type")
-        dumptable(at)
+        --print(">Type:Type -  dumping value")
+        --dumptable(value)
+        --local at = get_array_type(value)
+        --print(">Type:Type -  dumping array type")
+        --dumptable(at)
         result.arrayType = get_array_type(value)
     else
         if(tag == "record") then

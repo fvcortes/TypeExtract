@@ -16,8 +16,8 @@ local function fooError3(a,b)
     return a
 end
 
-local function foo(a,b)
-    return a
+local function foo()
+    return 
 end
 
 
@@ -55,4 +55,4 @@ end
 --foo(math.cos)
 
 
-foo(1,2)
+foo()

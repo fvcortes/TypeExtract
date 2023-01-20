@@ -97,13 +97,17 @@ local function get_transfered_values(event)
     local r = debug.getinfo(4, "r")
     print(">Inspect:get_transfered_values - event: " .. event)
     print(">Inspect:get_transfered_values - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
+    if(r.ntransfer == 0) then
+        return nil
+    end
     for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
         local name, value = debug.getlocal(4,i)
+        -- when transfered value is nil, tranfered array gets messedup
         if(event == "call") then
             print(">Inspect:get_transfered_values - -> [" .. name .. "]" )
             table.insert(v, {[name] = value})
         else
-            table.insert(v, {[i] = value})
+            table.insert(v, {[tostring(i)] = value})
         end
     end
     print(">Inspect:get_transfered_values - dumping transfered_values:" )
