@@ -5,7 +5,6 @@
 require "Hook"
 local function_type_name = {}
 local get_type_name
-
 local function get_record_type_name(rt, function_print)
     print(">Report:get_record_type_name")
 

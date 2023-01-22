@@ -1,5 +1,5 @@
 
-local function hello(a,b,c)
+local function hello(a,b)
     return a,b
 end
 
@@ -32,9 +32,9 @@ end
 --hello({1,2,3,4,3},1,1)
 
 
---hello({a = {1,2,3}, b = true, c = {x = {1,2,3.0}}},1,1)
+--hello({a = {1,2,3}, b = true, c = {x = {1,2,3.0}}},true,1)
 --hello(1.0)
---hello(1, 2)
+hello({1}, true)
 --hello(1.0)
 --hello("", 2.0, 3)
 --hello(1,2,3)
@@ -55,4 +55,4 @@ end
 --foo(math.cos)
 
 
-foo()
+--foo()
