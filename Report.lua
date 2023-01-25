@@ -96,11 +96,25 @@ local function get_return_type_name(returns)
     end
 end
 
+local function get_transfered_type_name(t)
+    print(">Report:get_transfered_type_name")
+    for k,v in pairs(t) do print(k,v) end
+    if(t ~= nil) then
+        local r = ""
+        local firstreturn = t[1];
+        r = r..get_type_name(firstreturn, true)
+        for i=2,#t do
+            r = r.."->"..get_type_name(t[i], true)
+        end
+        return r
+    end
+end
+
 local function get_function_type_name(params, returns)
     print(">Report:get_function_type_name (redefined)")
 
     if (params ~= nil) then
-        return string.format("(%s)->(%s)", get_type_name(params, true), get_type_name(returns, true))
+        return string.format("(%s)->(%s)", get_transfered_type_name(params), get_transfered_type_name(returns))
     end
 end
 -- Finds a suitable name for the function

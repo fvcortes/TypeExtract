@@ -69,24 +69,47 @@ end
 --     end
 -- end
 
-local function update_parameter_type(type)
+local function update_parameter_type(types)
     print(">Inspect:update_parameter_type")
     local ft = debug.getinfo(4,"ft")
     push(ft)
-    if (Functions[ft.func] == nil) then
-        Functions[ft.func] = {tag = "function", parameterType = type}
+    if (Functions[ft.func] == nil) then     -- first call
+        Functions[ft.func] = {tag = "function", parameterType = types}
     else
-        Functions[ft.func].parameterType = type + Functions[ft.func].parameterType
+        for k,v in pairs(types) do
+            Functions[ft.func].parameterType[k] = v + Functions[ft.func].parameterType[k]
+        end
+--        Functions[ft.func].parameterType = type + Functions[ft.func].parameterType
     end
 end
 
-local function update_result_type(type)
+local function update_result_type(types)
     print(">Inspect:update_result_type")
     local ft = pop()
-    Functions[ft.func].returnType = type + Functions[ft.func].returnType
+    if(Functions[ft.func].returnType == nil) then   -- first return
+        Functions[ft.func].returnType = types
+    else
+        for k,v in pairs (types) do
+            Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
+        end
+    end
+
+    -- for k,v in pairs (types) do
+    --     Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
+    -- end
+    --Functions[ft.func].returnType = type + Functions[ft.func].returnType
     while ft.istailcall do
         ft = pop()
-        Functions[ft.func].returnType = type + Functions[ft.func].returnType
+        if(Functions[ft.func].returnType == nil) then   -- first return
+            Functions[ft.func].returnType = types
+        else
+            for k,v in pairs (types) do
+                Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
+            end
+        end
+        -- for k,v in pairs (types) do
+        --     Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
+        -- end
     end
 end
 local function iter_transfer(r, event)
@@ -96,23 +119,25 @@ local function iter_transfer(r, event)
             local name, value = debug.getlocal(4,i)
             -- when transfered value is nil, tranfered array gets messedup
             print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
-            table.insert(t, {[name] = value})
+            local value_type = T.new(value)
+            table.insert(t, T.new_record({[name] = value_type}))
         end
     else
         for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
             local name, value = debug.getlocal(4,i)
             -- when transfered value is nil, tranfered array gets messedup
-            print(">Inspect:get_transfered_values - -> [" .. name .. "]" )
-            table.insert(t, {[tostring(i)] = value})
+            print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
+            local value_type = T.new(value)
+            table.insert(t, T.new_record({[tostring(i)] = value_type}))
         end
     end
     return t
 end
-local function get_transfered_values(event)
-    print(">Inspect:get_transfered_values")
+local function get_transfered_types(event)
+    print(">Inspect:get_transfered_types")
     local r = debug.getinfo(4, "r")
-    print(">Inspect:get_transfered_values - event: " .. event)
-    print(">Inspect:get_transfered_values - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
+    print(">Inspect:get_transfered_types - event: " .. event)
+    print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
     if(r.ntransfer == 0) then
         return nil
     end
@@ -122,10 +147,10 @@ end
 function Inspect(event)
     print(">Inspect:Inspect")
     -- pack parameter/return values in a table and call Type on it
-    local transfered_type = T.new(get_transfered_values(event))
+    local transfered_types = get_transfered_types(event)
     if(event == "call") then
-        update_parameter_type(transfered_type)
+        update_parameter_type(transfered_types)
     else    -- return event
-        update_result_type(transfered_type)
+        update_result_type(transfered_types)
     end
 end

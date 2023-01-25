@@ -240,6 +240,9 @@ function Type:__tostring()
     end
 end
 
+function Type:insert_record(label, record)
+    self.recordType[label] = record
+end
 function Type:__add(t)
     --print(">Type:Type:__add")
     --print(">Type:Add - self: " .. tostring(t1) .. " - t2: " .. tostring(t2))
@@ -281,6 +284,19 @@ function Type:__add(t)
         return {tag = "unknown"}
     end
 end
+
+function Type.new_record(record_type)
+    local t = {tag = "record", recordType = record_type}
+    setmetatable(t,Type)
+    return t
+end
+
+function Type.new_array(array_of_types)
+    local t = {tag = "array", arrayType = fold_table(array_of_types, Type.__add)}
+    setmetatable(t,Type)
+    return t
+end
+
 
 function Type.new(value)
     --print(">Type:Type.new")
