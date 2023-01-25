@@ -34,7 +34,7 @@ end
 
 --hello({a = {1,2,3}, b = true, c = {x = {1,2,3.0}}},true,1)
 --hello(1.0)
-hello({1}, true)
+hello({1}, nil)
 --hello(1.0)
 --hello("", 2.0, 3)
 --hello(1,2,3)
