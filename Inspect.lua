@@ -114,13 +114,16 @@ local function update_result_type(types)
 end
 local function iter_transfer(r, event)
     local t = {}
+    if (r.ntransfer == 0) then
+        table.insert(t, T.new(nil))
+        return  t
+    end
     if(event == "call") then
         for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
             local name, value = debug.getlocal(4,i)
             -- when transfered value is nil, tranfered array gets messedup
             print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
-            local value_type = T.new(value)
-            table.insert(t, T.new_record({[name] = value_type}))
+            table.insert(t, T.new(value))
         end
     else
         for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
@@ -128,7 +131,7 @@ local function iter_transfer(r, event)
             -- when transfered value is nil, tranfered array gets messedup
             print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
             local value_type = T.new(value)
-            table.insert(t, T.new_record({[tostring(i)] = value_type}))
+            table.insert(t, T.new(value))
         end
     end
     return t

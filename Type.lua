@@ -189,38 +189,17 @@ local function get_function_type(func)
     return {[func] = true}
 end
 
-local function get_record_type_name(rt, function_print)
+local function get_record_type_name(rt)
     --print(">Report:get_record_type_name")
 
     local entries = ""
     local label, type = next(rt.recordType)
-    if(function_print) then
-        entries = entries.. tostring(type)
-    else
-        entries = entries..label..":"..tostring(type)
-    end
+    entries = entries..label..":"..tostring(type)
     rt.recordType[label] = nil
     for k,v in pairs(rt.recordType) do
         entries = entries..", "..k..":"..tostring(v)
     end
     rt.recordType[label] = type
-    if (function_print) then
-        return string.format("%s", entries)
-    end
-    return string.format("{%s}", entries)
-end
-
-local function get_function_type_name(ft)
-    --print(">Report:get_function_type_name")
-
-    local entries = ""
-    local firstKey, _ = next(ft.functionType)
-    entries = entries..tostring(firstKey)
-    ft[firstKey] = nil
-    for k,_ in pairs(ft) do
-        entries = entries.."; "..tostring(k)
-    end
-    ft[firstKey] = true
     return string.format("{%s}", entries)
 end
 
@@ -231,11 +210,7 @@ function Type:__tostring()
         if(self.tag == "record") then
             return get_record_type_name(self)
         else
-            if(self.tag == "function") then
-                return get_function_type_name(self)
-            else
-                return self.tag
-            end
+            return self.tag
         end
     end
 end

@@ -55,4 +55,4 @@ hello({1}, nil)
 --foo(math.cos)
 
 
---foo()
+foo()
