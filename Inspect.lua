@@ -2,17 +2,17 @@
 -- File: Hook.lua                                                 -
 -- Inspect local types; export function information               -
 -------------------------------------------------------------------
-local T = require "Type"
+local Type = require "Type"
 Functions = {}
 Stack = {}
 
 local function push(info)
-    print(">Inspect:push")
+    --print(">Inspect:push")
     table.insert(Stack, info)
 end
 
 local function pop()
-    print(">Inspect:pop")
+    --print(">Inspect:pop")
     return table.remove(Stack)
 end
 
@@ -70,7 +70,7 @@ end
 -- end
 
 local function update_parameter_type(types)
-    print(">Inspect:update_parameter_type")
+    --print(">Inspect:update_parameter_type")
     local ft = debug.getinfo(4,"ft")
     push(ft)
     if (Functions[ft.func] == nil) then     -- first call
@@ -84,7 +84,7 @@ local function update_parameter_type(types)
 end
 
 local function update_result_type(types)
-    print(">Inspect:update_result_type")
+    --print(">Inspect:update_result_type")
     local ft = pop()
     if(Functions[ft.func].returnType == nil) then   -- first return
         Functions[ft.func].returnType = types
@@ -115,32 +115,32 @@ end
 local function iter_transfer(r, event)
     local t = {}
     if (r.ntransfer == 0) then
-        table.insert(t, T.new(nil))
+        table.insert(t, Type.new(nil))
         return  t
     end
     if(event == "call") then
         for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
             local name, value = debug.getlocal(4,i)
             -- when transfered value is nil, tranfered array gets messedup
-            print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
-            table.insert(t, T.new(value))
+            --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
+            table.insert(t, Type.new(value))
         end
     else
         for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
             local name, value = debug.getlocal(4,i)
             -- when transfered value is nil, tranfered array gets messedup
-            print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
-            local value_type = T.new(value)
-            table.insert(t, T.new(value))
+            --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
+            local value_type = Type.new(value)
+            table.insert(t, Type.new(value))
         end
     end
     return t
 end
 local function get_transfered_types(event)
-    print(">Inspect:get_transfered_types")
+    --print(">Inspect:get_transfered_types")
     local r = debug.getinfo(4, "r")
-    print(">Inspect:get_transfered_types - event: " .. event)
-    print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
+    --print(">Inspect:get_transfered_types - event: " .. event)
+    --print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
     if(r.ntransfer == 0) then
         return nil
     end
@@ -148,7 +148,7 @@ local function get_transfered_types(event)
 end
 
 function Inspect(event)
-    print(">Inspect:Inspect")
+    --print(">Inspect:Inspect")
     -- pack parameter/return values in a table and call Type on it
     local transfered_types = get_transfered_types(event)
     if(event == "call") then

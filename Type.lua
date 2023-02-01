@@ -48,11 +48,11 @@ local function list_keys(a,b)
 end
 
 local function map_table(tb,f)
-    --print(">Type:map_table")
+    ----print(">Type:map_table")
 
     local result = {}
     for i = 1,#tb do
-        -- print(">Type:map_table - f(tb[i]) = " .. tostring(f(tb[i])))
+        -- --print(">Type:map_table - f(tb[i]) = " .. tostring(f(tb[i])))
 
         result[i] = f(tb[i])
     end
@@ -60,13 +60,13 @@ local function map_table(tb,f)
 end
 
 local function fold_table(tb,f)
-    --print(">Type:fold_table")
+    ----print(">Type:fold_table")
 
     local result = tb[1]
-    --print(">Type:fold_table - tb[1]: " .. tostring(tb[1]))
+    ----print(">Type:fold_table - tb[1]: " .. tostring(tb[1]))
 
     for i = 2, #tb do
-        -- print(">Type:fold_table - f(result, tb[i]) = " .. tostring(f(result, tb[i])))
+        -- --print(">Type:fold_table - f(result, tb[i]) = " .. tostring(f(result, tb[i])))
         
         result = f(result, tb[i])
     end
@@ -74,26 +74,26 @@ local function fold_table(tb,f)
 end
 
 local function get_table_tag(tb)
-    --print(">Type:get_table_tag")
+    ----print(">Type:get_table_tag")
     local tablesize = #tb
     if (tablesize > 0) then
-        --print(">Type:get_table_tag - array")
+        ----print(">Type:get_table_tag - array")
         return "array"
     else                        
         local i,v = next(tb)
         if (i == nil) then
-            --print(">Type:get_table_tag - empty")
+            ----print(">Type:get_table_tag - empty")
             return "empty"
         else
-            --print(">Type:get_table_tag - record")
+            ----print(">Type:get_table_tag - record")
             return "record"
         end
     end
 end
 
 local function get_tag(value)
-    --print(">Type:get_tag")
-    -- print(">Type:get_tag - value: " .. tostring(value))
+    ----print(">Type:get_tag")
+    -- --print(">Type:get_tag - value: " .. tostring(value))
     local t = type(value)
     if (t == "number") then
         return math.type(value)
@@ -102,7 +102,7 @@ local function get_tag(value)
             return get_table_tag(value)
         end
     end
-    -- print(">Type:get_tag - tag: " .. t)
+    -- --print(">Type:get_tag - tag: " .. t)
     return t
 end
 
@@ -165,14 +165,14 @@ local function add_function_type(f1,f2)
 end
 
 local function get_array_type(array)
-    --print(">Type:get_array_type")
+    ----print(">Type:get_array_type")
     -- local mapped = map_table(array,Type)
-    -- print(">Type:get_array_type -  dumping mapped table")
+    -- --print(">Type:get_array_type -  dumping mapped table")
     -- dumptable(mapped)
-    -- print(">Type:get_array_type -  dumping mapped[1]")
+    -- --print(">Type:get_array_type -  dumping mapped[1]")
     -- dumptable(mapped[1])
     local ret = fold_table(map_table(array, Type.new), Type.__add)
-    --print(">Type:get_array_type - ret: ")
+    ----print(">Type:get_array_type - ret: ")
     --print(ret)
     return fold_table(map_table(array, Type.new), Type.__add)
 end
@@ -190,7 +190,7 @@ local function get_function_type(func)
 end
 
 local function get_record_type_name(rt)
-    --print(">Report:get_record_type_name")
+    ----print(">Report:get_record_type_name")
 
     local entries = ""
     local label, type = next(rt.recordType)
@@ -218,9 +218,43 @@ end
 function Type:insert_record(label, record)
     self.recordType[label] = record
 end
+
+function Type:__eq(t)
+    --print(">Type:__eq")
+
+    if(t == nil) then
+        return false
+    end
+    if(self.tag ~= t.tag) then
+        return false
+    end
+    if(t.tag == "array") then
+        -- print(">Type:__eq - comparing array types")
+        -- print(">Type:__eq - self.arrayType: "..self.arrayType.. " t.arrayType: ".. t.arrayType)
+        return self.arrayType == t.arrayType
+    else
+        if (t.tag == "record") then
+            --print(">Type:__eq - comparing record types")
+            for k,_ in pairs(list_keys(self.recordType,t.recordType)) do
+                --print(">Type:__eq = k: ".. k)
+                if (self.recordType[k] ~= t.recordType[k]) then
+                    return false
+                end
+            end
+            return true
+        else
+            if(t.tag == "function") then
+                return false
+            else
+                return true
+            end
+        end
+    end
+end
+
 function Type:__add(t)
-    --print(">Type:Type:__add")
-    --print(">Type:Add - self: " .. tostring(t1) .. " - t2: " .. tostring(t2))
+    ----print(">Type:Type:__add")
+    ----print(">Type:Add - self: " .. tostring(t1) .. " - t2: " .. tostring(t2))
     -- if(t1 == nil and t2 == nil) then
     --     return {tag = "nil"}
     -- else
@@ -256,7 +290,8 @@ function Type:__add(t)
             end
         end
     else
-        return {tag = "unknown"}
+        self.tag = "unknown"
+        return self
     end
 end
 
@@ -274,17 +309,17 @@ end
 
 
 function Type.new(value)
-    --print(">Type:Type.new")
+    ----print(">Type:Type.new")
 
     local tag = get_tag(value)
     --(">Type:Type.new - tag: " .. tag)
 
     local t = {tag = tag}
     if (tag == "array") then
-        --print(">Type:Type -  dumping value")
+        ----print(">Type:Type -  dumping value")
         --dumptable(value)
         --local at = get_array_type(value)
-        --print(">Type:Type -  dumping array type")
+        ----print(">Type:Type -  dumping array type")
         --dumptable(at)
         t.arrayType = get_array_type(value)
     else
