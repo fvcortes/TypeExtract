@@ -186,7 +186,7 @@ local function get_record_type(record)
 end
 
 local function get_function_type(func)
-    return {[func] = true}
+    return Type.new {[func] = true}
 end
 
 local function get_record_type_name(rt)
@@ -194,7 +194,7 @@ local function get_record_type_name(rt)
 
     local entries = ""
     local label, type = next(rt.recordType)
-    entries = entries..label..":"..tostring(type)
+    entries = entries..tostring(label)..":"..tostring(type)
     rt.recordType[label] = nil
     for k,v in pairs(rt.recordType) do
         entries = entries..", "..k..":"..tostring(v)
@@ -295,6 +295,9 @@ function Type:__add(t)
     end
 end
 
+function Type.set_type(type)
+    setmetatable(type,Type)
+end
 function Type.new_record(record_type)
     local t = {tag = "record", recordType = record_type}
     setmetatable(t,Type)
