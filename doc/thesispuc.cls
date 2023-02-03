@@ -1458,33 +1458,33 @@ parcial para obtenção de grau da disciplina \puc@coverprogram.}
   \pdfbookmark[0]{\contentsname}{anchor:contents}%
   \singlespacing\rmfamily%
   \tableofcontents%
-  \ifthenelse{\equal{\puc@tablesmode}{fig} \or \equal{\puc@tablesmode}{figtab}}%
-  {%
-    \clearpage%
-    \markboth{\listfigurename}{\listfigurename}%
-    \thispagestyle{empty}%
-    \phantomsection
-    \listoffigures%
-    %\cftaddtitleline{toc}{section}{\listfigurename}{}%
-  }{}%
-  \ifthenelse{\equal{\puc@tablesmode}{tab} \or \equal{\puc@tablesmode}{figtab}}%
-  {%
-    \clearpage%
-    \markboth{\listtablename}{\listtablename}%
-    \phantomsection
-    \thispagestyle{empty}%
-    \listoftables%
-    %\cftaddtitleline{toc}{section}{\listtablename}{}%
-  }{}%
-  \ifthenelse{\equal{\puc@algorithmsmode}{use}}%
-  {%
-    \clearpage%
-    \markboth{\listalgorithmcfname}{\listalgorithmcfname}%
-    \thispagestyle{empty}%
-    \renewcommand\@dotsep{10000}
-    \listofalgorithms%
-    %\cftaddtitleline{toc}{section}{\listalgorithmcfname}{}%
-  }{}%
+  % \ifthenelse{\equal{\puc@tablesmode}{fig} \or \equal{\puc@tablesmode}{figtab}}%
+  % {%
+  %   \clearpage%
+  %   \markboth{\listfigurename}{\listfigurename}%
+  %   \thispagestyle{empty}%
+  %   \phantomsection
+  %   \listoffigures%
+  %   %\cftaddtitleline{toc}{section}{\listfigurename}{}%
+  % }{}%
+  % \ifthenelse{\equal{\puc@tablesmode}{tab} \or \equal{\puc@tablesmode}{figtab}}%
+  % {%
+  %   \clearpage%
+  %   \markboth{\listtablename}{\listtablename}%
+  %   \phantomsection
+  %   \thispagestyle{empty}%
+  %   \listoftables%
+  %   %\cftaddtitleline{toc}{section}{\listtablename}{}%
+  % }{}%
+  % \ifthenelse{\equal{\puc@algorithmsmode}{use}}%
+  % {%
+  %   \clearpage%
+  %   \markboth{\listalgorithmcfname}{\listalgorithmcfname}%
+  %   \thispagestyle{empty}%
+  %   \renewcommand\@dotsep{10000}
+  %   \listofalgorithms%
+  %   %\cftaddtitleline{toc}{section}{\listalgorithmcfname}{}%
+  % }{}%
   \ifthenelse{\equal{\puc@codesmode}{use}}%
   {%
     \clearpage%
@@ -1494,21 +1494,21 @@ parcial para obtenção de grau da disciplina \puc@coverprogram.}
     \lstlistoflistings%
     %\cftaddtitleline{toc}{section}{\lstlistlistingname}{}%
   }{}%
-  \ifthenelse{\equal{\puc@abreviationsmode}{use}}%
-  {%
-    \clearpage%
-    \thispagestyle{empty}%
-    \if@brazilianlanguage
-      \chapter*{\puc@abreviationstitle}%
-      \markboth{\puc@abreviationstitle}{\puc@abreviationstitle}%
-      %\cftaddtitleline{toc}{section}{\puc@abreviationstitle}{}%
-    \else
-      \chapter*{\puc@abreviationstitleuk}%
-      \markboth{\puc@abreviationstitleuk}{\puc@abreviationstitleuk}%
-      %\cftaddtitleline{toc}{section}{\puc@abreviationstitleuk}{}%
-    \fi
-    \input{0-abrevs}%
-  }{}%
+  % \ifthenelse{\equal{\puc@abreviationsmode}{use}}%
+  % {%
+  %   \clearpage%
+  %   \thispagestyle{empty}%
+  %   \if@brazilianlanguage
+  %     \chapter*{\puc@abreviationstitle}%
+  %     \markboth{\puc@abreviationstitle}{\puc@abreviationstitle}%
+  %     %\cftaddtitleline{toc}{section}{\puc@abreviationstitle}{}%
+  %   \else
+  %     \chapter*{\puc@abreviationstitleuk}%
+  %     \markboth{\puc@abreviationstitleuk}{\puc@abreviationstitleuk}%
+  %     %\cftaddtitleline{toc}{section}{\puc@abreviationstitleuk}{}%
+  %   \fi
+  %   \input{0-abrevs}%
+  % }{}%
 }
 
 
