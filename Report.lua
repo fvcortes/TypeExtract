@@ -1,12 +1,11 @@
 -------------------------------------------------------------------
 -- File: Report.lua                                               -
--- Generates a readable report                         -
+-- Generates a readable report                                    -
 -------------------------------------------------------------------
 require "Hook"
 local function_type_name = {}
 
 local function get_transfered_type_name(t)
-    --print(">Report:get_transfered_type_name")
     if(t ~= nil) then
         local r = ""
         local firstreturn = t[1];
@@ -19,8 +18,6 @@ local function get_transfered_type_name(t)
 end
 
 local function get_function_type_name(params, returns)
-    --print(">Report:get_function_type_name")
-
     if (params ~= nil) then
         return string.format("(%s)->(%s)", get_transfered_type_name(params), get_transfered_type_name(returns))
     end
@@ -28,7 +25,6 @@ end
 
 -- Finds a suitable name for the function
 local function get_name (func)
-    --print(">Report:get_name")
     local n = Names[func]
     local f = Functions[func]
     if n.what == "C" then
@@ -47,7 +43,6 @@ local function get_name (func)
 end
 
 function Report()
-    --print(">Report:Report")
     for func, count in pairs (Counters) do
         print(get_name(func), count)
     end
