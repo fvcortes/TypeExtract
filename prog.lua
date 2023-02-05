@@ -1,6 +1,11 @@
 
+local function foo()
+    return 1
+end
+
+
 local function hello(a,b)
-    return a,b
+    return foo()
 end
 
 local function fooError(a,b)
@@ -16,9 +21,6 @@ local function fooError3(a,b)
     return a
 end
 
-local function foo()
-    return 
-end
 
 
 local function hey()
@@ -54,5 +56,5 @@ hello({1}, nil)
 --foo(math.sin)
 --foo(math.cos)
 
-
+foo()
 foo()

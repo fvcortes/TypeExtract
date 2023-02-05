@@ -36,7 +36,7 @@ local function get_name (func)
             function_type_name[func] = get_function_type_name(f.parameterType, f.returnType)
             return string.format("%s\t%s\t%s", lc, n.name, function_type_name[func])
         end
-        return string.format("%s\t%s()", lc, n.name)
+        return string.format("%s\t%s", lc, n.name)
     else
         return lc
     end

@@ -70,8 +70,9 @@ end
 -- end
 
 local function update_parameter_type(types)
-    --print(">Inspect:update_parameter_type")
+    print(">Inspect:update_parameter_type")
     local ft = debug.getinfo(4,"ft")
+    print(">Inspect:update_parameter_type - istailcall: ", ft.istailcall)
     push(ft)
     if (Functions[ft.func] == nil) then     -- first call
         Functions[ft.func] = {tag = "function", parameterType = types}
@@ -118,31 +119,21 @@ local function iter_transfer(r, event)
         table.insert(t, Type.new(nil))
         return  t
     end
-    if(event == "call") then
-        for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
-            local name, value = debug.getlocal(4,i)
-            -- when transfered value is nil, tranfered array gets messedup
-            --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
-            table.insert(t, Type.new(value))
-        end
-    else
-        for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
-            local name, value = debug.getlocal(4,i)
-            -- when transfered value is nil, tranfered array gets messedup
-            --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
-            local value_type = Type.new(value)
-            table.insert(t, Type.new(value))
-        end
+    for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
+        local _, value = debug.getlocal(4,i)
+        -- when transfered value is nil, tranfered array gets messedup
+        --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
+        table.insert(t, Type.new(value))
     end
     return t
 end
 local function get_transfered_types(event)
     --print(">Inspect:get_transfered_types")
     local r = debug.getinfo(4, "r")
-    --print(">Inspect:get_transfered_types - event: " .. event)
-    --print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
+    print(">Inspect:get_transfered_types - event: " .. event)
+    print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
     if(r.ntransfer == 0) then
-        return nil
+        return {}
     end
     return iter_transfer(r,event)
 end
@@ -151,7 +142,7 @@ function Inspect(event)
     --print(">Inspect:Inspect")
     -- pack parameter/return values in a table and call Type on it
     local transfered_types = get_transfered_types(event)
-    if(event == "call") then
+    if(event == "call" or event == "tail call") then
         update_parameter_type(transfered_types)
     else    -- return event
         update_result_type(transfered_types)
