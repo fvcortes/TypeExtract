@@ -10,24 +10,25 @@ Ignores = {}
 --TODO: Treat varargs from getlocal
 
 function Hook (event)
-    print(">Hook:Hook")
+    --print(">Hook:Hook")
     local f = debug.getinfo(2,"f").func
-    print(">Hook:Hook - f: ", f)
+    --print(">Hook:Hook - f: ", f)
     if (Ignores[f] == true) then
-        -- print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
+        --print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
         return
     else
         if(Counters[f] == nil) then
+            --print(">Hook:Hook - Counters[".. tostring(f).."] is nil. First time calling")
             local names = debug.getinfo(2,"Sn")
-            print("Printing names")
-            for k,v in pairs(names) do print(k,v) end
+            --print(">Hook:Hook - Printing function names")
+            --dumptable(names)
             if (names.what ~= "Lua") then
                 --print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
                 Ignores[f] = true
                 return
             else
-                --print(">Hook:Hook - name:" .. names.name)
-                print(">Hook:Hook - Counters = 1")
+                --print(">Hook:Hook - initializing counter and names:" .. names.name)
+                --print(">Hook:Hook - Counters = 1")
                 Counters[f] = 1
                 Names[f] = names
             end
@@ -37,7 +38,7 @@ function Hook (event)
                 --print(">Hook:Hook - Counters: " .. Counters[f])
             end
         end
-        print("Inspecting function: ", Names[f].name)
+        --print("Inspecting function: ", Names[f].name)
         Inspect(event)
     end
     ----------------------------------------------------------

@@ -70,13 +70,17 @@ end
 -- end
 
 local function update_parameter_type(types)
-    print(">Inspect:update_parameter_type")
+    --print(">Inspect:update_parameter_type")
     local ft = debug.getinfo(4,"ft")
-    print(">Inspect:update_parameter_type - istailcall: ", ft.istailcall)
+    --print(">Inspect:update_parameter_type - istailcall: ", ft.istailcall)
     push(ft)
     if (Functions[ft.func] == nil) then     -- first call
+        --print(">Inspect:update_parameter_type - Functions[" .. tostring(ft.func) .. "] == nil (first call)")
+        --print(">Inspect:update_parameter_type - dumping parameter types")
+        --dumptable(types)
         Functions[ft.func] = {tag = "function", parameterType = types}
     else
+        --print(">Inspect:update_parameter_type - Functions[" .. tostring(ft.func) .. "] != nil (already called")
         for k,v in pairs(types) do
             Functions[ft.func].parameterType[k] = v + Functions[ft.func].parameterType[k]
         end
@@ -113,11 +117,15 @@ local function update_result_type(types)
         -- end
     end
 end
-local function iter_transfer(r, event)
+local function get_transfered_types(event)
+    --print(">Inspect:get_transfered_types")
+    local r = debug.getinfo(4, "r")
+    --print(">Inspect:get_transfered_types - event: " .. event)
+    --print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
     local t = {}
     if (r.ntransfer == 0) then
         table.insert(t, Type.new(nil))
-        return  t
+        return  {}
     end
     for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
         local _, value = debug.getlocal(4,i)
@@ -126,16 +134,6 @@ local function iter_transfer(r, event)
         table.insert(t, Type.new(value))
     end
     return t
-end
-local function get_transfered_types(event)
-    --print(">Inspect:get_transfered_types")
-    local r = debug.getinfo(4, "r")
-    print(">Inspect:get_transfered_types - event: " .. event)
-    print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
-    if(r.ntransfer == 0) then
-        return {}
-    end
-    return iter_transfer(r,event)
 end
 
 function Inspect(event)

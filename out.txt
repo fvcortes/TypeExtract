@@ -1,91 +1,106 @@
 >Hook:Hook
->Hook:Hook - func:function: 0x5618ece50470 ignored
+>Hook:Hook - f: 	function: 0x55800790f770
+>Hook:Hook - Counters[function: 0x55800790f770] is nil. First time calling
+>Hook:Hook - Printing function names
+------------ table ------------
+source	=[C]
+linedefined	-1
+namewhat	field
+lastlinedefined	-1
+name	sethook
+what	C
+short_src	[C]
+-------------------------------
+>Hook:Hook - func:function: 0x55800790f770 ignored
 >Hook:Hook
->Hook:Hook - func:function: 0x5618ee535ef0 ignored
+>Hook:Hook - f: 	function: 0x5580097ccac0
+>Hook:Hook - func:function: 0x5580097ccac0 ignored
 >Hook:Hook
->Hook:Hook - name:foo
+>Hook:Hook - f: 	function: 0x5580097cd7d0
+>Hook:Hook - Counters[function: 0x5580097cd7d0] is nil. First time calling
+>Hook:Hook - Printing function names
+------------ table ------------
+source	@prog.lua
+linedefined	2
+namewhat	local
+lastlinedefined	4
+name	foo
+what	Lua
+short_src	prog.lua
+-------------------------------
 >Hook:Hook - Counters = 1
->Inspect:Inspect
->Inspect:get_transfered_values
->Inspect:get_transfered_values - event: call
->Inspect:get_transfered_values - ftransfer: 1 - ntransfer: 1
->Inspect:get_transfered_values - -> [a]
->Inspect:get_transfered_values - dumping transfered_values:
------------- table ------------
-1	table: 0x5618ee53bad0
--------------------------------
->Inspect:get_transfered_values - dumping v[1]:
------------- table ------------
-a	table: 0x5618ee53b7e0
--------------------------------
->Type:Type
->Type:get_tag
->Type:get_table_tag
->Type:get_table_tag - array
->Type:Type - tag: array
->Type:get_array_type
->Type:map_table
->Type:Type
->Type:get_tag
->Type:get_table_tag
->Type:get_table_tag - record
->Type:Type - tag: record
->Type:Type
->Type:get_tag
->Type:get_table_tag
->Type:get_table_tag - empty
->Type:Type - tag: empty
->Type:fold_table
+Inspecting function: 	foo
+>Inspect:get_transfered_types - event: call
+>Inspect:get_transfered_types - ftransfer: 0 - ntransfer: 0
 >Inspect:update_parameter_type
->Inspect:push
->Hook:Hook
->Inspect:Inspect
->Inspect:get_transfered_values
->Inspect:get_transfered_values - event: return
->Inspect:get_transfered_values - ftransfer: 1 - ntransfer: 1
->Inspect:get_transfered_values - dumping transfered_values:
+>Inspect:update_parameter_type - istailcall: 	false
+>Inspect:update_parameter_type - Functions[function: 0x5580097cd7d0] == nil (first call)
+>Inspect:update_parameter_type - dumping parameter types
 ------------ table ------------
-1	table: 0x5618ee52aa70
 -------------------------------
->Inspect:get_transfered_values - dumping v[1]:
+>Hook:Hook
+>Hook:Hook - f: 	function: 0x5580097cd7d0
+Inspecting function: 	foo
+>Inspect:get_transfered_types - event: return
+>Inspect:get_transfered_types - ftransfer: 1 - ntransfer: 1
+>Hook:Hook
+>Hook:Hook - f: 	function: 0x5580097cd800
+>Hook:Hook - Counters[function: 0x5580097cd800] is nil. First time calling
+>Hook:Hook - Printing function names
 ------------ table ------------
-1	table: 0x5618ee53b7e0
+source	@prog.lua
+linedefined	7
+namewhat	local
+lastlinedefined	9
+name	hello
+what	Lua
+short_src	prog.lua
 -------------------------------
->Type:Type
->Type:get_tag
->Type:get_table_tag
->Type:get_table_tag - array
->Type:Type - tag: array
->Type:get_array_type
->Type:map_table
->Type:Type
->Type:get_tag
->Type:get_table_tag
->Type:get_table_tag - record
->Type:Type - tag: record
->Type:Type
->Type:get_tag
->Type:get_table_tag
->Type:get_table_tag - empty
->Type:Type - tag: empty
->Type:fold_table
->Inspect:update_result_type
->Inspect:pop
->Type:Add
->Type:Add - t1: nil - t2: table: 0x5618ee52ab10
+>Hook:Hook - Counters = 1
+Inspecting function: 	hello
+>Inspect:get_transfered_types - event: call
+>Inspect:get_transfered_types - ftransfer: 1 - ntransfer: 2
+>Inspect:update_parameter_type
+>Inspect:update_parameter_type - istailcall: 	false
+>Inspect:update_parameter_type - Functions[function: 0x5580097cd800] == nil (first call)
+>Inspect:update_parameter_type - dumping parameter types
+------------ table ------------
+1	{integer}
+2	nil
+-------------------------------
 >Hook:Hook
->Hook:Hook - func:function: 0x5618ee535ef0 ignored
+>Hook:Hook - f: 	function: 0x5580097cd7d0
+Inspecting function: 	foo
+>Inspect:get_transfered_types - event: tail call
+>Inspect:get_transfered_types - ftransfer: 0 - ntransfer: 0
+>Inspect:update_parameter_type
+>Inspect:update_parameter_type - istailcall: 	true
+>Inspect:update_parameter_type - Functions[function: 0x5580097cd7d0] != nil (already called
 >Hook:Hook
->Hook:Hook - func:function: 0x5618ece50470 ignored
->Report:Report
->Report:get_name
->Report:get_function_type_name (redefined)
->Report:get_type_name
->Report:get_type_name
->Report:get_record_type_name
->Report:get_type_name
->Report:get_type_name
->Report:get_type_name
->Report:get_record_type_name
->Report:get_type_name
-[prog.lua]:19	foo	()->()	1
+>Hook:Hook - f: 	function: 0x5580097cd7d0
+Inspecting function: 	foo
+>Inspect:get_transfered_types - event: return
+>Inspect:get_transfered_types - ftransfer: 1 - ntransfer: 1
+>Hook:Hook
+>Hook:Hook - f: 	function: 0x5580097ccac0
+>Hook:Hook - func:function: 0x5580097ccac0 ignored
+>Hook:Hook
+>Hook:Hook - f: 	function: 0x55800790f770
+>Hook:Hook - func:function: 0x55800790f770 ignored
+> Report:Report - dumping Counters...
+------------ table ------------
+function: 0x5580097cd7d0	2
+function: 0x5580097cd800	1
+-------------------------------
+> Report:Report - dumping Function...
+------------ table ------------
+function: 0x5580097cd7d0	table: 0x5580097d2800
+function: 0x5580097cd800	table: 0x5580097c2970
+-------------------------------
+> Report:Report - dumping Names...
+------------ table ------------
+function: 0x5580097cd7d0	table: 0x5580097d2470
+function: 0x5580097cd800	table: 0x5580097d2bf0
+-------------------------------
+[prog.lua]:2	foo	(nil)->(integer)	2
+[prog.lua]:7	hello	({integer}->nil)->(integer)	1

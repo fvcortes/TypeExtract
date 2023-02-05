@@ -27,22 +27,45 @@ end
 local function get_name (func)
     local n = Names[func]
     local f = Functions[func]
+    --print("> Report:get_name - Dumping Functions["..tostring(func).."]")
+    --local k,v = next(f.parameterType)
+    --print(v.tag)
+    --print("is parameterTypes empty??", "next(f.parameterType)", next(f.parameterType))
+    --print("f.parameterType[1]",f.parameterType[1])
+    --print("parameterTypes")
+    --dumptable(f.parameterType)
+    
+    --print("returnType")
+    --dumptable(f.returnType)
     if n.what == "C" then
         return n.name
     end
     local lc = string.format("[%s]:%d", n.short_src, n.linedefined)
-    if n.what ~= "main" and n.namewhat ~= "" then
+    local ln = string.format("%s", true and n.name or "()")
+    if n.what ~= "main" then
+        --print("> Reporting function with names...")
+        --dumptable(n)
+        --print("> Report:get_name - n.what ~= \"main\" and n.namewhat ~= \"\"")
+        --print("> Report:get_name - f.parameterType: ["..tostring(f.parameterType).. "]")
+        --print("> Report:get_name - f.returnType: ["..tostring(f.returnType).. "]")
         if (f.parameterType ~= nil) then
             function_type_name[func] = get_function_type_name(f.parameterType, f.returnType)
-            return string.format("%s\t%s\t%s", lc, n.name, function_type_name[func])
+            return string.format("%s\t%s\t%s", lc, ln, function_type_name[func])
         end
-        return string.format("%s\t%s", lc, n.name)
+        return string.format("%s\t%s", lc, ln)
     else
         return lc
     end
 end
 
 function Report()
+    --print("> Report:Report - dumping Counters...")
+    --dumptable(Counters)
+    --print("> Report:Report - dumping Function...")
+    --dumptable(Functions)
+    --print("> Report:Report - dumping Names...")
+    --dumptable(Names)
+    --for k,v in pairs(Names) do dumptable(v) end
     for func, count in pairs (Counters) do
         print(get_name(func), count)
     end
