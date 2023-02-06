@@ -2,10 +2,23 @@
 
 \chapter{Development}
 \label{cha:Development}
-
+The type extractor depends heavily on Lua debug library. Our tool make use of the hook mechanism and introspective functions to inspect names and values inside a program execution. The project development is inspired by a rudimentary profiler, specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}.
 \paragraph*{Type}
+Categorize values into conventional types, boolean, integer, string, float, number, array, record, function
+An array type is defined by the union of the types of each element in the array. This result can be achieved by a map+reduce strategy, creating a new type for each element in the array and merging them by our union function.
 \subparagraph*{Compatibility Matrix}
 \subparagraph*{Relational Metamethods}
+\paragraph*{Inspect}
+\subparagraph*{Accessing local variables}
+iterating getlocal for each transfered value
+\paragraph*{Hook}
+\subparagraph*{Basic profiler}
+getinfo at hook events
+\paragraph*{Report}
+\subparagraph*{String formating}
+\paragraph*{Test}
+\subparagraph*{Type comparison by an equality function}
+
 
 % Table example. Table~\ref{tab:res} shows results. 
 

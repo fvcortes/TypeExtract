@@ -2,9 +2,9 @@
 
 \chapter{Introduction}
 There are several reasons that motivate the adoption of statically typed languages. Maintaining large systems built with dynamic types can become a nightmare due to the lack of type information \cite{takikawa_is_2016}. Typed languages has also generally better performance because compile-time type information helps generating optimized machine code. However, programmers are frequently left empty-handed when inspecting dynamically typed code while having to re-write systems to a statically typed languaged if gradually typed languages are not an option.
-\paragraph*{}
+\par
 Inspired by the challenge of inspecting dynamically typed code, we built a type extractor for the Lua programming language. By inspecting a program's execution during runtime, it can generate a detailed report with the types being transfered between functions. We believe that the type extractor can help programmers understand the types in a program's execution, contributing for code documentation, debugging and optimization.
-\paragraph*{}
+\par
 The document is structured as follows. In Chapter~\ref{cha:Previous Work} we present previous work related to type systems in Lua. In Chapter~\ref{cha:Project Scope} we describe the software goal. Chapter~\ref{cha:Project Specification} explain the software modules and how they interact. In Chapter~\ref{cha:Development} it's shown the software key functions, the modules relationship and basic utilization. In Chapter~\ref{cha:Results} we present and discuss some results obtained by the type extractor with some Lua benchmarks. Finally on Chapter~\ref{cha:Final Considerations} we present our conclusion and future work.
 
 % \begin{figure}

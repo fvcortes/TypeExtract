@@ -1,10 +1,20 @@
 % -*- coding: utf-8; -*-
 \chapter{Project Specification}
 \label{cha:Project Specification}
+The objective of the type extractor is to generate a readable report for the user containing the types of parameter and return values of each function in a program's execution. With this objective in mind, we explored the reflection abilities of Lua through four main modules.
+\par
+A type function to categorize Lua values into specific types.
+An inspection function to access local variable values, specially parameter and return values and pass them to our type function
+A hook module to register our inspection function to be executed in each function call and return event.
+Finally, a report module to print all type information gathered through the inspection.
+
+First, we want to be able to categorize Lua values into specific types. The Type module is responsible for creating a type specification depending on the value passed.
+Second, an inspection module is responsible for accessing local variables, specially paramter and return values.
+Third, a hook module, responsible for registering
 
 \paragraph*{Modules}
 \begin{itemize}
-    \item Type - Element that represents a type
+    \item Type: Element that represents a type
     \item Inspect - Inspection of local upvalues
     \item Hook - Manages function hooks
     \item Report - Generates a friendly report
