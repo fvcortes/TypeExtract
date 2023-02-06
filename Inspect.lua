@@ -69,20 +69,23 @@ end
 --     end
 -- end
 
-local function update_parameter_type(types)
+local function update_parameter_type(types,infos)
     --print(">Inspect:update_parameter_type")
-    local ft = debug.getinfo(4,"ft")
+    --local ft = debug.getinfo(4,"ft")
     --print(">Inspect:update_parameter_type - istailcall: ", ft.istailcall)
-    push(ft)
-    if (Functions[ft.func] == nil) then     -- first call
-        --print(">Inspect:update_parameter_type - Functions[" .. tostring(ft.func) .. "] == nil (first call)")
-        --print(">Inspect:update_parameter_type - dumping parameter types")
-        --dumptable(types)
-        Functions[ft.func] = {tag = "function", parameterType = types}
+    push(infos)
+    --print(">Inspect:update_parameter_type - dumping parameter types")
+    --dumptable(types)
+    if (Functions[infos.func] == nil) then     -- first call
+        --print(">Inspect:update_parameter_type - Functions[" .. tostring(infos.func) .. "] == nil (first call)")
+        Functions[infos.func] = {tag = "function", parameterType = types}
     else
-        --print(">Inspect:update_parameter_type - Functions[" .. tostring(ft.func) .. "] != nil (already called")
-        for k,v in pairs(types) do
-            Functions[ft.func].parameterType[k] = v + Functions[ft.func].parameterType[k]
+        --print(">Inspect:update_parameter_type - Functions[" .. tostring(infos.func) .. "] != nil (already called)")
+        for k,v in ipairs(types) do
+            --print(">Inspect:update_parameter_type - summing " .. tostring(v).." + ".. tostring(Functions[infos.func].parameterType[k]))
+            --local sum = v + Functions[infos.func].parameterType[k]
+            --print(">Inspect:update_parameter_type - result sum:[" .. tostring(sum).."]")
+            Functions[infos.func].parameterType[k] = Functions[infos.func].parameterType[k] + v
         end
 --        Functions[ft.func].parameterType = type + Functions[ft.func].parameterType
     end
@@ -94,7 +97,7 @@ local function update_result_type(types)
     if(Functions[ft.func].returnType == nil) then   -- first return
         Functions[ft.func].returnType = types
     else
-        for k,v in pairs (types) do
+        for k,v in ipairs (types) do
             Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
         end
     end
@@ -108,7 +111,7 @@ local function update_result_type(types)
         if(Functions[ft.func].returnType == nil) then   -- first return
             Functions[ft.func].returnType = types
         else
-            for k,v in pairs (types) do
+            for k,v in ipairs (types) do
                 Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
             end
         end
@@ -117,31 +120,34 @@ local function update_result_type(types)
         -- end
     end
 end
-local function get_transfered_types(event)
+local function get_transfered_types(infos)
     --print(">Inspect:get_transfered_types")
-    local r = debug.getinfo(4, "r")
-    --print(">Inspect:get_transfered_types - event: " .. event)
-    --print(">Inspect:get_transfered_types - ftransfer: " .. r.ftransfer .. " - ntransfer: " .. r.ntransfer)
+    --local r = debug.getinfo(4, "r")
+    -- print(">Inspect:get_transfered_types - r.ftransfer: " .. r.ftransfer .. " - r.ntransfer: " .. r.ntransfer.." - infos.linedefined:["..infos.linedefined.."]")
+    --print(">Inspect:get_transfered_types - infos.ftransfer: " .. infos.ftransfer .. " - infos.ntransfer: " .. infos.ntransfer.." - infos.linedefined:["..infos.linedefined.."]")
     local t = {}
-    if (r.ntransfer == 0) then
+    if (infos.ntransfer == 0) then
         table.insert(t, Type.new(nil))
         return  {}
     end
-    for i=r.ftransfer,(r.ftransfer + r.ntransfer) - 1 do
+    for i=infos.ftransfer,(infos.ftransfer + infos.ntransfer) - 1 do
         local _, value = debug.getlocal(4,i)
         -- when transfered value is nil, tranfered array gets messedup
         --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
         table.insert(t, Type.new(value))
     end
+    -- print(">Inspect:Inspect - dumping transfered table")
+    -- dumptable(t)
     return t
 end
 
-function Inspect(event)
+function Inspect(event,infos)
     --print(">Inspect:Inspect")
     -- pack parameter/return values in a table and call Type on it
-    local transfered_types = get_transfered_types(event)
+    --local infos = debug.getinfo(3,"rt")
+    local transfered_types = get_transfered_types(infos)
     if(event == "call" or event == "tail call") then
-        update_parameter_type(transfered_types)
+        update_parameter_type(transfered_types,infos)
     else    -- return event
         update_result_type(transfered_types)
     end

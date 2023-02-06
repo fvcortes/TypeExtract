@@ -7,11 +7,13 @@ require "Inspect"
 Counters = {}
 Names = {}
 Ignores = {}
+Infos = {}
 --TODO: Treat varargs from getlocal
 
 function Hook (event)
-    --print(">Hook:Hook")
-    local f = debug.getinfo(2,"f").func
+    --print(">Hook:Hook - event:["..event.."]")
+    local infos = debug.getinfo(2,"Snfrt")
+    local f = infos.func
     --print(">Hook:Hook - f: ", f)
     if (Ignores[f] == true) then
         --print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
@@ -19,10 +21,10 @@ function Hook (event)
     else
         if(Counters[f] == nil) then
             --print(">Hook:Hook - Counters[".. tostring(f).."] is nil. First time calling")
-            local names = debug.getinfo(2,"Sn")
+            --infos = debug.getinfo(2,"Sn")
             --print(">Hook:Hook - Printing function names")
             --dumptable(names)
-            if (names.what ~= "Lua") then
+            if (infos.what ~= "Lua") then
                 --print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
                 Ignores[f] = true
                 return
@@ -30,7 +32,7 @@ function Hook (event)
                 --print(">Hook:Hook - initializing counter and names:" .. names.name)
                 --print(">Hook:Hook - Counters = 1")
                 Counters[f] = 1
-                Names[f] = names
+                Infos[f] = infos
             end
         else
             if(event == "call" or event == "tail call") then
@@ -39,15 +41,15 @@ function Hook (event)
             end
         end
         --print("Inspecting function: ", Names[f].name)
-        Inspect(event)
+        Inspect(event,infos)
     end
     ----------------------------------------------------------
     -- if(Ignores[f] ~= true) then
-    --     --local infos = debug.getinfo(2,"ur")
+    --     --local infos = debu g.getinfo(2,"ur")
     --     local functionType = Inspect(event)
     --     if (event == "call") then
     --         if(Counters[f] == nil) then  -- Function never inspected
-    --             local names = debug.getinfo(2,"Sn")
+    --             local names = debu g.getinfo(2,"Sn")
     --             if names.what == "Lua" then
     --                 push(finfos)
     --                 Counters[f] = 1
@@ -74,7 +76,7 @@ function Hook (event)
     --         ]]
     --     end
     -- end
-    -- TODO: Transfer value obtention logic from debug.getlocal to Inspect module
+    -- TODO: Transfuncue obtention logic from debu g.getlocal to Inspect module
     -- WARNING: Counters table is messed up now, Inspect module knows how to increment call count (due to event == "call")
     --          but Report module requires Hook and not Inspect
     --          event is only useful to assign the correct table (returnType or parameterType), but
@@ -84,7 +86,7 @@ function Hook (event)
     
     --     local infos
     --     if(Counters[f] == nil) then  -- Function never inspected
-    --         infos = debug.getinfo(2,"Snurt")
+    --         infos = debu g.getinfo(2,"Snurt")
     --         if infos.what == "Lua" then
     --             push(infos)
     --         end
@@ -95,12 +97,12 @@ function Hook (event)
     -- end
 
     -- if(Ignores[f] ~= true) then
-    --     --print("name",debug.getinfo(2,"Sn").name,"event", event)
+    --     --print("name",debu g.getinfo(2,"Sn").name,"event", event)
     --     if (event == "call") then -- call event
     --         if(Counters[f] == nil) then -- first time function is called
-    --             local names = debug.getinfo(2,"Sn")
+    --             local names = debu g.getinfo(2,"Sn")
     --             if names.what == "Lua" then
-    --                 Infos[f] = debug.getinfo(2,"urt")
+    --                 Infos[f] = debu g.getinfo(2,"urt")
     --                 Counters[f] = 1
     --                 Names[f] = names
     --                 get_parameter_types(f)
@@ -111,7 +113,7 @@ function Hook (event)
     --         end
     --     else    -- return event
     --         if(Returns[f] == nil) then  -- first time returned
-    --             ReturnInfos[f] = debug.getinfo(2,"urt")
+    --             ReturnInfos[f] = debu g.getinfo(2,"urt")
     --             get_return_types(f)
     --         else    -- function already returned before
     --             add_return_types(f)

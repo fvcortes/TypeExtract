@@ -7,26 +7,27 @@ local Type = {}
 
 local type_compatibility =
     {
-        number = { number = true, integer = true, float = true},
-        integer = {number = true, integer = true, float = true},
-        float = {number = true, integer = true, float = true},
-        string = {string = true},
-        boolean = {boolean = true},
-        array = {array = true},
-        record = {record = true},
+        number = { number = true, integer = true, float = true, ["nil"] = true},
+        integer = {number = true, integer = true, float = true, ["nil"] = true},
+        float = {number = true, integer = true, float = true, ["nil"] = true},
+        string = {string = true, ["nil"] = true},
+        boolean = {boolean = true, ["nil"] = true},
+        array = {array = true, ["nil"] = true},
+        record = {record = true, ["nil"] = true},
         unknown = {},
-        empty = {empty = true},
-        ["nil"] = {["nil"] = true},
+        empty = {empty = true, ["nil"] = true},
+        ["nil"] = {["nil"] = true, number = true, integer = true, float = true, string = true, boolean = true, array = true, record = true},
         ["function"] = {["function"] = true}
     }
 local primitive =
-    { 
+    {
         number = true,
         integer = true,
         float = true,
         string = true,
         boolean = true,
-        empty = true
+        empty = true,
+        ["nil"] = true
     }
 local number = 
     {
@@ -68,7 +69,7 @@ local function get_table_tag(tb)
     local tablesize = #tb
     if (tablesize > 0) then
         return "array"
-    else                        
+    else
         local i,v = next(tb)
         if (i == nil) then
             return "empty"
@@ -169,15 +170,20 @@ local function get_record_type_name(rt)
 end
 
 function Type:__tostring()
+    local result
     if(self.tag == "array") then
-        return "{".. tostring(self.arrayType) .."}"
+        result = "{".. tostring(self.arrayType) .."}"
     else
         if(self.tag == "record") then
-            return get_record_type_name(self)
+            result = get_record_type_name(self)
         else
-            return self.tag
+            result = self.tag
         end
     end
+    if (self.optional == true) then
+        result = result.."?"
+    end
+    return result
 end
 
 function Type:insert_record(label, record)
@@ -214,14 +220,26 @@ end
 function Type:__add(t)
     local result = {}
     if(t == nil) then
+        self.optional = true
         return self
     end
-
     if(is_compatible(self, t)) then
-        local tag = self.tag
-        if(is_primitive(t)) then
+        -- check if t1 or t2 are nil
+        if(self.tag == "nil" and t.tag == "nil") then
+            return self
+        end
+        if(self.tag == "nil") then
+            t.optional = true
+            return t
+        end
+        if(t.tag == "nil") then
+            self.optional = true
+            return self
+        end
+        if(is_primitive(self) and is_primitive(t)) then
             result = add_compatible_primitive_types(self,t)
         else
+            local tag = self.tag
             if(tag == "array") then
                 result = add_array_type(self, t)
             else
@@ -237,6 +255,7 @@ function Type:__add(t)
     else
         result = {tag = "unknown"}
     end
+    result.optional = (self.optional == true or t.optional == true)
     setmetatable(result,Type)
     return result
 end

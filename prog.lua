@@ -21,6 +21,9 @@ local function fooError3(a,b)
     return a
 end
 
+local function fooError4(a,b,c,d)
+    return 1
+end
 
 
 local function hey()
@@ -37,7 +40,13 @@ end
 --hello({a = {1,2,3}, b = true, c = {x = {1,2,3.0}}},true,1)
 --hello(1.0)
 
-hello({1}, nil)
+--foo()
+--hello({1}, nil)
+--foo()
+fooError4(1)
+fooError4(1,2.0)
+--fooError4(1,2.0)
+
 --hello(1.0)
 --hello("", 2.0, 3)
 --hello(1,2,3)

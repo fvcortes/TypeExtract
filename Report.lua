@@ -25,7 +25,7 @@ end
 
 -- Finds a suitable name for the function
 local function get_name (func)
-    local n = Names[func]
+    local n = Infos[func]
     local f = Functions[func]
     --print("> Report:get_name - Dumping Functions["..tostring(func).."]")
     --local k,v = next(f.parameterType)
