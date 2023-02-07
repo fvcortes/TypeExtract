@@ -123,6 +123,7 @@ local function add_record_type(r1,r2)
             else
                 recordType[k] = r2.recordType[k]
             end
+            recordType[k].optional = true
         end
     end
     return {tag = "record", recordType = recordType}
@@ -141,7 +142,6 @@ local function add_function_type(f1,f2)
 end
 
 local function get_array_type(array)
-    local ret = fold_table(map_table(array, Type.new), Type.__add)
     return fold_table(map_table(array, Type.new), Type.__add)
 end
 

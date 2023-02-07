@@ -5,7 +5,17 @@
 The type extractor depends heavily on the Lua debug library. Our tool make use of the hook mechanism and introspective functions of the language to inspect names and values inside a program execution. In this section we will describe the implementation of our extractor, emphasizing some key parts.
 \section*{Type extraction}
 
-The core functionality of the type extractor is the creation of a sophisticated type representation supported by the \textit{type} function. 
+The core functionality of the type extractor is the creation of a sophisticated type representation supported by the \textit{type} function. A basic example of type extraction is shown in Code~\ref{type_new}.
+
+\lstinputlisting[label=type_new,title={Type Extraction},caption={Type Extraction}, language={[5.0]Lua}]{codes/type_new.lua}
+
+An key aspect of the type entity is the ability to generate a new representation based on the union of other two types. It's pointed in Code~\ref{type_union} how some trivial types are merged together to create a new type. The creation and union of types combined, enables the categorization of array types in a more elegant way. For example, we can obtain an array type by iterating over its structure, mapping each element to a new type, then reducing this array of types by folding it with our union function. The implementation of this strategy is shown in Code. 
+
+\lstinputlisting[label=type_union,title={Array Type Creation},caption={Array Type Creation}, language={[5.0]Lua}]{codes/array_fold.lua}
+
+\lstinputlisting[label=type_union,title={Type Union},caption={Type Union}, language={[5.0]Lua}]{codes/type_union.lua}
+
+
 
 \section*{Basic profiler}
 The project development is inspired by a rudimentary profiler specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}. This profiler gives us insight of how a function can be inspected during runtime as it can be easly expanded to explore other introspective capabilities. Code~\ref{hook} shows the hook function registered to be executed by each event. Inevitably, some functions we do not want to inspect are captured by the this hook, so we ignore these functions as soon as we identify it's not a Lua function. The counterside of this restriction is that C functions defined by the user will not be inspected.
@@ -14,9 +24,9 @@ The project development is inspired by a rudimentary profiler specified in Chapt
 
 Notice the invocation of \textit{debug.getinfo} with a sequence of letters representing what information we want to obtain. The \textcolor{gray}{\textit{Sn}} part captures information about the function's name, location and source, useful when generating the desired report. The letter \textcolor{gray}{\textit{f}} fills the function value, which is used as a key value for several global tables shared across modules. The letter \textcolor{gray}{\textit{t}} tells us if the function event is part of a tail call. It's important to track this value when updating return values. Finally, the letter \textcolor{gray}{\textit{r}} fills information about the values being transferred, that is, parameters values in a call or return values in a return.
 
+\section*{Local variables inspection}
 
-
-\textit{Inspect} is a function imported by the Inspect module and it's implemention is shown in Code~\ref{inspect}. It's interesting to notice that the transfered values can be inspected the same way regardless of the event type. This simplification is possible due to the ntransfer and ftransfer fields obtained before. In a call event, ftransfer is always 1, it means that the index of the first transfered value is actually the index of the first parameter, while ntransfer is the number of parameters. On the other hand, in a return event the ftransfer index is not as predictable as in a call event and the ntransfer field holds the number of transfered values in the return statement.
+\textit{Inspect} is a function imported by the Inspect module and it's implemention is shown in Code~\ref{inspect}. It's interesting to notice that the transfered values can be inspected the same way regardless of the event type. The simplification is possible due to the ntransfer and ftransfer fields obtained before. In a call event, ftransfer is always 1, it means that the index of the first transfered value is actually the index of the first parameter, while ntransfer is the number of parameters. On the other hand, in a return event the ftransfer index is not as predictable as in a call event and the ntransfer field holds the number of transfered values in the return statement.
 
 \lstinputlisting[label=inspect,title={Inspect function},caption={Inspect function}, language={[5.0]Lua}]{codes/inspect.lua}
 
