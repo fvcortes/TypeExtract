@@ -44,7 +44,7 @@ Lua functions feature a concept called \textit{proper tail calls}, meaning that 
 \section*{Type comparison}
 In order to test if our type representation is correct, we explored the relational metamethod \textit{\_\_eq}, giving a new meaning under our type context. Two types are equal if it has the same type representation. With that in mind, an equality function can be defined recursevly, by analysing each type tag and comparing subsequent structures if needed. An example of type comparison is shown in Code~\ref{transfered}.
 
-\lstinputlisting[label=transfered,title={Get Transfered Types},caption={Get Transfered Types}, language={[5.0]Lua}]{codes/transfer_types.lua}
+\lstinputlisting[label=compare,title={Type Comparison},caption={Type Comparison}, language={[5.0]Lua}]{codes/type_compare.lua}
 
 % \paragraph*{Type}
 % Categorize values into conventional types, boolean, integer, string, float, number, array, record, function
