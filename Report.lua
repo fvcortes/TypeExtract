@@ -11,7 +11,7 @@ local function get_transfered_type_name(t)
         local firstreturn = t[1];
         r = r..tostring(firstreturn)
         for i=2,#t do
-            r = r.."->"..tostring(t[i])
+            r = r..","..tostring(t[i])
         end
         return r
     end
