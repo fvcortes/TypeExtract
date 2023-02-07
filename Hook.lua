@@ -2,7 +2,6 @@
 -- File: Hook.lua                                                 -
 -- Inspect local types; export function information               -
 -------------------------------------------------------------------
-require "Type"
 require "Inspect"
 Counters = {}
 Names = {}

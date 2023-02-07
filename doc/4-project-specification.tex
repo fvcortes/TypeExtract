@@ -75,40 +75,47 @@ A hook function is a piece of code to be executed during specific events. There 
 Generating a report consists in transforming the type information stored during the inspection phase to a human readable output. The Report module is responsible for printing some function informations as well as the function types.
 
 \paragraph*{Modules Diagram}
+Figure~\ref{fig:diag} shows the import relation between the project modules.
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{pictures/module_diagram.png}
+\caption{Diagram module}
+\label{fig:diag}
+\end{figure}
 
 
 
 
 
 
-Equation example 1:
+% Equation example 1:
 
-\begin{equation}
-\begin{split}
-\min_u \int_{x_i\in X}\int_{x_j\in X} q_{ij} u_i u_j da da + \int_{x_i\in X}||x' - x_i|| u_i da \\
-s.t. \ \ \ u\in[0,1] \ \ \land  \ \ \int_{x_i\in X}u da = a_0,
-\end{split}
-\end{equation}
+% \begin{equation}
+% \begin{split}
+% \min_u \int_{x_i\in X}\int_{x_j\in X} q_{ij} u_i u_j da da + \int_{x_i\in X}||x' - x_i|| u_i da \\
+% s.t. \ \ \ u\in[0,1] \ \ \land  \ \ \int_{x_i\in X}u da = a_0,
+% \end{split}
+% \end{equation}
 
-Equation exmaple 2:
+% Equation exmaple 2:
 
-\begin{equation}
-\begin{split}
-\min_{\mathbf{u}} \alpha \mathbf{u}^T \mathbf{A}^T \mathbf{Q} \mathbf{A} \mathbf{u} +  \beta \mathbf{d}^T a' \mathbf{A} \mathbf{u} + \gamma \mathbf{u}^T \mathbf{G}^T \mathbf{G} \mathbf{u} + \delta\mathbf{f}^T a' \mathbf{A} \mathbf{u} \\
-s.t. \ \ \ \mathbf{0} \leq \mathbf{u} \leq \mathbf{1} \land \mathbf{a}^T\mathbf{u}=a_0.
-\end{split}
-\end{equation}
+% \begin{equation}
+% \begin{split}
+% \min_{\mathbf{u}} \alpha \mathbf{u}^T \mathbf{A}^T \mathbf{Q} \mathbf{A} \mathbf{u} +  \beta \mathbf{d}^T a' \mathbf{A} \mathbf{u} + \gamma \mathbf{u}^T \mathbf{G}^T \mathbf{G} \mathbf{u} + \delta\mathbf{f}^T a' \mathbf{A} \mathbf{u} \\
+% s.t. \ \ \ \mathbf{0} \leq \mathbf{u} \leq \mathbf{1} \land \mathbf{a}^T\mathbf{u}=a_0.
+% \end{split}
+% \end{equation}
 
-Equation example 3:
-\begin{align}
-\mathbf{G}=(g_{ij}) = \left\lbrace
-\begin{array}{ll}
-\sum_{f_k\in N_f(f_i)} l_{ik} & i=j\\
--l_{ij} & e_{ij}\in E\\
-0 & \text{otherwise}
-\end{array}
-\right.
-\end{align}
+% Equation example 3:
+% \begin{align}
+% \mathbf{G}=(g_{ij}) = \left\lbrace
+% \begin{array}{ll}
+% \sum_{f_k\in N_f(f_i)} l_{ik} & i=j\\
+% -l_{ij} & e_{ij}\in E\\
+% 0 & \text{otherwise}
+% \end{array}
+% \right.
+% \end{align}
 
 % \lstinputlisting[label=mean,title={Mean Filter},caption={Mean Filter},language=R]{codes/mean.R}
 
