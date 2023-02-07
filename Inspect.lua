@@ -7,12 +7,10 @@ Functions = {}
 Stack = {}
 
 local function push(info)
-    --print(">Inspect:push")
     table.insert(Stack, info)
 end
 
 local function pop()
-    --print(">Inspect:pop")
     return table.remove(Stack)
 end
 
@@ -69,17 +67,17 @@ end
 --     end
 -- end
 
-local function update_parameter_type(types,infos)
-    if (Functions[infos.func] == nil) then     -- first call
-        Functions[infos.func] = {tag = "function", parameterType = types}
+local function add_parameter_types(types, func)
+    if (Functions[func] == nil) then     -- first call
+        Functions[func] = {tag = "function", parameterType = types}
     else
         for k,v in ipairs(types) do
-            Functions[infos.func].parameterType[k] = Functions[infos.func].parameterType[k] + v
+            Functions[func].parameterType[k] = Functions[func].parameterType[k] + v
         end
     end
 end
 
-local function add_return_types(func,types)
+local function add_return_types(types,func)
     if(Functions[func].returnType == nil) then   -- first return
         Functions[func].returnType = types
     else
@@ -88,46 +86,37 @@ local function add_return_types(func,types)
         end
     end
 end
-local function add_parameter_types ()
-    
+
+local function update_parameter_type(types,func)
+    add_parameter_types(types,func)
 end
-local function update_result_type(types, func, istailcall)
-    add_return_types(func,types)
+
+local function update_return_type(types, func, istailcall)
+    add_return_types(types,func)
     while istailcall do
-        local p = pop()
+        local p = table.remove(Stack)
         func = p.func
         istailcall = p.istailcall
-        add_return_types(func,types)
+        add_return_types(types,func)
     end
 end
+
 local function get_transfered_types(infos)
-    --print(">Inspect:get_transfered_types")
-    --local r = debug.getinfo(4, "r")
-    -- print(">Inspect:get_transfered_types - r.ftransfer: " .. r.ftransfer .. " - r.ntransfer: " .. r.ntransfer.." - infos.linedefined:["..infos.linedefined.."]")
-    --print(">Inspect:get_transfered_types - infos.ftransfer: " .. infos.ftransfer .. " - infos.ntransfer: " .. infos.ntransfer.." - infos.linedefined:["..infos.linedefined.."]")
     local t = {}
-    if (infos.ntransfer == 0) then
-        table.insert(t, Type.new(nil))
-        return  {}
-    end
     for i=infos.ftransfer,(infos.ftransfer + infos.ntransfer) - 1 do
         local _, value = debug.getlocal(4,i)
-        -- when transfered value is nil, tranfered array gets messedup
-        --print(">Inspect:get_transfered_values - -> [" .. name .. "] = "..tostring(value) )
         table.insert(t, Type.new(value))
     end
-    -- print(">Inspect:Inspect - dumping transfered table")
-    -- dumptable(t)
     return t
 end
 
 function Inspect(event,infos)
     local transfered_types = get_transfered_types(infos)
     if(event == "call" or event == "tail call") then
-        push(infos)
-        update_parameter_type(transfered_types,infos)
+        table.insert(Stack, infos)
+        update_parameter_type(transfered_types,infos.func)
     else
-        local p = pop()
-        update_result_type(transfered_types, p.func, p.istailcall)
+        local p = table.remove(Stack)
+        update_return_type(transfered_types, p.func, p.istailcall)
     end
 end

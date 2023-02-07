@@ -1,5 +1,5 @@
 function Hook (event)
-    local infos = debug.getinfo(2,"Snfrt")
+    local infos = debug.getinfo(2,"fnrSt")
     local f = infos.func
     if (Ignores[f] == true) then
         return

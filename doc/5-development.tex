@@ -3,15 +3,33 @@
 \chapter{Development}
 \label{cha:Development}
 The type extractor depends heavily on the Lua debug library. Our tool make use of the hook mechanism and introspective functions of the language to inspect names and values inside a program execution. In this section we will describe the implementation of our extractor, emphasizing some key parts.
+\section*{Type extraction}
+
+The core functionality of the type extractor is the creation of a sophisticated type representation supported by the \textit{type} function. 
 
 \section*{Basic profiler}
-The project development is inspired by a rudimentary profiler specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}. This profler gives us insight of how a function can be inspected during runtime and can be easly expanded to explore other introspective capabilities. Code~\ref{hook} shows the hook function registered to be executed by each event. Inevitably, some functions we do not want to inspect are captured by the this hook, so we ignore these functions as soon as we identify it's not a Lua function. The counterside of this restriction is that C functions defined by the user will not be inspected. 
+The project development is inspired by a rudimentary profiler specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}. This profiler gives us insight of how a function can be inspected during runtime as it can be easly expanded to explore other introspective capabilities. Code~\ref{hook} shows the hook function registered to be executed by each event. Inevitably, some functions we do not want to inspect are captured by the this hook, so we ignore these functions as soon as we identify it's not a Lua function. The counterside of this restriction is that C functions defined by the user will not be inspected.
 
 \lstinputlisting[label=hook,title={Hook function},caption={Hook function}, language={[5.0]Lua}]{codes/hook.lua}
 
-\textit{Inspect} is a function imported by the Inspect module and it's implemention is shown in Code~\ref{inspect}. 
+Notice the invocation of \textit{debug.getinfo} with a sequence of letters representing what information we want to obtain. The \textcolor{gray}{\textit{Sn}} part captures information about the function's name, location and source, useful when generating the desired report. The letter \textcolor{gray}{\textit{f}} fills the function value, which is used as a key value for several global tables shared across modules. The letter \textcolor{gray}{\textit{t}} tells us if the function event is part of a tail call. It's important to track this value when updating return values. Finally, the letter \textcolor{gray}{\textit{r}} fills information about the values being transferred, that is, parameters values in a call or return values in a return.
+
+
+
+\textit{Inspect} is a function imported by the Inspect module and it's implemention is shown in Code~\ref{inspect}. It's interesting to notice that the transfered values can be inspected the same way regardless of the event type. This simplification is possible due to the ntransfer and ftransfer fields obtained before. In a call event, ftransfer is always 1, it means that the index of the first transfered value is actually the index of the first parameter, while ntransfer is the number of parameters. On the other hand, in a return event the ftransfer index is not as predictable as in a call event and the ntransfer field holds the number of transfered values in the return statement.
 
 \lstinputlisting[label=inspect,title={Inspect function},caption={Inspect function}, language={[5.0]Lua}]{codes/inspect.lua}
+
+Another instrospective function explored by our extractor is the \textit{debug.getlocal} function which is is responsible for accessing local variables within a closure. Togheter with the transfered value indexes, \textit{getlocal} can to access the parameter and return values we want and extract it's type. This logic is shown in Code~\ref{transfered}.
+\clearpage
+
+\lstinputlisting[label=transfered,title={Get Transfered Types},caption={Get Transfered Types}, language={[5.0]Lua}]{codes/transfer_types.lua}
+
+Lua functions feature a concept called \textit{proper tail calls}, meaning that the calling function does not have its respective space in the stack after a tail call is made. Lua's proper tail call design is appropriate for many programming situations, but it requires our extarctor an extra step for updating return values of functions. Because Lua does not keep any information of the calling function of a tail call, our extractor still had to keep this information for updating the return values appropriately. Code~\ref{update_return} shows that, by manipulating a stack table, we can maintain the syncronism between the return type inspection and the program's call stack.
+
+
+\lstinputlisting[label=update_return,title={Update Return Types},caption={Update Return Types}, language={[5.0]Lua}]{codes/update_return.lua}
+
 
 
 \paragraph*{Type}
