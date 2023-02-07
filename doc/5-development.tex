@@ -9,13 +9,15 @@ The core functionality of the type extractor is the creation of a sophisticated 
 
 \lstinputlisting[label=type_new,title={Type Extraction},caption={Type Extraction}, language={[5.0]Lua}]{codes/type_new.lua}
 
-An key aspect of the type entity is the ability to generate a new representation based on the union of other two types. It's pointed in Code~\ref{type_union} how some trivial types are merged together to create a new type. The creation and union of types combined, enables the categorization of array types in a more elegant way. For example, we can obtain an array type by iterating over its structure, mapping each element to a new type, then reducing this array of types by folding it with our union function. The implementation of this strategy is shown in Code. 
-
-\lstinputlisting[label=type_union,title={Array Type Creation},caption={Array Type Creation}, language={[5.0]Lua}]{codes/array_fold.lua}
+A key aspect of the type entity is the ability to generate a new representation based on the union of other two types. It's pointed in Code~\ref{type_union} how some trivial types are merged together to create a new type. In the case of the union function, we override the \textit{\_\_add} function, as we want to use the \textit{+} operator to manipulate types.
+\clearpage
 
 \lstinputlisting[label=type_union,title={Type Union},caption={Type Union}, language={[5.0]Lua}]{codes/type_union.lua}
 
 
+The creation and union of types combined, enables the categorization of array types in a more elegant way. For example, we can obtain an array type by iterating over its structure, mapping each element to a new type, then reducing this array of types by folding it with our union function. The implementation of this strategy is shown in Code~\ref{array_type}.
+
+\lstinputlisting[label=array_type,title={Array Type Creation},caption={Array Type Creation}, language={[5.0]Lua}]{codes/array_fold.lua}
 
 \section*{Basic profiler}
 The project development is inspired by a rudimentary profiler specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}. This profiler gives us insight of how a function can be inspected during runtime as it can be easly expanded to explore other introspective capabilities. Code~\ref{hook} shows the hook function registered to be executed by each event. Inevitably, some functions we do not want to inspect are captured by the this hook, so we ignore these functions as soon as we identify it's not a Lua function. The counterside of this restriction is that C functions defined by the user will not be inspected.
@@ -31,7 +33,6 @@ Notice the invocation of \textit{debug.getinfo} with a sequence of letters repre
 \lstinputlisting[label=inspect,title={Inspect function},caption={Inspect function}, language={[5.0]Lua}]{codes/inspect.lua}
 
 Another instrospective function explored by our extractor is the \textit{debug.getlocal} function which is is responsible for accessing local variables within a closure. Togheter with the transfered value indexes, \textit{getlocal} can to access the parameter and return values we want and extract it's type. This logic is shown in Code~\ref{transfered}.
-\clearpage
 
 \lstinputlisting[label=transfered,title={Get Transfered Types},caption={Get Transfered Types}, language={[5.0]Lua}]{codes/transfer_types.lua}
 
@@ -40,23 +41,26 @@ Lua functions feature a concept called \textit{proper tail calls}, meaning that 
 
 \lstinputlisting[label=update_return,title={Update Return Types},caption={Update Return Types}, language={[5.0]Lua}]{codes/update_return.lua}
 
+\section*{Type comparison}
+In order to test if our type representation is correct, we explored the relational metamethod \textit{\_\_eq}, giving a new meaning under our type context. Two types are equal if it has the same type representation. With that in mind, an equality function can be defined recursevly, by analysing each type tag and comparing subsequent structures if needed. An example of type comparison is shown in Code~\ref{transfered}.
 
+\lstinputlisting[label=transfered,title={Get Transfered Types},caption={Get Transfered Types}, language={[5.0]Lua}]{codes/transfer_types.lua}
 
-\paragraph*{Type}
-Categorize values into conventional types, boolean, integer, string, float, number, array, record, function
-An array type is defined by the union of the types of each element in the array. This result can be achieved by a map+reduce strategy, creating a new type for each element in the array and merging them by our union function.
-\subparagraph*{Compatibility Matrix}
-\subparagraph*{Relational Metamethods}
-\paragraph*{Inspect}
-\subparagraph*{Accessing local variables}
-iterating getlocal for each transfered value
-\paragraph*{Hook}
-\subparagraph*{Basic profiler}
-getinfo at hook events
-\paragraph*{Report}
-\subparagraph*{String formating}
-\paragraph*{Test}
-\subparagraph*{Type comparison by an equality function}
+% \paragraph*{Type}
+% Categorize values into conventional types, boolean, integer, string, float, number, array, record, function
+% An array type is defined by the union of the types of each element in the array. This result can be achieved by a map+reduce strategy, creating a new type for each element in the array and merging them by our union function.
+% \subparagraph*{Compatibility Matrix}
+% \subparagraph*{Relational Metamethods}
+% \paragraph*{Inspect}
+% \subparagraph*{Accessing local variables}
+% iterating getlocal for each transfered value
+% \paragraph*{Hook}
+% \subparagraph*{Basic profiler}
+% getinfo at hook events
+% \paragraph*{Report}
+% \subparagraph*{String formating}
+% \paragraph*{Test}
+% \subparagraph*{Type comparison by an equality function}
 
 
 % Table example. Table~\ref{tab:res} shows results. 
