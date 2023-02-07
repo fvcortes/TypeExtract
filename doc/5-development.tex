@@ -2,7 +2,18 @@
 
 \chapter{Development}
 \label{cha:Development}
-The type extractor depends heavily on Lua debug library. Our tool make use of the hook mechanism and introspective functions to inspect names and values inside a program execution. The project development is inspired by a rudimentary profiler, specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}.
+The type extractor depends heavily on the Lua debug library. Our tool make use of the hook mechanism and introspective functions of the language to inspect names and values inside a program execution. In this section we will describe the implementation of our extractor, emphasizing some key parts.
+
+\section*{Basic profiler}
+The project development is inspired by a rudimentary profiler specified in Chapter 25 of the Programming in Lua book \cite{ierusalimschy_programming_2016}. This profler gives us insight of how a function can be inspected during runtime and can be easly expanded to explore other introspective capabilities. Code~\ref{hook} shows the hook function registered to be executed by each event. Inevitably, some functions we do not want to inspect are captured by the this hook, so we ignore these functions as soon as we identify it's not a Lua function. The counterside of this restriction is that C functions defined by the user will not be inspected. 
+
+\lstinputlisting[label=hook,title={Hook function},caption={Hook function}, language={[5.0]Lua}]{codes/hook.lua}
+
+\textit{Inspect} is a function imported by the Inspect module and it's implemention is shown in Code~\ref{inspect}. 
+
+\lstinputlisting[label=inspect,title={Inspect function},caption={Inspect function}, language={[5.0]Lua}]{codes/inspect.lua}
+
+
 \paragraph*{Type}
 Categorize values into conventional types, boolean, integer, string, float, number, array, record, function
 An array type is defined by the union of the types of each element in the array. This result can be achieved by a map+reduce strategy, creating a new type for each element in the array and merging them by our union function.

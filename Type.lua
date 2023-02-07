@@ -38,8 +38,8 @@ local number =
 local number_type = 
     {
         number = { number = "number", integer = "number", float = "number" },
-        integer = { number = "number", integer = "integer", float = "number" },
-        float = { number = "number", integer = "number", float = "float" }
+        integer = { number = "number", integer = "integer", float = "float" },
+        float = { number = "number", integer = "float", float = "float" }
     }
 
 local function list_keys(a,b)

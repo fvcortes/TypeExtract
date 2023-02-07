@@ -13,7 +13,7 @@ end
 local function testNewPrimitiveType()
     assert(Type.new(1) == Types.INTEGER, "Not an integer type")
     assert(Type.new(1.0) == Types.FLOAT, "Not a float type")
-    assert((Type.new(1) + Type.new(1.0)) == Types.NUMBER, "Not a number type")
+    assert((Type.new(1) + Type.new(1.0)) == Types.FLOAT, "Not a number type")
     assert(Type.new(true) == Types.BOOLEAN, "Not a boolean type")
     assert(Type.new("abc") == Types.STRING, "Not a string type")
     assert(Type.new() == Types.NIL, "Not a nil type")
@@ -23,7 +23,7 @@ end
 local function testNewPrimitiveArrayType()
     assert(Type.new({1}) == Types.INTEGER_ARRAY, "Not an array of integer type")
     assert(Type.new({1.0}) == Types.FLOAT_ARRAY, "Not an array of float type")
-    assert((Type.new({1}) + Type.new({1.0})) == Types.NUMBER_ARRAY, "Not an array of number type")
+    assert((Type.new({1}) + Type.new({1.0})) == Types.FLOAT_ARRAY, "Not an array of number type")
     assert(Type.new({true}) == Types.BOOLEAN_ARRAY, "Not an array of boolean type")
     assert(Type.new({"abc"}) == Types.STRING_ARRAY, "Not an array of string type")
     assert(Type.new({{}}) == Types.EMPTY_ARRAY, "Not an empty array type")
@@ -33,7 +33,7 @@ end
 local function testNewPrimitiveRecordType()
     assert(Type.new({x = 1}) == Types.INTEGER_RECORD, "Not an record of integer type")
     assert(Type.new({x = 1.0}) == Types.FLOAT_RECORD, "Not a record of float type")
-    assert((Type.new({x = 1}) + Type.new({x = 1.0})) == Types.NUMBER_RECORD, "Not a record of number type")
+    assert((Type.new({x = 1}) + Type.new({x = 1.0})) == Types.FLOAT_RECORD, "Not a record of number type")
     assert(Type.new({x = true}) == Types.BOOLEAN_RECORD, "Not a record of boolean type")
     assert(Type.new({x = "abc"}) == Types.STRING_RECORD, "Not a record of string type")
     assert(Type.new({x = {}}) == Types.EMPTY_RECORD, "Not a record of empty type")
@@ -44,7 +44,7 @@ end
 local function testNewArrayOfRecordType()
     assert(Type.new({{x = 1}, {x = 2}}) == Types.INTEGER_RECORD_ARRAY, "Not an array of record of integer type")
     assert(Type.new({{x = 1.0}, {x = 2.0}}) == Types.FLOAT_RECORD_ARRAY, "Not an array of record of float type")
-    assert(Type.new({{x = 1}, {x = 1.0}}) == Types.NUMBER_RECORD_ARRAY, "Not an array of record of number type")
+    assert(Type.new({{x = 1}, {x = 1.0}}) == Types.FLOAT_RECORD_ARRAY, "Not an array of record of number type")
     assert(Type.new({{x = true}, {x = false}}) == Types.BOOLEAN_RECORD_ARRAY, "Not an array of record of booelan type")
     assert(Type.new({{x = "abc"}, {x = "xyz"}}) == Types.STRING_RECORD_ARRAY, "Not an array of record of string type")
     assert(Type.new({{x = {}}, {x = {}}}) == Types.EMPTY_RECORD_ARRAY, "Not an array of record of empty type")
@@ -54,7 +54,7 @@ end
 local function testNewRecordOfArrayType()
     assert(Type.new({x = {1,2,3}}) == Types.INTEGER_ARRAY_RECORD, "Not a record of array of integer type")
     assert(Type.new({x = {1.0,2.0,3.0}}) == Types.FLOAT_ARRAY_RECORD, "Not a record of array of float type")
-    assert((Type.new({x = {1,2,3}}) + Type.new({x = {1.0,2.0,3.0}})) == Types.NUMBER_ARRAY_RECORD, "Not a record of array of float type")
+    assert((Type.new({x = {1,2,3}}) + Type.new({x = {1.0,2.0,3.0}})) == Types.FLOAT_ARRAY_RECORD, "Not a record of array of float type")
     assert(Type.new({x = {true,false}}) == Types.BOOLEAN_ARRAY_RECORD, "Not a record of array of boolean type")
     assert(Type.new({x = {"abc", "xyz"}}) == Types.STRING_ARRAY_RECORD, "Not a record of array of string type")
     assert(Type.new({x = {{}, {}}}) == Types.EMPTY_ARRAY_RECORD, "Not a record of array of empty type")
@@ -64,7 +64,7 @@ end
 local function testNewArrayOfArrayType()
     assert(Type.new({{1,2,3}}) == Types.INTEGER_ARRAY_ARRAY, "Not an array of array of integer type")
     assert(Type.new({{1.0,2.0,3.0}}) == Types.FLOAT_ARRAY_ARRAY, "Not an array of array of float type")
-    assert((Type.new({{1,2,3}}) + Type.new({{1.0,2.0,3.0}})) == Types.NUMBER_ARRAY_ARRAY, "Not an array of array of number type")
+    assert((Type.new({{1,2,3}}) + Type.new({{1.0,2.0,3.0}})) == Types.FLOAT_ARRAY_ARRAY, "Not an array of array of number type")
     assert(Type.new({{true,false}}) == Types.BOOLEAN_ARRAY_ARRAY, "Not an array of array of boolean type")
     assert(Type.new({{"abc", "xyz"}}) == Types.STRING_ARRAY_ARRAY, "Not an array of array of string type")
     assert(Type.new({{{}, {}}}) == Types.EMPTY_ARRAY_ARRAY, "Not an array of array of empty type")
@@ -74,7 +74,7 @@ end
 local function testNewRecordOfRecordType()
     assert(Type.new({x = {x = 1}}) == Types.INTEGER_RECORD_RECORD, "Not a record of record of integer type")
     assert(Type.new({x = {x = 1.0}}) == Types.FLOAT_RECORD_RECORD, "Not a record of record of float type")
-    assert((Type.new({x = {x = 1}}) + Type.new({x = {x = 1.0}})) == Types.NUMBER_RECORD_RECORD, "Not a record of record of number type")
+    assert((Type.new({x = {x = 1}}) + Type.new({x = {x = 1.0}})) == Types.FLOAT_RECORD_RECORD, "Not a record of record of number type")
     assert(Type.new({x = {x = true}}) == Types.BOOLEAN_RECORD_RECORD, "Not a record of record of booelan type")
     assert(Type.new({x = {x = "abc"}}) == Types.STRING_RECORD_RECORD, "Not a record of record of string type")
     assert(Type.new({x = {x = {}}}) == Types.EMPTY_RECORD_RECORD, "Not a record of record of empty type")
@@ -109,7 +109,7 @@ local function testPrimitiveTypeSum()
     -- integer + integer
     assert((Types.INTEGER + Types.INTEGER) ==  Types.INTEGER)
     -- integer + float
-    assert((Types.INTEGER + Types.FLOAT) ==  Types.NUMBER)
+    assert((Types.INTEGER + Types.FLOAT) ==  Types.FLOAT)
     -- integer + boolean
     assert((Types.INTEGER + Types.BOOLEAN) ==  Types.UNKNOWN)
     -- float + string
@@ -117,7 +117,7 @@ local function testPrimitiveTypeSum()
     -- float + number
     assert((Types.FLOAT + Types.NUMBER) ==  Types.NUMBER)
     -- float + integer
-    assert((Types.FLOAT + Types.INTEGER) ==  Types.NUMBER)
+    assert((Types.FLOAT + Types.INTEGER) ==  Types.FLOAT)
     -- float + float
     assert((Types.FLOAT + Types.FLOAT) ==  Types.FLOAT)
     -- float + boolean
@@ -162,7 +162,7 @@ local function testArrayTypeSum()
     -- integer + integer
     assert((Types.INTEGER_ARRAY + Types.INTEGER_ARRAY) == Types.INTEGER_ARRAY)
     -- integer + float
-    assert((Types.INTEGER_ARRAY + Types.FLOAT_ARRAY) == Types.NUMBER_ARRAY)
+    assert((Types.INTEGER_ARRAY + Types.FLOAT_ARRAY) == Types.FLOAT_ARRAY)
     -- integer + boolean
     assert((Types.INTEGER_ARRAY + Types.BOOLEAN_ARRAY) == Types.UNKNOWN_ARRAY)
     -- float + string
@@ -170,7 +170,7 @@ local function testArrayTypeSum()
     -- float + number
     assert((Types.FLOAT_ARRAY + Types.NUMBER_ARRAY) == Types.NUMBER_ARRAY)
     -- float + integer
-    assert((Types.FLOAT_ARRAY + Types.INTEGER_ARRAY) == Types.NUMBER_ARRAY)
+    assert((Types.FLOAT_ARRAY + Types.INTEGER_ARRAY) == Types.FLOAT_ARRAY)
     -- float + float
     assert((Types.FLOAT_ARRAY + Types.FLOAT_ARRAY) == Types.FLOAT_ARRAY)
     -- float + boolean
@@ -215,7 +215,7 @@ local function testRecordTypeSum()
     -- integer + integer
     assert((Types.INTEGER_RECORD + Types.INTEGER_RECORD) == Types.INTEGER_RECORD)
     -- integer + float
-    assert((Types.INTEGER_RECORD + Types.FLOAT_RECORD) == Types.NUMBER_RECORD)
+    assert((Types.INTEGER_RECORD + Types.FLOAT_RECORD) == Types.FLOAT_RECORD)
     -- integer + boolean
     assert((Types.INTEGER_RECORD + Types.BOOLEAN_RECORD) == Types.UNKNOWN_RECORD)
     -- float + string
@@ -223,7 +223,7 @@ local function testRecordTypeSum()
     -- float + number
     assert((Types.FLOAT_RECORD + Types.NUMBER_RECORD) == Types.NUMBER_RECORD)
     -- float + integer
-    assert((Types.FLOAT_RECORD + Types.INTEGER_RECORD) == Types.NUMBER_RECORD)
+    assert((Types.FLOAT_RECORD + Types.INTEGER_RECORD) == Types.FLOAT_RECORD)
     -- float + float
     assert((Types.FLOAT_RECORD + Types.FLOAT_RECORD) == Types.FLOAT_RECORD)
     -- float + boolean

@@ -1458,24 +1458,24 @@ parcial para obtenção de grau da disciplina \puc@coverprogram.}
   \pdfbookmark[0]{\contentsname}{anchor:contents}%
   \singlespacing\rmfamily%
   \tableofcontents%
-  % \ifthenelse{\equal{\puc@tablesmode}{fig} \or \equal{\puc@tablesmode}{figtab}}%
-  % {%
-  %   \clearpage%
-  %   \markboth{\listfigurename}{\listfigurename}%
-  %   \thispagestyle{empty}%
-  %   \phantomsection
-  %   \listoffigures%
-  %   %\cftaddtitleline{toc}{section}{\listfigurename}{}%
-  % }{}%
-  % \ifthenelse{\equal{\puc@tablesmode}{tab} \or \equal{\puc@tablesmode}{figtab}}%
-  % {%
-  %   \clearpage%
-  %   \markboth{\listtablename}{\listtablename}%
-  %   \phantomsection
-  %   \thispagestyle{empty}%
-  %   \listoftables%
-  %   %\cftaddtitleline{toc}{section}{\listtablename}{}%
-  % }{}%
+  \ifthenelse{\equal{\puc@tablesmode}{fig} \or \equal{\puc@tablesmode}{figtab}}%
+  {%
+    \clearpage%
+    \markboth{\listfigurename}{\listfigurename}%
+    \thispagestyle{empty}%
+    \phantomsection
+    \listoffigures%
+    %\cftaddtitleline{toc}{section}{\listfigurename}{}%
+  }{}%
+  \ifthenelse{\equal{\puc@tablesmode}{tab} \or \equal{\puc@tablesmode}{figtab}}%
+  {%
+    \clearpage%
+    \markboth{\listtablename}{\listtablename}%
+    \phantomsection
+    \thispagestyle{empty}%
+    \listoftables%
+    %\cftaddtitleline{toc}{section}{\listtablename}{}%
+  }{}%
   % \ifthenelse{\equal{\puc@algorithmsmode}{use}}%
   % {%
   %   \clearpage%

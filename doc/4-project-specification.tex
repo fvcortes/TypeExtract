@@ -1,9 +1,9 @@
 % -*- coding: utf-8; -*-
 \chapter{Project Specification}
 \label{cha:Project Specification}
-The objective of the type extractor is to generate a readable report for the user containing the types of parameter and return values of each function in a program's execution. With this objective in mind, we explored the reflection abilities of Lua through four main modules.
+The objective of the type extractor is to generate a readable report for the user containing the types of parameter and return values of each function in a program's execution. With this objective in mind, we explored the reflection abilities of Lua through the following modules.
 \subsection*{Type}
-The Type module is responsible for categorizing Lua values into a refined type representation. As said before, our type representation is borrowed by the Pallene Language type system and can represent five different categories:
+The Type module is responsible for categorizing Lua values into a refined type representation. As said before, our type representation is borrowed by the Pallene type system and can represent seven different categories:
 \begin{flalign*}
     && \tau&:=nil \;|\; boolean \;|\; integer \;|\; float \;|\; number \;|\; string && \text{primitive types} \\
     && &| \ \left \{ \tau \right \} && \text{array type} \\
@@ -13,14 +13,14 @@ The Type module is responsible for categorizing Lua values into a refined type r
     && &| \ \{\} && \text{empty type} \\
     && &| \ any && \text{dynamic type}
 \end{flalign*}
-It also defines a union strategy between two types. If types are equal, then the result of a union is of the same type but if types are incopatible, a dynamic type is generated. A compatibility table is shown in~\ref{tab:comp} to help understanding the union strategy. The union operation is commutative and table~\ref{tab:res} shows the union strategy between primitive number types.
+It also defines a union strategy between two types. If types are equal, then the result of a union is of the same type but if types are incopatible, a dynamic type is generated. A compatibility table is shown in~\ref{tab:comp} to help understanding this union strategy. Table~\ref{tab:res} shows the union strategy between primitive number types.
 \begin{table}[!h]
     \caption{Compatibility table}
     \tiny
  \begin{tabular}{ m{1.1cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm} m{0.95cm}} 
 
             & nil                                           & boolean                                                              & integer                                       & float                                         & number                                        & string                                        & array                                         & record                                        & empty                                         & function                                      & any                   \\ \cline{2-12} 
-\multicolumn{1}{l|}{nil}      & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}{\color[HTML]{000000} }} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{FFFFFF}} & \multicolumn{1}{l|}{} \\ \cline{2-12} 
+\multicolumn{1}{l|}{nil}      & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}{\color[HTML]{000000} }} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \multicolumn{1}{l|}{boolean}  & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}}                        & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \multicolumn{1}{l|}{integer}  & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \multicolumn{1}{l|}{float}    & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
@@ -29,7 +29,7 @@ It also defines a union strategy between two types. If types are equal, then the
 \multicolumn{1}{l|}{array}    & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \multicolumn{1}{l|}{record}   & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \multicolumn{1}{l|}{empty}    & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
-\multicolumn{1}{l|}{function} & \multicolumn{1}{l|}{\cellcolor[HTML]{FFFFFF}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{} \\ \cline{2-12} 
+\multicolumn{1}{l|}{function} & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{\cellcolor[HTML]{036400}} & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \multicolumn{1}{l|}{any}      & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                                                & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{}                         & \multicolumn{1}{l|}{} \\ \cline{2-12} 
 \end{tabular}
      \label{tab:comp}
@@ -40,7 +40,7 @@ It also defines a union strategy between two types. If types are equal, then the
 \begin{center}
     \begin{tabular}{lll}
         type1                        & type2  & result                      \\ \hline
-        \multicolumn{1}{|l}{integer} & float  & \multicolumn{1}{l|}{number} \\ \hline
+        \multicolumn{1}{|l}{integer} & float  & \multicolumn{1}{l|}{float} \\ \hline
         \multicolumn{1}{|l}{integer} & number & \multicolumn{1}{l|}{number} \\ \hline
         \multicolumn{1}{|l}{float}   & number & \multicolumn{1}{l|}{number} \\ \hline
         \end{tabular}
@@ -66,16 +66,17 @@ For recursive types, optional type and dynamic type, the following definition st
 \end{flalign*}
 \clearpage
 \subsection*{Inspect}
-The Inspect module is responsible for accessing the parameter and return values, analysing each one by our type definition. In order to iterate over the return values, the inspection module is dependent on the version 5.4 of Lua, which enables the inspection of transfered values.
+The Inspect module is responsible for accessing the parameter and return values, analysing each one by our type definition. In order to access return values, the inspection module is dependent on the version 5.4 of Lua, which enables the inspection of transfered values through the debug library.
 
 \subsection*{Hook}
-A hook function is a piece of code to be executed during specific events. There are several events available to inspect but the extractor only needs to inspect call and return events. The Hook module is resposible for configuring the hook function to be executed at these events.
+A hook function is a piece of code to be executed during specific events. There are several events available to inspect but the extractor is focused on inspecting call and return events. The Hook module is resposible for configuring the inspection function to be executed at these events.
 
 \subsection*{Report}
-Generating a report consists in transforming the type information stored during the inspection phase to a human readable output. The Report module is responsible for printing some function informations as well as the function types.
+Generating a report consists in transforming the type information collected so far to a human readable output. The Report module is responsible for printing some function informations as well as the function types.
+\\
 
-\paragraph*{Modules Diagram}
-Figure~\ref{fig:diag} shows the import relation between the project modules.
+Figure~\ref{fig:diag} shows the relationship between the project modules. Other than the modules already described here, there are modules responsible for configuring and running the extractor. Specially, the Test module validates the definitions described earlier. It asserts that the result of a type creation and type union is the one expected by an equality function between types. A type is equal to another if it has the exact same definition.
+
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{pictures/module_diagram.png}

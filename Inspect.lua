@@ -70,54 +70,34 @@ end
 -- end
 
 local function update_parameter_type(types,infos)
-    --print(">Inspect:update_parameter_type")
-    --local ft = debug.getinfo(4,"ft")
-    --print(">Inspect:update_parameter_type - istailcall: ", ft.istailcall)
-    push(infos)
-    --print(">Inspect:update_parameter_type - dumping parameter types")
-    --dumptable(types)
     if (Functions[infos.func] == nil) then     -- first call
-        --print(">Inspect:update_parameter_type - Functions[" .. tostring(infos.func) .. "] == nil (first call)")
         Functions[infos.func] = {tag = "function", parameterType = types}
     else
-        --print(">Inspect:update_parameter_type - Functions[" .. tostring(infos.func) .. "] != nil (already called)")
         for k,v in ipairs(types) do
-            --print(">Inspect:update_parameter_type - summing " .. tostring(v).." + ".. tostring(Functions[infos.func].parameterType[k]))
-            --local sum = v + Functions[infos.func].parameterType[k]
-            --print(">Inspect:update_parameter_type - result sum:[" .. tostring(sum).."]")
             Functions[infos.func].parameterType[k] = Functions[infos.func].parameterType[k] + v
         end
---        Functions[ft.func].parameterType = type + Functions[ft.func].parameterType
     end
 end
 
-local function update_result_type(types)
-    --print(">Inspect:update_result_type")
-    local ft = pop()
-    if(Functions[ft.func].returnType == nil) then   -- first return
-        Functions[ft.func].returnType = types
+local function add_return_types(func,types)
+    if(Functions[func].returnType == nil) then   -- first return
+        Functions[func].returnType = types
     else
         for k,v in ipairs (types) do
-            Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
+            Functions[func].returnType[k] = v + Functions[func].returnType[k]
         end
     end
-
-    -- for k,v in pairs (types) do
-    --     Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
-    -- end
-    --Functions[ft.func].returnType = type + Functions[ft.func].returnType
-    while ft.istailcall do
-        ft = pop()
-        if(Functions[ft.func].returnType == nil) then   -- first return
-            Functions[ft.func].returnType = types
-        else
-            for k,v in ipairs (types) do
-                Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
-            end
-        end
-        -- for k,v in pairs (types) do
-        --     Functions[ft.func].returnType[k] = v + Functions[ft.func].returnType[k]
-        -- end
+end
+local function add_parameter_types ()
+    
+end
+local function update_result_type(types, func, istailcall)
+    add_return_types(func,types)
+    while istailcall do
+        local p = pop()
+        func = p.func
+        istailcall = p.istailcall
+        add_return_types(func,types)
     end
 end
 local function get_transfered_types(infos)
@@ -142,13 +122,12 @@ local function get_transfered_types(infos)
 end
 
 function Inspect(event,infos)
-    --print(">Inspect:Inspect")
-    -- pack parameter/return values in a table and call Type on it
-    --local infos = debug.getinfo(3,"rt")
     local transfered_types = get_transfered_types(infos)
     if(event == "call" or event == "tail call") then
+        push(infos)
         update_parameter_type(transfered_types,infos)
-    else    -- return event
-        update_result_type(transfered_types)
+    else
+        local p = pop()
+        update_result_type(transfered_types, p.func, p.istailcall)
     end
 end

@@ -1,12 +1,16 @@
+local function boo(a)
+    return "a"
+end
 
 local function foo()
-    return 1
+    return boo(1)
 end
 
 
 local function hello(a,b)
     return foo()
 end
+
 
 local function fooError(a,b)
     return a
@@ -41,7 +45,7 @@ end
 --hello(1.0)
 
 --foo()
---hello({1}, nil)
+hello({1}, nil)
 --foo()
 fooError4(1)
 fooError4(1,2.0)

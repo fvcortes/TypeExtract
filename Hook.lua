@@ -10,117 +10,35 @@ Infos = {}
 --TODO: Treat varargs from getlocal
 
 function Hook (event)
-    --print(">Hook:Hook - event:["..event.."]")
     local infos = debug.getinfo(2,"Snfrt")
     local f = infos.func
-    --print(">Hook:Hook - f: ", f)
     if (Ignores[f] == true) then
-        --print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
         return
     else
         if(Counters[f] == nil) then
-            --print(">Hook:Hook - Counters[".. tostring(f).."] is nil. First time calling")
-            --infos = debug.getinfo(2,"Sn")
-            --print(">Hook:Hook - Printing function names")
-            --dumptable(names)
             if (infos.what ~= "Lua") then
-                --print(">Hook:Hook - func:" .. tostring(f) .. " ignored")
                 Ignores[f] = true
                 return
             else
-                --print(">Hook:Hook - initializing counter and names:" .. names.name)
-                --print(">Hook:Hook - Counters = 1")
                 Counters[f] = 1
                 Infos[f] = infos
             end
         else
             if(event == "call" or event == "tail call") then
                 Counters[f] = Counters[f] + 1
-                --print(">Hook:Hook - Counters: " .. Counters[f])
             end
         end
-        --print("Inspecting function: ", Names[f].name)
         Inspect(event,infos)
     end
-    ----------------------------------------------------------
-    -- if(Ignores[f] ~= true) then
-    --     --local infos = debu g.getinfo(2,"ur")
-    --     local functionType = Inspect(event)
-    --     if (event == "call") then
-    --         if(Counters[f] == nil) then  -- Function never inspected
-    --             local names = debu g.getinfo(2,"Sn")
-    --             if names.what == "Lua" then
-    --                 push(finfos)
-    --                 Counters[f] = 1
-    --                 Names[f] = names
-    --             else
-    --                 return
-    --             end
-    --         else    -- Function already inspected and its a call event
-    --             push(finfos)
-    --             update_counter(f)
-    --         end
-    --     else    -- return event
-    --         finfos = pop()
-    --         while finfos.istailcall do
-    --             finfos = pop()
-    --             Update(finfos.func, functionType)
-    --         end
-    --         -- REMINDER
-    --         --[[
-    --             while p.istailcall do
-    --                 p = pop()
-    --                 updateResult(p.func, info.ftransfer, info.ntransfer)
-    --             end
-    --         ]]
-    --     end
-    -- end
-    -- TODO: Transfuncue obtention logic from debu g.getlocal to Inspect module
+end
+
+-- TODO: Transfuncue obtention logic from debu g.getlocal to Inspect module
     -- WARNING: Counters table is messed up now, Inspect module knows how to increment call count (due to event == "call")
     --          but Report module requires Hook and not Inspect
     --          event is only useful to assign the correct table (returnType or parameterType), but
     --          it's very debatable wether event is necessary on Inspect or not because ntransfer and ftransfer
     --          facilitates a lot to iterate over 
-
     
-    --     local infos
-    --     if(Counters[f] == nil) then  -- Function never inspected
-    --         infos = debu g.getinfo(2,"Snurt")
-    --         if infos.what == "Lua" then
-    --             push(infos)
-    --         end
-    --     else    -- Function already inspected
-    --         infos = pop()
-    --     end
-    --     Inspect(f,event,infos.ntransfer,infos.ftransfer)
-    -- end
-
-    -- if(Ignores[f] ~= true) then
-    --     --print("name",debu g.getinfo(2,"Sn").name,"event", event)
-    --     if (event == "call") then -- call event
-    --         if(Counters[f] == nil) then -- first time function is called
-    --             local names = debu g.getinfo(2,"Sn")
-    --             if names.what == "Lua" then
-    --                 Infos[f] = debu g.getinfo(2,"urt")
-    --                 Counters[f] = 1
-    --                 Names[f] = names
-    --                 get_parameter_types(f)
-    --             end
-    --         else    -- function already called 
-    --             update_counter(f)
-    --             add_parameter_type(f)   -- try to add new types to old ones
-    --         end
-    --     else    -- return event
-    --         if(Returns[f] == nil) then  -- first time returned
-    --             ReturnInfos[f] = debu g.getinfo(2,"urt")
-    --             get_return_types(f)
-    --         else    -- function already returned before
-    --             add_return_types(f)
-    --         end
-    --     end
-    -- end
-end
-
 ---------------------------- NOTES --------------------------------
 -- if the function isvararg, the value of nparams from getlocal  is always 0
 -- the value of nparams is always the number of parameters defined in the functions declaration,
