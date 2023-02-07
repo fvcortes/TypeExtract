@@ -1,0 +1,35 @@
+============================================================================================================================================================
+Number of functions:    29
+Total calls:    422326
+============================================================================================================================================================
+[exemplos/julia.lua]:136 isqr   (float,float)->(float,float)    11786
+[exemplos/julia.lua]:99 inside  (float,float,float,float)->(boolean)    5789
+[exemplos/julia.lua]:183 f      (nil)->(integer,integer,string) 9
+[exemplos/julia.lua]:41 f       (nil)->(integer)        9
+[exemplos/julia.lua]:67 addsink (integer)->(nil)        14
+[exemplos/julia.lua]:104 clip   (any,float,float,float,float,{2:integer, color:float},float,float,float,float)->(nil)       266733
+[exemplos/julia.lua]:52 newcell (float)->({color:float})        5895
+[exemplos/julia.lua]:362 f      (integer)->(integer)    9
+[exemplos/julia.lua]:280 f      (nil)->(integer,integer,integer,integer)        9
+[exemplos/julia.lua]:402 julia  (integer,integer,integer)->(nil)        1
+[exemplos/julia.lua]:124 imul   (float,float,float,float)->(float,float)        5893
+[exemplos/julia.lua]:321 boxcolor       ({scc:integer, 2:integer?, 3:integer?, lowlink:integer, index:integer, color:float})->(float)   4929
+[exemplos/julia.lua]:346 savebox        (any,float,float,float)->(integer)  6569
+[exemplos/julia.lua]:12 output  (float,float?,float?,float?,nil,nil,nil)->(nil) 4947
+[exemplos/julia.lua]:146 f      (float,float,float,float)->(float,float,float,float)    5893
+[exemplos/julia.lua]:153 map    ({2:integer, color:float},float,float,float,float)->(nil)       5893
+[exemplos/julia.lua]:218 issingle       (integer,integer)->(integer?)   3124
+[exemplos/julia.lua]:390 f      (integer,integer,integer)->(integer,integer,integer)    1
+[exemplos/julia.lua]:26 prune   (any)->(float?)     9209
+[exemplos/julia.lua]:165 edges  (any,float,float,float,float)->(nil)        9209
+[exemplos/julia.lua]:92 outside (float,float,float,float)->(boolean)    5893
+[exemplos/julia.lua]:75 f       (integer)->(nil)        9
+[exemplos/julia.lua]:374 report (integer,string,function)->(nil)        55
+[exemplos/julia.lua]:204 issink (integer,integer)->(boolean)    3138
+[exemplos/julia.lua]:235 recolor        (integer,integer)->(nil)        3138
+[exemplos/julia.lua]:62 addedge
+({scc:integer?, 2:integer, 3:integer?, lowlink:integer?, color:float},{scc:integer?, 2:integer?, 3:integer?, lowlink:integer?, index:integer?, color:float})->(nil)     52351
+[exemplos/julia.lua]:251 strongconnect  ({scc:integer?, 2:integer, 3:integer, lowlink:integer?, color:float})->(nil)    5906
+[exemplos/julia.lua]:382 f      (integer)->(nil)        9
+[exemplos/julia.lua]:56 addvertex       ({scc:integer?, 2:integer?, 3:integer?, lowlink:integer?, index:integer?, color:float})->(nil)  5906
+============================================================================================================================================================
