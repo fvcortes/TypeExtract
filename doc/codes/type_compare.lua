@@ -4,8 +4,8 @@ Type.new(1) == INTEGER  --> true
 EMPTY = {tag = "empty"}
 Type.new({}) == EMPTY   --> true
 
-UNKNOWN = {tag = "unknown"}
-Type.new("abc") == UNKNOWN  --> false
+ANY = {tag = "any"}
+Type.new("abc") == ANY  --> false
 
 
 BOOLEAN = {tag = "boolean"}

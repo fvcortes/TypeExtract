@@ -41,7 +41,7 @@ local function get_name (func)
         return n.name
     end
     local lc = string.format("[%s]:%d", n.short_src, n.linedefined)
-    local ln = string.format("%s", true and n.name or "()")
+    local ln = string.format("%s", n.name or "()")
     if n.what ~= "main" then
         --print("> Reporting function with names...")
         --dumptable(n)
@@ -50,7 +50,7 @@ local function get_name (func)
         --print("> Report:get_name - f.returnType: ["..tostring(f.returnType).. "]")
         if (f.parameterType ~= nil) then
             function_type_name[func] = get_function_type_name(f.parameterType, f.returnType)
-            return string.format("%s\t%s\t%s", lc, ln, function_type_name[func])
+            return string.format("%s %s\t%s", lc, ln, function_type_name[func])
         end
         return string.format("%s\t%s", lc, ln)
     else
@@ -59,14 +59,12 @@ local function get_name (func)
 end
 
 function Report()
-    --print("> Report:Report - dumping Counters...")
-    --dumptable(Counters)
-    --print("> Report:Report - dumping Function...")
-    --dumptable(Functions)
-    --print("> Report:Report - dumping Names...")
-    --dumptable(Names)
-    --for k,v in pairs(Names) do dumptable(v) end
+    print("===================================================================================================================================================================================")
+    print("Number of functions:", TotalFunctions)
+    print("Total calls:", TotalCalls)
+    print("===================================================================================================================================================================================")
     for func, count in pairs (Counters) do
         print(get_name(func), count)
     end
+    print("===================================================================================================================================================================================")
 end

@@ -14,7 +14,7 @@ local type_compatibility =
         boolean = {boolean = true, ["nil"] = true},
         array = {array = true, ["nil"] = true},
         record = {record = true, ["nil"] = true},
-        unknown = {},
+        any = {},
         empty = {empty = true, ["nil"] = true},
         ["nil"] = {["nil"] = true, number = true, integer = true, float = true, string = true, boolean = true, array = true, record = true},
         ["function"] = {["function"] = true}
@@ -253,7 +253,7 @@ function Type:__add(t)
             end
         end
     else
-        result = {tag = "unknown"}
+        result = {tag = "any"}
     end
     result.optional = (self.optional == true or t.optional == true)
     setmetatable(result,Type)
